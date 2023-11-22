@@ -20,7 +20,7 @@ Square Board::getSquare(int index){
 
 std::ostream& operator<<(std::ostream& out, Board& board) {
     for (size_t i = 0; i < 64; ++i) {
-        out << std::setw(5) << board.getSquare(i); // Assuming Square has its operator<< defined
+        out << std::setw(5) << board.getSquare(i);
         if ((i + 1) % 8 == 0) {
             out << '\n'; // Start a new line after printing 8 squares (end of a row)
         }
