@@ -11,7 +11,7 @@ class Location{
         int rank;
         File file;
     public:
-        Location(int rank, char file) : rank{rank}, file{file} {}
+        Location(int rank, File file) : rank{rank}, file{file} {}
         File getFile(){
             return this->file;
         }
