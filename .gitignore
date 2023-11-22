@@ -34,5 +34,5 @@ Makefile
 
 # Executables
 *.exe
-a5
+*.out
 *.app
