@@ -1,3 +1,6 @@
+#include <iostream>
+
+
 enum class File {
     A,B,C,D,E,F,G,H
 };
@@ -44,3 +47,9 @@ class Square {
         }
 };
 
+inline std::ostream& operator<<(std::ostream& out, const Square& square) {
+    out << "Square at " << square.getLocation().getRank() << static_cast<char>(square.getLocation().getFile())
+        << " | Color: " << (square.getColor() == color::white ? "White" : "Black")
+        << " | Occupied: " << (square.isOccupied() ? "Yes" : "No");
+    return out;
+}
