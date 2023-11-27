@@ -6,10 +6,11 @@ Board::Board() {
     for (int file = 0; file < 8; ++file) {
         for (int rank = 0; rank < 8; ++rank) {
             bool isWhite = (file + rank) % 2 != 0;
-            color currColor = (isWhite) ? color::white : color::black;
+            color currColor = (isWhite) ? color::light : color::dark;
             Location loc(rank + 1, static_cast<File>('A' + file));
 
-            squares.emplace_back(loc, currColor, false);
+            Square mysquare (loc, currColor, false);
+            squares.emplace_back(mysquare);
         }
     }
 }
@@ -20,7 +21,7 @@ Square Board::getSquare(int index){
 
 std::ostream& operator<<(std::ostream& out, Board& board) {
     for (size_t i = 0; i < 64; ++i) {
-        out << std::setw(5) << board.getSquare(i);
+        out << board.getSquare(i);
         if ((i + 1) % 8 == 0) {
             out << '\n'; // Start a new line after printing 8 squares (end of a row)
         }
