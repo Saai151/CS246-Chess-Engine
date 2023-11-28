@@ -1,5 +1,9 @@
+#ifndef ABSTRACTPIECE_H
+#define ABSTRACTPIECE_H
+
 #include <string>
 #include "Square.h"
+
 
 enum class pieceColor{
     White, Black
@@ -26,11 +30,14 @@ class AbstractPiece{
         }
 
         virtual std::vector<Location> getValidMoves() const = 0;
-
+        virtual void makeMove(Square targetSquare)const = 0;
 };
 
 class Pawn : public AbstractPiece{
     Pawn(Square currSquare, pieceColor color): AbstractPiece(currSquare, color, "Pawn"){}
+    std::vector<Location> getValidMoves() const override{
+
+    }
 
 };
 
@@ -58,3 +65,5 @@ class Bishop : public AbstractPiece{
     Bishop(Square currSquare, pieceColor color): AbstractPiece(currSquare, color, "Bishop"){}
 
 };
+
+#endif

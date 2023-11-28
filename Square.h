@@ -1,4 +1,8 @@
+#ifndef SQUARE_H
+#define SQUARE_H
+
 #include <iostream>
+#include "AbstractPiece.h"
 
 enum class File {
     A,B,C,D,E,F,G,H
@@ -22,12 +26,12 @@ class Location{
         }
 };
 
-
 class Square {
     private:
         Location location;
         color squareColor;
-        bool occupied; 
+        bool occupied;
+        AbstractPiece *piece;
     public:
         Square(Location location, color squareColor, bool occupied)
             : location{location}, squareColor{squareColor}, occupied{occupied} {}
@@ -43,6 +47,10 @@ class Square {
         Location getLocation() const {
             return location; 
         }
+
+        void reset(){
+            occupied = false;
+        }
 };
 
 inline std::ostream& operator<<(std::ostream& out, const Square& square) {
@@ -51,3 +59,5 @@ inline std::ostream& operator<<(std::ostream& out, const Square& square) {
         << " | Occupied: " << (square.isOccupied() ? "Yes" : "No");
     return out;
 }
+
+#endif
