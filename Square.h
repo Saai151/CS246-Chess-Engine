@@ -1,5 +1,4 @@
 #include <iostream>
-#include "AbstractPiece.h"
 
 enum class File {
     A,B,C,D,E,F,G,H
@@ -29,7 +28,6 @@ class Square {
         Location location;
         color squareColor;
         bool occupied; 
-        AbstractPiece *piece;
     public:
         Square(Location location, color squareColor, bool occupied)
             : location{location}, squareColor{squareColor}, occupied{occupied} {}
@@ -44,15 +42,6 @@ class Square {
 
         Location getLocation() const {
             return location; 
-        }
-        
-        void reset(){
-            occupied = false;
-            piece = nullptr;
-        }
-
-        void setCurrentPiece(AbstractPiece *piece){
-            this->piece = piece;
         }
 };
 

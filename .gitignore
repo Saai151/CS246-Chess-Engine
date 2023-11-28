@@ -1,9 +1,6 @@
 #vscode
 *.vscode
 
-#Makefile
-Makefile
-
 # Prerequisites
 *.d
 
