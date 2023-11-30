@@ -1,6 +1,7 @@
 #ifndef ABSTRACTPIECE_H
 #define ABSTRACTPIECE_H
 
+#include "Board.h"
 #include <string>
 #include "Square.h"
 
@@ -31,25 +32,31 @@ class AbstractPiece{
 };
 
 class Pawn : public AbstractPiece{
+    bool isFirst;
     public:
-        Pawn(int squareIndex, pieceColor color): AbstractPiece(squareIndex, color, "Pawn"){}
+        Pawn(int squareIndex, pieceColor color): AbstractPiece(squareIndex, color, "Pawn"), isFirst{false}{}
         std::vector<Location> getValidMoves(){
 
         }
 
-        void makeMove(Square targetSquare){
-
+        void Move(int targetSquare, Board board){
+            this->setSquare(targetSquare);
         }
 
-        friend std::ostream& operator<<(std::ostream& out, const Pawn& pawn) {
-        if (pawn.getPieceColor() == pieceColor::White){
-            out << "P";
+        bool validMove(int targetSquare, Board board){
+            int currSquare = this->getSquare();
+            std::vector<int> moves;
+            if (isFirst){
+                moves.push_back(currSquare+16);
+            }
+
+            for (int i = 0; i < board.pieces.size(); ++i){
+                if (board.pieces[i].getSquare() && board.pieces[i].getPieceColor() == this->getPieceColor()){
+
+                }
+            }
         }
-        else {
-            out << "p";
-        }
-        return out;
-    }
+
 };
 
 class Queen : public AbstractPiece{
@@ -72,15 +79,6 @@ class King : public AbstractPiece{
     public:
         King(int squareIndex, pieceColor color): AbstractPiece(squareIndex, color, "King"){}
 
-        friend std::ostream& operator<<(std::ostream& out, const King& king) {
-        if (king.getPieceColor() == pieceColor::White){
-            out << "K";
-        }
-        else {
-            out << "k";
-        }
-        return out;
-    }
 
 };
 
@@ -88,30 +86,12 @@ class Knight : public AbstractPiece{
     public:
          Knight(int squareIndex, pieceColor color): AbstractPiece(squareIndex, color, "Knight"){}
 
-         friend std::ostream& operator<<(std::ostream& out, const Knight& knight) {
-        if (knight.getPieceColor() == pieceColor::White){
-            out << "Kn";
-        }
-        else {
-            out << "kn";
-        }
-        return out;
-    }
 
 };
 
 class Rook : public AbstractPiece{
     public:
         Rook(int squareIndex, pieceColor color): AbstractPiece(squareIndex, color, "Rook"){}
-        friend std::ostream& operator<<(std::ostream& out, const Rook& rook) {
-        if (rook.getPieceColor() == pieceColor::White){
-            out << "R";
-        }
-        else {
-            out << "r";
-        }
-        return out;
-    }
 
 };
 
@@ -119,15 +99,6 @@ class Bishop : public AbstractPiece{
     public:
         Bishop(int squareIndex, pieceColor color): AbstractPiece(squareIndex, color, "Bishop"){}
 
-        friend std::ostream& operator<<(std::ostream& out, const Bishop& bishop) {
-        if (bishop.getPieceColor() == pieceColor::White){
-            out << "B";
-        }
-        else {
-            out << "b";
-        }
-        return out;
-    }
 };
 
 #endif
