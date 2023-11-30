@@ -7,11 +7,10 @@
 #include <vector>
 
 
-class Board{
-    private:
+class Board{    
+    public:
         std::vector<Square> squares;
         std::vector<AbstractPiece> pieces;
-    public:
         Board();
         Square getSquare(int index);
         AbstractPiece getPiece (int index);
