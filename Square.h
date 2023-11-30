@@ -2,7 +2,6 @@
 #define SQUARE_H
 
 #include <iostream>
-#include "AbstractPiece.h"
 
 enum class File {
     A,B,C,D,E,F,G,H
@@ -31,7 +30,6 @@ class Square {
         Location location;
         color squareColor;
         bool occupied;
-        AbstractPiece *piece;
     public:
         Square(Location location, color squareColor, bool occupied)
             : location{location}, squareColor{squareColor}, occupied{occupied} {}
@@ -51,12 +49,11 @@ class Square {
         void reset(){
             occupied = false;
         }
+
 };
 
 inline std::ostream& operator<<(std::ostream& out, const Square& square) {
-    out << "Square at " << square.getLocation().getRank() << static_cast<char>(square.getLocation().getFile())
-        << " | Color: " << (square.getColor() == color::light ? "light" : "dark")
-        << " | Occupied: " << (square.isOccupied() ? "Yes" : "No");
+    out << (square.getColor() == color::light ? " " : "_");
     return out;
 }
 

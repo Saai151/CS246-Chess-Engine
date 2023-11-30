@@ -11,59 +11,123 @@ enum class pieceColor{
 
 class AbstractPiece{
     private:
+        int squareIndex;
         pieceColor color;
         std::string name;
-        Square currSquare;
     public:
-        AbstractPiece(Square currSquare, pieceColor color, std::string name):  currSquare{currSquare}, color{color}, name{name}{}
-        pieceColor getPieceColor(){
+        AbstractPiece(int squareIndex, pieceColor color, std::string name):  squareIndex{squareIndex}, color{color}, name{name}{}
+        pieceColor getPieceColor() const{
             return color;
         }
         std::string getName(){
             return name;
         }
-        Square getSquare(){
-            return currSquare;
+        int getSquare(){
+            return squareIndex;
         }
-        void setSquare(Square square){
-            currSquare = square;
+        void setSquare(int index){
+            squareIndex = index;
         }
-
-        virtual std::vector<Location> getValidMoves() const = 0;
-        virtual void makeMove(Square targetSquare)const = 0;
 };
 
 class Pawn : public AbstractPiece{
-    Pawn(Square currSquare, pieceColor color): AbstractPiece(currSquare, color, "Pawn"){}
-    std::vector<Location> getValidMoves() const override{
+    public:
+        Pawn(int squareIndex, pieceColor color): AbstractPiece(squareIndex, color, "Pawn"){}
+        std::vector<Location> getValidMoves(){
 
+        }
+
+        void makeMove(Square targetSquare){
+
+        }
+
+        friend std::ostream& operator<<(std::ostream& out, const Pawn& pawn) {
+        if (pawn.getPieceColor() == pieceColor::White){
+            out << "P";
+        }
+        else {
+            out << "p";
+        }
+        return out;
+    }
+};
+
+class Queen : public AbstractPiece{
+    public:
+        Queen(int squareIndex, pieceColor color): AbstractPiece(squareIndex, color, "Queen"){}
+
+        friend std::ostream& operator<<(std::ostream& out, const Queen& queen) {
+        if (queen.getPieceColor() == pieceColor::White){
+            out << "Q";
+        }
+        else {
+            out << "q";
+        }
+        return out;
     }
 
 };
 
-class Queen : public AbstractPiece{
-    Queen(Square currSquare, pieceColor color): AbstractPiece(currSquare, color, "Queen"){}
-
-};
-
 class King : public AbstractPiece{
-    King(Square currSquare, pieceColor color): AbstractPiece(currSquare, color, "King"){}
+    public:
+        King(int squareIndex, pieceColor color): AbstractPiece(squareIndex, color, "King"){}
+
+        friend std::ostream& operator<<(std::ostream& out, const King& king) {
+        if (king.getPieceColor() == pieceColor::White){
+            out << "K";
+        }
+        else {
+            out << "k";
+        }
+        return out;
+    }
 
 };
 
 class Knight : public AbstractPiece{
-    Knight(Square currSquare, pieceColor color): AbstractPiece(currSquare, color, "Knight"){}
+    public:
+         Knight(int squareIndex, pieceColor color): AbstractPiece(squareIndex, color, "Knight"){}
+
+         friend std::ostream& operator<<(std::ostream& out, const Knight& knight) {
+        if (knight.getPieceColor() == pieceColor::White){
+            out << "Kn";
+        }
+        else {
+            out << "kn";
+        }
+        return out;
+    }
 
 };
 
 class Rook : public AbstractPiece{
-    Rook(Square currSquare, pieceColor color): AbstractPiece(currSquare, color, "Rook"){}
+    public:
+        Rook(int squareIndex, pieceColor color): AbstractPiece(squareIndex, color, "Rook"){}
+        friend std::ostream& operator<<(std::ostream& out, const Rook& rook) {
+        if (rook.getPieceColor() == pieceColor::White){
+            out << "R";
+        }
+        else {
+            out << "r";
+        }
+        return out;
+    }
 
 };
 
 class Bishop : public AbstractPiece{
-    Bishop(Square currSquare, pieceColor color): AbstractPiece(currSquare, color, "Bishop"){}
+    public:
+        Bishop(int squareIndex, pieceColor color): AbstractPiece(squareIndex, color, "Bishop"){}
 
+        friend std::ostream& operator<<(std::ostream& out, const Bishop& bishop) {
+        if (bishop.getPieceColor() == pieceColor::White){
+            out << "B";
+        }
+        else {
+            out << "b";
+        }
+        return out;
+    }
 };
 
 #endif
