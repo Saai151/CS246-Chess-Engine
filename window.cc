@@ -72,27 +72,36 @@ void Xwindow::drawString(int x, int y, string msg) {
 std::vector<int> GraphicsDisplay::map(Square s) { 
   int cell_len = 500/gridSize; 
   Location l = s.getLocation();
-  int col = l.getFile() - 'A';
-  int row = l.getRank() - 1; 
+  int col = 0;
+  vector<File> file_arr = {File::A,File::B,File::C,File::D,File::E,File::F,File::G,File::H};
+  for (File f : file_arr) {
+    if (l.getFile() == f) {
+      break;
+    }
+    col++;
+  }
+  int row = l.getRank(); 
   int x = col * cell_len;
-  int y = row * cell_len;
+  int y = (gridSize - row) * cell_len;
   std::vector<int> dimensions = {x, y, cell_len};
   return dimensions;
 }
 
-GraphicsDisplay::GraphicsDisplay(Xwindow &w) : w{w} {
+GraphicsDisplay::GraphicsDisplay(Xwindow &w, Board &b) : w{w}, b{b} {
   gridSize = 8; // 8 x 8 chess board
   w.fillRectangle(0, 0, 500, 500);
 }
 
-// void GraphicsDisplay::notify(Cell &c) {
-//   int colour = c.getState() ? Xwindow::White : Xwindow::Black;
-//   std::vector<int> dimensions = map(c);
-//   int x = dimensions[0];
-//   int y = dimensions[1];
-//   int len = dimensions[2];
-//   w.fillRectangle(x, y, len, len, colour);
-// }
+void GraphicsDisplay::DisplayUpdate() {
+  for (Square s : b.squares) {
+    std::vector<int> dimensions = map(s);
+    int x = dimensions[0];
+    int y = dimensions[1];
+    int len = dimensions[2];
+    int colour = s.getColor() == color::light ? Xwindow::White : Xwindow::Black;
+    w.fillRectangle(x, y, len, len, colour);
+  }
+}
 
 GraphicsDisplay::~GraphicsDisplay() {
 }

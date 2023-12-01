@@ -7,7 +7,7 @@
 #include <vector>
 
 
-class Board{    
+class Board {    
     public:
         std::vector<Square> squares;
         std::vector<AbstractPiece> pieces;

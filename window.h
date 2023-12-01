@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "Square.h"
+#include "Board.h"
 
 class Board;
 
@@ -31,11 +31,13 @@ class Xwindow {
 
 class GraphicsDisplay {
   Xwindow w;
+  Board b;
   int gridSize;
   std::vector<int> map(Square s);
 
  public:
-  GraphicsDisplay(Xwindow &w);
+  GraphicsDisplay(Xwindow &w, Board &b);
+  void DisplayUpdate();
   //void notify(Cell &c) override;
   //SubscriptionType subType() override;
 
