@@ -22,7 +22,7 @@ Board::Board() {
             AbstractPiece piece = Pawn(i, pieceColor::White);
             pieces.push_back(piece);
         }
-
+        
         pieces.push_back(Rook(0, pieceColor::Black));
         pieces.push_back(Rook(7, pieceColor::Black));
         pieces.push_back(Knight(1, pieceColor::Black));
@@ -39,7 +39,6 @@ Board::Board() {
         pieces.push_back(Bishop(61, pieceColor::White));
         pieces.push_back(Queen(59, pieceColor::White));
         pieces.push_back(King(60, pieceColor::White));
-
     }
 
 Square Board::getSquare(int index){

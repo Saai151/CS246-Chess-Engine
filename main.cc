@@ -9,5 +9,6 @@ int main(){
     string command;
     std::cin >> command;
 
+
     // work on what happens when the user enters setup mode
 }

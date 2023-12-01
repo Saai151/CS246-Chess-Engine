@@ -40,22 +40,55 @@ class Pawn : public AbstractPiece{
         }
 
         void Move(int targetSquare, Board board){
-            this->setSquare(targetSquare);
+            if (validMove(targetSquare, board)){
+                this->setSquare(targetSquare);
+            }
         }
 
         bool validMove(int targetSquare, Board board){
+            pieceColor targetColor;
+            if (this->getPieceColor() == pieceColor::White){
+                targetColor = pieceColor::Black;
+            } else{
+                 targetColor = pieceColor::White;
+            }
             int currSquare = this->getSquare();
+            bool occupied1 = false;
+            bool occupied2 = false;
             std::vector<int> moves;
-            if (isFirst){
+            
+
+            for (int i = 0; i < moves.size(); ++i){
+                for ( auto piece : board.pieces) {
+                    if (piece.getSquare() == currSquare + 8) {
+                        occupied1 = true;
+                    }
+                    else if (piece.getSquare() == currSquare + 16){
+                        occupied2 = true;
+                    }
+                    else if(piece.getSquare() == currSquare + 9 && piece.getPieceColor() == targetColor){
+                        moves.push_back(currSquare + 9);
+                    }
+                    else if (piece.getSquare() == currSquare - 9 && piece.getPieceColor() == targetColor){
+                        moves.push_back(currSquare - 9);
+                    }
+                }
+
+            if (isFirst && !occupied2){
                 moves.push_back(currSquare+16);
             }
+            else if (!occupied1){
+                moves.push_back(currSquare+8);
+            }
 
-            for (int i = 0; i < board.pieces.size(); ++i){
-                if (board.pieces[i].getSquare() && board.pieces[i].getPieceColor() == this->getPieceColor()){
-
+            for (int i = 0; i < moves.size(); ++i){
+                if (targetSquare == moves[i]){
+                    return true;
                 }
             }
-        }
+            return false;    
+        }        
+    }
 
 };
 
