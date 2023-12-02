@@ -39,13 +39,13 @@ class Pawn : public AbstractPiece{
 
         }
 
-        void Move(int targetSquare, Board board){
-            if (validMove(targetSquare, board)){
+        void Move(int targetSquare, vector<AbstractPiece> boardState){
+            if (validMove(targetSquare, boardState)){
                 this->setSquare(targetSquare);
             }
         }
 
-        bool validMove(int targetSquare, Board board){
+        bool validMove(int targetSquare, vector<AbstractPiece> boardState){
             pieceColor targetColor;
             if (this->getPieceColor() == pieceColor::White){
                 targetColor = pieceColor::Black;
@@ -57,21 +57,18 @@ class Pawn : public AbstractPiece{
             bool occupied2 = false;
             std::vector<int> moves;
             
-
-            for (int i = 0; i < moves.size(); ++i){
-                for ( auto piece : board.pieces) {
-                    if (piece.getSquare() == currSquare + 8) {
-                        occupied1 = true;
-                    }
-                    else if (piece.getSquare() == currSquare + 16){
-                        occupied2 = true;
-                    }
-                    else if(piece.getSquare() == currSquare + 9 && piece.getPieceColor() == targetColor){
-                        moves.push_back(currSquare + 9);
-                    }
-                    else if (piece.getSquare() == currSquare - 9 && piece.getPieceColor() == targetColor){
-                        moves.push_back(currSquare - 9);
-                    }
+            for ( auto piece : boardState) {
+                if (piece.getSquare() == currSquare + 8) {
+                    occupied1 = true;
+                }
+                else if (piece.getSquare() == currSquare + 16){
+                    occupied2 = true;
+                }
+                else if(piece.getSquare() == currSquare + 9 && piece.getPieceColor() == targetColor){
+                    moves.push_back(currSquare + 9);
+                }
+                else if (piece.getSquare() == currSquare - 9 && piece.getPieceColor() == targetColor){
+                    moves.push_back(currSquare - 9);
                 }
 
             if (isFirst && !occupied2){
