@@ -2,7 +2,6 @@
 #define ABSTRACTPIECE_H
 
 #include <vector>
-#include "Board.h"
 #include <string>
 #include <iostream>
 #include "Location.h"
