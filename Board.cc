@@ -88,7 +88,8 @@ Square* Board::getSquare(int index){
 
 void Board::handlePieceMoved(AbstractPiece* piece) {
     squares[piece->getPreviousSquare()].setOccupant(nullptr);
-    squares[piece->getSquare()].setOccupant(piece);
+    squares[piece->getSquare()].setOccupant(piece); 
+    // Validate isChecked, pieceHopping, isCheckMated, inBoardArea
 }
 
 Board::~Board() {}
