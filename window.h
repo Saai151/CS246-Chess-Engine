@@ -1,6 +1,7 @@
 #ifndef __WINDOW_H__
 #define __WINDOW_H__
 #include <X11/Xlib.h>
+#include <X11/xpm.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -27,6 +28,9 @@ class Xwindow {
   // Draws a string
   void drawString(int x, int y, std::string msg);
 
+  // Places a piece on a square;
+  void placePiece(int x, int y, int cell_len, const char* piecePath);
+
 };
 
 class GraphicsDisplay {
@@ -34,6 +38,7 @@ class GraphicsDisplay {
   Board b;
   int gridSize;
   std::vector<int> map(Square s);
+  const char *nameToimgPath(std::string name, pieceColor color);
 
  public:
   GraphicsDisplay(Xwindow &w, Board &b);

@@ -7,5 +7,9 @@ int main(){
     cout << myBoard;
     Xwindow w = Xwindow();
     GraphicsDisplay gd(w, myBoard);
-    gd.DisplayUpdate();
+   
+    string cmd;
+    while (cin >> cmd) {
+        gd.DisplayUpdate();
+    }
 }

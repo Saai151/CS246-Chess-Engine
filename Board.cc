@@ -9,48 +9,6 @@ Board::Board() {
                 Location loc(rank + 1, static_cast<File>('A' + file));
 
                 Square mySquare(loc, currColor, false);
-
-            //     // Assign specific pieces to their starting positions
-            //     if ((file + rank >= 8 && file + rank <= 15) || (file + rank >= 48 && file + rank <= 55)) {
-            //         if (file + rank >= 8 && file + rank <= 15) {
-            //             std::cout << "Pawn" << std::endl;
-            //             AbstractPiece piece = Pawn(file+rank, pieceColor::Black); // Instantiate a Black Pawn
-            //             pieces.push_back(piece);
-            //         } else {
-            //             std::cout << "Pawn" << std::endl;
-            //             AbstractPiece piece = Pawn(file+rank, pieceColor::White); // Instantiate a White Pawn
-            //             pieces.push_back(piece);
-            //         }
-            //     } else if (rank == 0 || rank == 7) {
-            //     // Other pieces in the back row
-            //     pieceColor color = (rank == 0) ? pieceColor::Black : pieceColor::White;
-            //     if (file == 0 || file == 7) {
-            //         // Rooks
-            //         std::cout << "Rook" << std::endl;
-            //         AbstractPiece piece = Rook(file+rank, color);
-            //         pieces.push_back(piece);
-            //     } else if (file == 1 || file == 6) {
-            //         // Knights
-            //         std::cout << "Knight" << std::endl;
-            //         AbstractPiece piece = Knight(file+rank, color);
-            //         pieces.push_back(piece);
-            //     } else if (file == 2 || file == 5) {
-            //         // Bishops
-            //         std::cout << "Bishop" << std::endl;
-            //         AbstractPiece piece = Bishop(file+rank, color);
-            //         pieces.push_back(piece);
-            //     } else if (file == 3) {
-            //         // Queens
-            //         std::cout << "Queen" << std::endl;
-            //         AbstractPiece piece = Queen(file+rank, color);
-            //         pieces.push_back(piece);
-            //     } else if (file == 4) {
-            //         // Kings
-            //         std::cout << "King" << std::endl;
-            //         AbstractPiece piece = King(file+rank, color);
-            //         pieces.push_back(piece);
-            //     }
-            // }
                 // Add the pieceAndSquare to the squares vector
                 squares.push_back(mySquare);
             }
