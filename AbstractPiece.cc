@@ -98,7 +98,7 @@ std::string Rook::printable() const {
     }
 }
 
-std::string King::printable() const {
+std::string Bishop::printable() const {
     if (getPieceColor() == ChessColor::White){
         return "B";
     }
