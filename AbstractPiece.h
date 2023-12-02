@@ -1,133 +1,125 @@
 #ifndef ABSTRACTPIECE_H
 #define ABSTRACTPIECE_H
 
+#include <vector>
 #include <string>
-#include "Square.h"
+#include <iostream>
+#include "Location.h"
+#include "Color.h"
 
+using namespace std;
 
-enum class pieceColor{
-    White, Black
-};
+class PieceRemovedObserver;
+class PieceMovedObserver;
 
-class AbstractPiece{
+class AbstractPiece {
+    protected:
+        ChessColor color;
+
     private:
-        int squareIndex;
-        pieceColor color;
+        int squareIndex = -1;
+        int previousSquareIndex = -1;
         std::string name;
+        PieceRemovedObserver* pieceRemovedObserver;
+        PieceMovedObserver* pieceMovedObserver;
+
     public:
-        AbstractPiece(int squareIndex, pieceColor color, std::string name):  squareIndex{squareIndex}, color{color}, name{name}{}
-        pieceColor getPieceColor() const{
+        AbstractPiece(ChessColor color, std::string name, PieceRemovedObserver* pieceRemovedObserver) : 
+            color{color}, name{name}, pieceRemovedObserver{pieceRemovedObserver} {}
+
+        ChessColor getPieceColor() const{
             return color;
         }
+
         std::string getName(){
             return name;
         }
-        int getSquare(){
+
+        void attachMoveObserver(PieceMovedObserver* board) {
+            pieceMovedObserver = board;
+        }
+
+        int getSquare() {
             return squareIndex;
         }
+
+        int getPreviousSquare() {
+            return previousSquareIndex;
+        }
+
         void setSquare(int index){
             squareIndex = index;
         }
+
+        virtual std::string printable() const = 0;
+        virtual void move(int newIndex);
+        virtual ~AbstractPiece();
+        virtual bool validMove(int targetSquare, vector<AbstractPiece*> boardState);
 };
 
-class Pawn : public AbstractPiece{
+class PieceRemovedObserver {
     public:
-        Pawn(int squareIndex, pieceColor color): AbstractPiece(squareIndex, color, "Pawn"){}
+        virtual void handlePieceRemoved(AbstractPiece* p) = 0;
+};
+
+class PieceMovedObserver {
+    public:
+        virtual void handlePieceMoved(AbstractPiece* p) = 0;
+};
+
+
+class Pawn : public AbstractPiece{
+    bool isFirst;
+    public:
+        Pawn(ChessColor color, PieceRemovedObserver* pieceRemovedObserver) : 
+            AbstractPiece(color, "Pawn", pieceRemovedObserver) {}
+        
+        std::string printable() const override;
+
         std::vector<Location> getValidMoves(){
-
         }
 
-        void makeMove(Square targetSquare){
-
-        }
-
-        friend std::ostream& operator<<(std::ostream& out, const Pawn& pawn) {
-        if (pawn.getPieceColor() == pieceColor::White){
-            out << "P";
-        }
-        else {
-            out << "p";
-        }
-        return out;
-    }
+        bool validMove(int targetSquare, vector<AbstractPiece*> boardState);
 };
 
 class Queen : public AbstractPiece{
     public:
-        Queen(int squareIndex, pieceColor color): AbstractPiece(squareIndex, color, "Queen"){}
+        Queen(ChessColor color, PieceRemovedObserver* pieceRemovedObserver) : 
+                    AbstractPiece(color, "Queen", pieceRemovedObserver) {}
 
-        friend std::ostream& operator<<(std::ostream& out, const Queen& queen) {
-        if (queen.getPieceColor() == pieceColor::White){
-            out << "Q";
-        }
-        else {
-            out << "q";
-        }
-        return out;
-    }
-
+        std::string printable() const override;
 };
 
 class King : public AbstractPiece{
     public:
-        King(int squareIndex, pieceColor color): AbstractPiece(squareIndex, color, "King"){}
+        King(ChessColor color, PieceRemovedObserver* pieceRemovedObserver) : 
+            AbstractPiece(color, "King", pieceRemovedObserver) {}
 
-        friend std::ostream& operator<<(std::ostream& out, const King& king) {
-        if (king.getPieceColor() == pieceColor::White){
-            out << "K";
-        }
-        else {
-            out << "k";
-        }
-        return out;
-    }
-
+        std::string printable() const override;
 };
 
 class Knight : public AbstractPiece{
     public:
-         Knight(int squareIndex, pieceColor color): AbstractPiece(squareIndex, color, "Knight"){}
-
-         friend std::ostream& operator<<(std::ostream& out, const Knight& knight) {
-        if (knight.getPieceColor() == pieceColor::White){
-            out << "Kn";
-        }
-        else {
-            out << "kn";
-        }
-        return out;
-    }
-
+        Knight(ChessColor color, PieceRemovedObserver* pieceRemovedObserver) : 
+            AbstractPiece(color, "Knight", pieceRemovedObserver) {}
+        
+        std::string printable() const override;
 };
 
 class Rook : public AbstractPiece{
     public:
-        Rook(int squareIndex, pieceColor color): AbstractPiece(squareIndex, color, "Rook"){}
-        friend std::ostream& operator<<(std::ostream& out, const Rook& rook) {
-        if (rook.getPieceColor() == pieceColor::White){
-            out << "R";
-        }
-        else {
-            out << "r";
-        }
-        return out;
-    }
+        Rook(ChessColor color, PieceRemovedObserver* pieceRemovedObserver) : 
+            AbstractPiece(color, "Rook", pieceRemovedObserver) {}
 
+        std::string printable() const override;
 };
 
 class Bishop : public AbstractPiece{
     public:
-        Bishop(int squareIndex, pieceColor color): AbstractPiece(squareIndex, color, "Bishop"){}
+        Bishop(ChessColor color, PieceRemovedObserver* pieceRemovedObserver) : 
+            AbstractPiece(color, "Bishop", pieceRemovedObserver) {}
 
-        friend std::ostream& operator<<(std::ostream& out, const Bishop& bishop) {
-        if (bishop.getPieceColor() == pieceColor::White){
-            out << "B";
-        }
-        else {
-            out << "b";
-        }
-        return out;
-    }
+        std::string printable() const override;
 };
 
 #endif

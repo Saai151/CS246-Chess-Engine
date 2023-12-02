@@ -64,15 +64,18 @@
         "iostream": "cpp",
         "iomanip": "cpp",
         "*.tcc": "cpp",
+        "deque": "cpp",
         "functional": "cpp",
         "iterator": "cpp",
         "memory_resource": "cpp",
         "numeric": "cpp",
         "random": "cpp",
         "utility": "cpp",
-        "fstream": "cpp",
+        "numbers": "cpp",
         "ranges": "cpp",
         "span": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "list": "cpp",
+        "fstream": "cpp"
     }
 }
