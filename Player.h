@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include "AbstractPiece.h"
+#include "Square.h"
 
 class Player: public PieceRemovedObserver {
     ChessColor c;
@@ -24,7 +25,8 @@ class Player: public PieceRemovedObserver {
         void attachBoardToPieces(PieceMovedObserver* board);
 
         ChessColor getColor();
-        virtual void move() = 0;
+        virtual void move(vector<Square> boardState) = 0;
+        bool validBoard(vector<Square> boardState, AbstractPiece *target, int endLocation);
         virtual ~Player();
 };
 
@@ -32,14 +34,14 @@ class HumanPlayer: public Player {
     public:
         HumanPlayer(Player&& p);
         HumanPlayer(ChessColor c);
-        void move() override;
+        void move(vector<Square> boardState) override;
 };
 
 class ComputerPlayer: public Player {
     public:
         ComputerPlayer(Player&& p);
         ComputerPlayer(ChessColor c);
-        void move() override;
+        void move(vector<Square> boardState) override;
 };
 
 #endif

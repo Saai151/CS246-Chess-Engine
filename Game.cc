@@ -8,7 +8,7 @@ Game::Game(Player* white, Player* black, Board* board) : white{white}, black{bla
 
 void Game::makeMove() {
     try {
-        currentTurn->move();
+        currentTurn->move(board->squares);
     } catch (std::invalid_argument& _) {
         std::cout << "NOT VALID" << std::endl;
         return;
@@ -32,7 +32,7 @@ void Game::makeMove() {
 }
 
 bool validBoard(){
-    
+    return true;
 }
 
 Game::~Game() {

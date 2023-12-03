@@ -96,13 +96,117 @@ void Player::attachBoardToPieces(PieceMovedObserver* board) {
 HumanPlayer::HumanPlayer(ChessColor c) : Player(c) {}
 HumanPlayer::HumanPlayer(Player&& p) : Player(std::move(p)) {}
 
-void HumanPlayer::move() {
+bool Player::validBoard(vector<Square> boardState, AbstractPiece* target, int endLocation){
+    // Check for obstacles
+
+    ChessColor captureColor;
+
+    if (target->getPieceColor() == ChessColor::Black){
+        captureColor == ChessColor::White;
+    }
+    else{
+        captureColor == ChessColor::Black;
+    }
+
+
+    if(target->getName() == "Pawn"){
+        int startLocation = target->getSquare();
+
+        if (endLocation == startLocation + 8 || endLocation == startLocation - 8){
+            if (!boardState[endLocation].isOccupied()){
+                return true;
+            }
+        }
+
+        else if (endLocation == startLocation + 16 || endLocation == startLocation - 16){
+            int inBetweenSquare = (startLocation + endLocation) / 2;
+            if (!(boardState[endLocation].isOccupied()) && !(boardState[inBetweenSquare]).isOccupied()){
+                return true;
+            }            
+        }
+        return false;
+    }
+
+    else if(target->getName() == "Queen"){
+        
+    }
+
+    else if(target->getName() == "King"){
+        
+    }
+
+    else if(target->getName() == "Bishop"){
+        // Current location of the bishop
+        int startLocation = target->getSquare();
+        int diff = abs(endLocation - startLocation);
+        int x;
+
+        // Determine if the movement is along a diagonal
+        if (diff % 9 == 0) {
+            x = 9;
+        } else if (diff % 7 == 0) {
+            x = 7;
+        } else {
+            return false;
+        }
+
+        int steps = diff / x;
+
+        for (int i = 1; i <= steps; ++i) {
+            int index = (startLocation < endLocation) ? startLocation + (i * x) : startLocation - (i * x);
+            if (index == endLocation && boardState[index].isOccupied() && boardState[index].getColor() == captureColor){
+                return true;
+            }
+            if (boardState[index].isOccupied()) {
+                return false; 
+            }
+        }
+
+        return true;
+        
+    }
+    else if(target->getName() == "Rook"){
+        int startLocation = target->getSquare();
+        int diff = abs(endLocation - startLocation);
+        int x = 0;
+
+        // Determine if the movement is along a diagonal
+        if (diff % 8 == 0) {
+            x = 8;
+        } else if (diff % 1 == 0) {
+            x = 1;
+        } else {
+            return false;
+        }
+
+        int steps = diff / x;
+
+        for (int i = 1; i <= steps; ++i) {
+            int index = (startLocation < endLocation) ? startLocation + (i * x) : startLocation - (i * x);
+            if (index == endLocation && boardState[index].isOccupied() && boardState[endLocation].getColor() == boardState[startLocation].getColor()){
+                return true;
+            }
+            if (boardState[index].isOccupied()) {
+                return false; 
+            }
+        }
+
+        return true;
+
+    }
+    else if(target->getName() == "Knight"){
+        
+    }
+    cout << "board validation didn't work" << std::endl;
+    return false;
+    }
+
+void HumanPlayer::move(vector<Square> boardState) {
     std::string start, end;
     std::cin >> start >> end;
 
     int startLocation = parseLocation(start);
     int endLocation = parseLocation(end);
-
 
     AbstractPiece* target = nullptr;
     for (auto& p : pieces) {
@@ -113,13 +217,17 @@ void HumanPlayer::move() {
     if (endLocation < 0 || endLocation >= 64){
         throw std::invalid_argument("invalid target square");
     }
-    
+
+    if (!validBoard(boardState, target, endLocation)){
+        cout << "not board valid" << endl;
+    }
+
     target->move(endLocation);
 }
 
 ComputerPlayer::ComputerPlayer(ChessColor c) : Player(c) {}
 ComputerPlayer::ComputerPlayer(Player&& p) : Player(std::move(p)) {}
 
-void ComputerPlayer::move() {
+void ComputerPlayer::move(vector<Square> boardState) {
 
 }

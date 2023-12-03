@@ -12,10 +12,10 @@
 
 
 class Board: public PieceMovedObserver {    
-    std::vector<Square> squares;
     DisplayObserver* g;
 
     public:
+        std::vector<Square> squares;
         Board(Player* white, Player* black, DisplayObserver* g);
         void resetSquare(int index);
         void placePiece(AbstractPiece* piece, int square);
