@@ -128,7 +128,35 @@ bool Player::validBoard(vector<Square> boardState, AbstractPiece* target, int en
     }
 
     else if(target->getName() == "Queen"){
-        
+        int startLocation = target->getSquare();
+
+        int startRank = startLocation / 8;
+        int startFile = startLocation % 8;
+        int endRank = endLocation / 8;
+        int endFile = endLocation % 8;
+
+        // Check if the movement is along a rank, file, or diagonal
+        if ((startRank != endRank) && (startFile != endFile) && (abs(startRank - endRank) != abs(startFile - endFile))) {
+            // Invalid movement for a Queen (not along a rank, file, or diagonal)
+            return false;
+        }
+
+        int x = (startRank == endRank) ? 1 : ((startFile == endFile) ? 8 : ((endLocation - startLocation) / abs(endLocation - startLocation)));
+        int steps = abs(endLocation - startLocation) / abs(x);
+
+        // Check for obstacles or capture along the path
+        for (int i = 1; i <= steps; ++i) {
+            int index = startLocation + (i * x);
+            if (index == endLocation && boardState[index].isOccupied() && boardState[index].getColor() == captureColor) {
+                return true; // Capture possible on the last square of the path
+            }
+            if (boardState[index].isOccupied()) {
+                return false; // Obstacle found in the path
+            }
+        }
+
+        return true; // No obstacles in the rank, file, or diagonal path
+
     }
 
     else if(target->getName() == "King"){
@@ -211,7 +239,7 @@ bool Player::validBoard(vector<Square> boardState, AbstractPiece* target, int en
 
     }
     else if(target->getName() == "Knight"){
-        
+
         if (boardState[endLocation].isOccupied() && boardState[endLocation].getColor() == captureColor) {
             return true; // Capture possible at the end location
         }
