@@ -250,6 +250,7 @@ bool Player::validBoard(vector<Square> boardState, AbstractPiece* target, int en
     return false;
     }
 
+
 void HumanPlayer::move(vector<Square> boardState) {
     std::string start, end;
     std::cin >> start >> end;
