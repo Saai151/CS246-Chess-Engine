@@ -54,7 +54,7 @@ class AbstractPiece {
         virtual std::string printable() const = 0;
         virtual void move(int newIndex);
         virtual ~AbstractPiece();
-        virtual bool validMove(int targetSquare, vector<AbstractPiece*> boardState);
+        //virtual bool validMove(int targetSquare, vector<AbstractPiece*> boardState);
 };
 
 class PieceRemovedObserver {

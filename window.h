@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
 #include "Board.h"
 
 class Board;
@@ -15,12 +16,13 @@ class Xwindow {
   int s;
   GC gc;
   unsigned long colours[10];
+  //std::vector<std::string> readXPMFile(const std::string& filename);
 
  public:
   Xwindow(int width=500, int height=500);  // Constructor; displays the window.
   ~Xwindow();                              // Destructor; destroys the window.
 
-  enum {White=0, Black, Red, Green, Blue}; // Available colours.
+  enum {White=0, Black, Red, Green, Blue, Beige, Tan, Brown}; // Available colours.
 
   // Draws a rectangle
   void fillRectangle(int x, int y, int width, int height, int colour=Black);
@@ -29,8 +31,7 @@ class Xwindow {
   void drawString(int x, int y, std::string msg);
 
   // Places a piece on a square;
-  void placePiece(int x, int y, int cell_len, const char* piecePath);
-
+  //void placePiece(const char* xpm_data[], int x, int y);
 };
 
 class GraphicsDisplay {
@@ -38,7 +39,8 @@ class GraphicsDisplay {
   Board b;
   int gridSize;
   std::vector<int> map(Square s);
-  const char *nameToimgPath(std::string name, pieceColor color);
+  void drawBorders(int width, int colour);
+  //const char *nameToimgPath(std::string name, pieceColor color);
 
  public:
   GraphicsDisplay(Xwindow &w, Board &b);
@@ -48,5 +50,7 @@ class GraphicsDisplay {
 
   ~GraphicsDisplay();
 };
+
+int fileToInt(File file); 
 
 #endif

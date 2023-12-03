@@ -32,10 +32,10 @@ Xwindow::Xwindow(int width, int height) {
   // Set up colours.
   XColor xcolour;
   Colormap cmap;
-  char color_vals[5][10]={"white", "black", "red", "green", "blue"};
+  char color_vals[8][10]={"white", "black", "red", "green", "blue", "beige", "tan", "brown"};
 
   cmap=DefaultColormap(d,DefaultScreen(d));
-  for(int i=0; i < 5; ++i) {
+  for(int i=0; i < 8; ++i) {
       XParseColor(d,cmap,color_vals[i],&xcolour);
       XAllocColor(d,cmap,&xcolour);
       colours[i]=xcolour.pixel;
@@ -67,63 +67,33 @@ void Xwindow::fillRectangle(int x, int y, int width, int height, int colour) {
 }
 
 void Xwindow::drawString(int x, int y, string msg) {
+  // Load a bold font with a larger size
+  XFontStruct *fontInfo;
+  fontInfo = XLoadQueryFont(d, "lucidasanstypewriter-bold-24"); // This is an example font name
+  // Set the font for the graphics context
+  XSetFont(d, DefaultGC(d, s), fontInfo->fid);
   XDrawString(d, w, DefaultGC(d, s), x, y, msg.c_str(), msg.length());
-}
-
-void Xwindow::placePiece(int x, int y, int cell_len, const char* piecePath) {
-  // Load the image
-  Pixmap pixmap;
-  XpmCreatePixmapFromData(d, w, (char**)(const char*)piecePath, &pixmap, NULL, NULL);
-
-  // Draw the image on the specified square
-  XCopyArea(d, pixmap, w, gc, 0, 0, cell_len, cell_len, x, y);
-  XFreePixmap(d, pixmap);
+  // Free the font structure when done
+  XFreeFont(d, fontInfo);
 }
 
 std::vector<int> GraphicsDisplay::map(Square s) { 
   int cell_len = 500/gridSize; 
   Location l = s.getLocation();
-  int col = static_cast<char>(l.getFile()) - 'A';
+  int col = fileToInt(l.getFile());
+  //cout << col << endl;
   int row = l.getRank(); 
   int x = col * cell_len;
-  int y = (gridSize - row) * cell_len;
+  int y = (gridSize - row - 1) * cell_len;
   std::vector<int> dimensions = {x, y, cell_len};
   return dimensions;
 }
 
-// assume name is a valid chess piece name.
-const char* GraphicsDisplay::nameToimgPath(string name, pieceColor color) {
-  if (name == "Pawn") {
-    if (color == pieceColor::White) {
-      return "./pieces_images/Chess_plt60.png";
-    }
-    return "./pieces_images/Chess_pdt60.png";
-  } else if (name == "Knight") {
-    if (color == pieceColor::White) {
-      return "./pieces_images/Chess_nlt60.png";
-    }
-    return "./pieces_images/Chess_ndt60.png";
-  } else if (name == "Bishop") {
-    if (color == pieceColor::White) {
-      return "./pieces_images/Chess_blt60.png";
-    }
-    return "./pieces_images/Chess_bdt60.png";
-  } else if (name == "Rook") {
-    if (color == pieceColor::White) {
-      return "./pieces_images/Chess_rlt60.png";
-    }
-    return "./pieces_images/Chess_rdt60.png";
-  } else if (name == "Queen") {
-    if (color == pieceColor::White) {
-      return "./pieces_images/Chess_qlt60.png";
-    }
-    return "./pieces_images/Chess_qdt60.png";
-  } else { // must be King
-    if (color == pieceColor::White) {
-      return "./pieces_images/Chess_klt60.png";
-    }
-    return "./pieces_images/Chess_kdt60.png";
-  }
+void GraphicsDisplay::drawBorders(int width, int colour) {
+  w.fillRectangle(0, 0, 500, width, colour);
+  w.fillRectangle(0, 500-width, 500, width, colour);
+  w.fillRectangle(0, 0, width, 500, colour);
+  w.fillRectangle(500-width, 0, width, 500, colour);
 }
 
 GraphicsDisplay::GraphicsDisplay(Xwindow &w, Board &b) : w{w}, b{b} {
@@ -138,19 +108,15 @@ void GraphicsDisplay::DisplayUpdate() {
     int y = dimensions[1];
     int len = dimensions[2];
     //cout << "x,y = " << x << "," << y << endl;
-    int colour = s.getColor() == color::light ? Xwindow::White : Xwindow::Black;
+    int colour = s.getColor() == ChessColor::White ? Xwindow::Beige : Xwindow::Tan;
     w.fillRectangle(x, y, len, len, colour);
+
+    if (s.isOccupied()) {
+      string message = s.getOccupant()->printable();
+      w.drawString(x + (len/2 - 5), y + len - (len / 2 - 5), message);
+    }
   }
-  for (AbstractPiece p : b.pieces) {
-    //Square s = b.squares[0];
-    // std::vector<int> dimensions = map(s);
-    // int x = dimensions[0];
-    // int y = dimensions[1];
-    // int len = dimensions[2];
-    // const char *img_path = nameToimgPath(p.getName(), p.getPieceColor());
-    // w.placePiece(x, y, len, img_path);
-    break;
-  }
+  drawBorders(5, Xwindow::Black);
 }
 
 GraphicsDisplay::~GraphicsDisplay() {

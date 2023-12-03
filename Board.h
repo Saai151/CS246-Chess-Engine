@@ -1,3 +1,6 @@
+#ifndef BOARD_H
+#define BOARD_H
+
 #include "Square.h"
 #include "AbstractPiece.h"
 #include "Player.h"
@@ -20,3 +23,5 @@ class Board: public PieceMovedObserver {
 };
 
 std::ostream& operator<<(std::ostream& out, Board& board);
+
+#endif 
