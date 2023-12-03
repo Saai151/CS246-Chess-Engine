@@ -73,7 +73,7 @@ public:
 
 class Pawn : public AbstractPiece
 {
-    bool isFirst;
+    bool isFirst = true;
 
     public:
         Pawn(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Pawn", pieceRemovedObserver) {}

@@ -1,5 +1,5 @@
 CXX = g++ -std=c++20
-CXXFLAGS = -Wall -g -MMD  # use -MMD to generate dependencies
+CXXFLAGS = -Wall -g -MMD -I/opt/X11/include# use -MMD to generate dependencies
 SOURCES = $(wildcard *.cc)   # list of all .cc files in the current directory
 OBJECTS = ${SOURCES:.cc=.o}  # .o files depend upon .cc files with same names
 DEPENDS = ${OBJECTS:.o=.d}   # .d file is list of dependencies for corresponding .cc file
@@ -7,7 +7,7 @@ EXEC=chess.out
 
 # First target in the makefile is the default target.
 $(EXEC): $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(EXEC) -lX11
+	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(EXEC) -L/opt/X11/lib -lX11
 
 %.o: %.cc 
 	$(CXX) -c -o $@ $< $(CXXFLAGS)

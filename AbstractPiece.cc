@@ -18,9 +18,32 @@ std::string Pawn::printable() const
 }
 
 bool Pawn::validMove(int targetSquare)
-{
-    return true;
-}
+{   
+    int currSquare = this->getSquare();
+
+    int delta = targetSquare - currSquare;
+
+    if (getPieceColor() == ChessColor::Black) {
+        if ((delta == 8 || delta == 16) && isFirst) {
+            isFirst = false; // Set isFirst to false after the initial move
+            return true;
+        } else if (delta == 8) {
+            return true;
+        } else if (delta == 7 || delta == 9) {
+            return true;
+        }
+    } else { // For white pawns
+        if ((delta == -8 || delta == -16) && isFirst) {
+            isFirst = false; // Set isFirst to false after the initial move
+            return true;
+        } else if (delta == -8) {
+            return true;
+        } else if (delta == -7 || delta == -9) {
+            return true;
+        }
+    }
+    return false;
+    }
 
 std::vector<int> Pawn::allMoves() {
     return {};
@@ -40,7 +63,18 @@ std::string Queen::printable() const
 
 bool Queen::validMove(int targetSquare)
 {
-    return true;
+    int currSquare = this->getSquare();
+
+    // Calculate the difference between the target and current square
+    int delta = targetSquare - currSquare;
+
+    if ((delta % 8 == 0 && delta != 0) || (abs(delta) <= 7 && abs(delta) != 0) ||
+        (abs(delta) % 9 == 0 || abs(delta) % 7 == 0)) {
+        if (targetSquare >= 0 && targetSquare < 64) {
+            return true;
+        }
+    }
+    return false; 
 }
 
 std::vector<int> Queen::allMoves() {
@@ -124,7 +158,16 @@ std::string Rook::printable() const
 
 bool Rook::validMove(int targetSquare)
 {
-    return true;
+    int currSquare = this->getSquare();
+
+    int delta = targetSquare - currSquare;
+
+    if ((delta % 8 == 0 && delta != 0) || (abs(delta) <= 7 && abs(delta) != 0)) {
+        if (targetSquare >= 0 && targetSquare < 64) {
+            return true;
+        }
+    }
+    return false;
 }
 
 std::vector<int> Rook::allMoves() {
@@ -145,7 +188,14 @@ std::string Bishop::printable() const
 
 bool Bishop::validMove(int targetSquare)
 {
-    return true;
+     int currSquare = this->getSquare();
+
+    int delta = targetSquare - currSquare;
+
+    if (abs(delta) % 9 == 0 || abs(delta) % 7 == 0) {
+        return true;      
+    }
+    return false;
 }
 
 std::vector<int> Bishop::allMoves() {
