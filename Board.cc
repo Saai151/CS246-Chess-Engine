@@ -1,6 +1,6 @@
 #include "Board.h"
 
-Board::Board(Player* white, Player* black, DisplayObserver* g) {
+Board::Board(Player* white, Player* black, DisplayAggregator* g) {
     std::vector<AbstractPiece*> selectedPieces;
     squares.reserve(64); // Reserve space for 64 squares
 
@@ -154,15 +154,3 @@ bool Board::handlePieceMoved(AbstractPiece* piece) {
 }
 
 Board::~Board() {}
-
-std::ostream& operator<<(std::ostream& out, Board& board) {
-    for (size_t i = 0; i < 64; ++i) {
-        out << board.squares[i];
-
-        if ((i + 1) % 8 == 0) {
-            out << '\n'; // Start a new line after printing 8 squares (end of a row)
-        }
-    }
-    return out;
-}
-

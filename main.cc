@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "window.h"
+#include "TextDisplay.h"
 #include <iostream>
 #include <string>
 
@@ -24,7 +25,12 @@ int main(){
     Game* game = nullptr;
     Xwindow w = Xwindow();
     GraphicsDisplay gd(w);
-    Board* board = new Board(white, black, &gd);
+    TextDisplay td;
+
+    std::vector<DisplayObserver*> displays = {&gd, &td};
+    DisplayAggregator allDisplays = DisplayAggregator(displays);
+
+    Board* board = new Board(white, black, &allDisplays);
     std::string command;
 
     while (std::cin >> command) {
@@ -71,7 +77,7 @@ int main(){
             game->makeMove();
         }
 
-        std::cout << *board;
+        allDisplays.render();
     }
 
     delete game;
