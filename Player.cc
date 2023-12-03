@@ -132,7 +132,23 @@ bool Player::validBoard(vector<Square> boardState, AbstractPiece* target, int en
     }
 
     else if(target->getName() == "King"){
-        
+        int startLocation = target->getSquare();
+
+            // Check if the movement is within one square horizontally, vertically, or diagonally
+            if (abs(endLocation / 8 - startLocation / 8) > 1 || abs(endLocation % 8 - startLocation % 8) > 1) {
+                // Invalid movement for a King (more than one square away)
+                return false;
+            }
+
+            // Calculate the number of steps (which is always 1 for the King)
+            int steps = 1;
+
+            // Check for obstacles or capture along the path
+            if (boardState[endLocation].isOccupied() && boardState[endLocation].getColor() == captureColor) {
+                return true; // Capture possible at the end location
+            }
+
+        return !boardState[endLocation].isOccupied();
     }
 
     else if(target->getName() == "Bishop"){
@@ -196,6 +212,11 @@ bool Player::validBoard(vector<Square> boardState, AbstractPiece* target, int en
     }
     else if(target->getName() == "Knight"){
         
+        if (boardState[endLocation].isOccupied() && boardState[endLocation].getColor() == captureColor) {
+            return true; // Capture possible at the end location
+        }
+
+        return !boardState[endLocation].isOccupied();
     }
     cout << "board validation didn't work" << std::endl;
     return false;
