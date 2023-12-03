@@ -9,5 +9,6 @@ class Game {
     public:
         Game(Player* white, Player* black, Board* board);
         void makeMove();
+        bool validBoard;
         ~Game();
 };

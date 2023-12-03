@@ -103,12 +103,17 @@ void HumanPlayer::move() {
     int startLocation = parseLocation(start);
     int endLocation = parseLocation(end);
 
+
     AbstractPiece* target = nullptr;
     for (auto& p : pieces) {
         if (p->getSquare() == startLocation) target = p;
     }
     if (target == nullptr) throw std::invalid_argument("Invalid start position");
 
+    if (endLocation < 0 || endLocation >= 64){
+        throw std::invalid_argument("invalid target square");
+    }
+    
     target->move(endLocation);
 }
 
