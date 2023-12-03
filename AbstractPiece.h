@@ -12,54 +12,49 @@ using namespace std;
 class PieceRemovedObserver;
 class PieceMovedObserver;
 
-class AbstractPiece
-{
-protected:
-    ChessColor color;
+class AbstractPiece {
+    protected:
+        ChessColor color;
 
-private:
-    int squareIndex = -1;
-    int previousSquareIndex = -1;
-    std::string name;
-    PieceRemovedObserver *pieceRemovedObserver;
-    PieceMovedObserver *pieceMovedObserver;
+    private:
+        int squareIndex = -1;
+        int previousSquareIndex = -1;
+        std::string name;
+        PieceRemovedObserver* pieceRemovedObserver;
+        PieceMovedObserver* pieceMovedObserver;
 
-public:
-    AbstractPiece(ChessColor color, std::string name, PieceRemovedObserver *pieceRemovedObserver) : color{color}, name{name}, pieceRemovedObserver{pieceRemovedObserver} {}
+    public:
+        AbstractPiece(ChessColor color, std::string name, PieceRemovedObserver* pieceRemovedObserver) : 
+            color{color}, name{name}, pieceRemovedObserver{pieceRemovedObserver} {}
 
-    ChessColor getPieceColor() const
-    {
-        return color;
-    }
+        ChessColor getPieceColor() const{
+            return color;
+        }
 
-    std::string getName()
-    {
-        return name;
-    }
+        std::string getName(){
+            return name;
+        }
 
-    void attachMoveObserver(PieceMovedObserver *board)
-    {
-        pieceMovedObserver = board;
-    }
+        void attachMoveObserver(PieceMovedObserver* board) {
+            pieceMovedObserver = board;
+        }
 
-    int getSquare()
-    {
-        return squareIndex;
-    }
+        int getSquare() {
+            return squareIndex;
+        }
 
-    int getPreviousSquare()
-    {
-        return previousSquareIndex;
-    }
+        int getPreviousSquare() {
+            return previousSquareIndex;
+        }
 
-    void setSquare(int index)
-    {
-        squareIndex = index;
-    }
+        void setSquare(int index){
+            squareIndex = index;
+        }
 
-    virtual std::string printable() const = 0;
-    virtual void move(int newIndex);
-    virtual ~AbstractPiece();
+        virtual std::string printable() const = 0;
+        virtual void move(int newIndex);
+        virtual ~AbstractPiece();
+        //virtual bool validMove(int targetSquare, vector<AbstractPiece*> boardState);
 };
 
 class PieceRemovedObserver

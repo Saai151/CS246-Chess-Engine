@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "window.h"
 #include <iostream>
 #include <string>
 
@@ -16,7 +17,9 @@ int main(){
     Player* black = new HumanPlayer(ChessColor::Black);
     Board* board = new Board(white, black);
     Game* game = nullptr;
-
+    Xwindow w = Xwindow();
+    GraphicsDisplay gd(w, board);
+    gd.DisplayUpdate();
     std::string command;
 
     while (std::cin >> command) {
@@ -64,6 +67,7 @@ int main(){
         }
 
         std::cout << *board;
+        gd.DisplayUpdate();
     }
 
     delete game;
