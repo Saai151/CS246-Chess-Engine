@@ -1,21 +1,26 @@
 #include "AbstractPiece.h"
 
-AbstractPiece::~AbstractPiece(){
+AbstractPiece::~AbstractPiece()
+{
     pieceRemovedObserver->handlePieceRemoved(this);
 }
 
-void AbstractPiece::move(int newIndex) {
+void AbstractPiece::move(int newIndex)
+{
     previousSquareIndex = squareIndex;
     squareIndex = newIndex;
     pieceMovedObserver->handlePieceMoved(this);
     std::cout << "MOVING" << std::endl;
 }
 
-std::string Pawn::printable() const{
-    if (getPieceColor() == ChessColor::White){
+std::string Pawn::printable() const
+{
+    if (getPieceColor() == ChessColor::White)
+    {
         return "P";
     }
-    else {
+    else
+    {
         return "p";
     }
 }
@@ -62,47 +67,320 @@ std::string Pawn::printable() const{
 //     }        
 // }
 
-std::string Queen::printable() const  {
-    if (getPieceColor() == ChessColor::White){
+std::string Queen::printable() const
+{
+    if (getPieceColor() == ChessColor::White)
+    {
         return "Q";
     }
-    else {
+    else
+    {
         return "q";
     }
 }
 
-std::string King::printable() const {
-    if (getPieceColor() == ChessColor::White){
+bool Queen::validMove(int targetSquare, vector<AbstractPiece *> boardState)
+{
+        int currSquare = this->getSquare();
+
+    vector<int> moves;
+    int i = 8;
+    int j = 8;
+    int a = 1;
+    int b = 1;
+    while (true)
+    {
+        if (i + currSquare <= 63)
+        {
+            moves.push_back(i + currSquare);
+            i += i;
+        }
+        else
+        {
+            break;
+        }
+    }
+    while (true)
+    {
+        if (currSquare - i >= 0)
+        {
+            moves.push_back(currSquare - i);
+            j += j;
+        }
+    }
+    while (true)
+    {
+        if (b + currSquare <= 63)
+        {
+            moves.push_back(i + currSquare);
+            b += b;
+        }
+        else
+        {
+            break;
+        }
+    }
+    while (true)
+    {
+        if (currSquare - a >= 0)
+        {
+            moves.push_back(currSquare - a);
+            a += a;
+        }
+    }
+
+    int currSquare = this->getSquare();
+
+    i = 9;
+    j = 9;
+    a = 7;
+    b = 7;
+    while (true)
+    {
+        if (i + currSquare <= 63)
+        {
+            moves.push_back(i + currSquare);
+            i += i;
+        }
+        else
+        {
+            break;
+        }
+    }
+    while (true)
+    {
+        if (currSquare - i >= 0)
+        {
+            moves.push_back(currSquare - i);
+            j += j;
+        }
+    }
+    while (true)
+    {
+        if (b + currSquare <= 63)
+        {
+            moves.push_back(i + currSquare);
+            b += b;
+        }
+        else
+        {
+            break;
+        }
+    }
+    while (true)
+    {
+        if (currSquare - a >= 0)
+        {
+            moves.push_back(currSquare - a);
+            a += a;
+        }
+    }
+
+
+    for (int i = 0; i < moves.size(); ++i)
+    {
+        if (targetSquare == moves[i])
+        {
+            return true;
+        }
+    }
+}
+
+std::string King::printable() const
+{
+    if (getPieceColor() == ChessColor::White)
+    {
         return "K";
     }
-    else {
+    else
+    {
         return "k";
     }
 }
 
-std::string Knight::printable() const {
-    if (getPieceColor() == ChessColor::White){
+bool King::validMove(int targetSquare, vector<AbstractPiece *> boardState)
+{
+    int currSquare = this->getSquare();
+    vector<int> moves = {currSquare + 8, currSquare - 8, currSquare + 9, currSquare - 9};
+
+    for (int i = 0; i < moves.size(); ++i)
+    {
+        if (targetSquare == moves[i])
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+std::string Knight::printable() const
+{
+    if (getPieceColor() == ChessColor::White)
+    {
         return "N";
     }
-    else {
+    else
+    {
         return "n";
     }
 }
 
-std::string Rook::printable() const {
-    if (getPieceColor() == ChessColor::White){
+bool Knight::validMove(int targetSquare, vector<AbstractPiece *> boardState)
+{
+    int currSquare = this->getSquare();
+    vector<int> moves = {currSquare + 17, currSquare + 15, currSquare - 17,
+                         currSquare - 15, currSquare + 10, currSquare - 10, currSquare + 6, currSquare - 6};
+
+    for (int i = 0; i < moves.size(); ++i)
+    {
+        if (targetSquare == moves[i])
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+std::string Rook::printable() const
+{
+    if (getPieceColor() == ChessColor::White)
+    {
         return "R";
     }
-    else {
+    else
+    {
         return "r";
     }
 }
 
-std::string Bishop::printable() const {
-    if (getPieceColor() == ChessColor::White){
+bool Rook::validMove(int targetSquare, vector<AbstractPiece *> boardState)
+{
+    int currSquare = this->getSquare();
+
+    vector<int> moves;
+    int i = 8;
+    int j = 8;
+    int a = 1;
+    int b = 1;
+    while (true)
+    {
+        if (i + currSquare <= 63)
+        {
+            moves.push_back(i + currSquare);
+            i += i;
+        }
+        else
+        {
+            break;
+        }
+    }
+    while (true)
+    {
+        if (currSquare - i >= 0)
+        {
+            moves.push_back(currSquare - i);
+            j += j;
+        }
+    }
+    while (true)
+    {
+        if (b + currSquare <= 63)
+        {
+            moves.push_back(i + currSquare);
+            b += b;
+        }
+        else
+        {
+            break;
+        }
+    }
+    while (true)
+    {
+        if (currSquare - a >= 0)
+        {
+            moves.push_back(currSquare - a);
+            a += a;
+        }
+    }
+
+    for (int i = 0; i < moves.size(); ++i)
+    {
+        if (targetSquare == moves[i])
+        {
+            return true;
+        }
+    }
+}
+
+std::string Bishop::printable() const
+{
+    if (getPieceColor() == ChessColor::White)
+    {
         return "B";
     }
-    else {
+    else
+    {
         return "b";
     }
+}
+
+bool Bishop::validMove(int targetSquare, vector<AbstractPiece *> boardState)
+{
+    int currSquare = this->getSquare();
+
+    vector<int> moves;
+    int i = 9;
+    int j = 9;
+    int a = 7;
+    int b = 7;
+    while (true)
+    {
+        if (i + currSquare <= 63)
+        {
+            moves.push_back(i + currSquare);
+            i += i;
+        }
+        else
+        {
+            break;
+        }
+    }
+    while (true)
+    {
+        if (currSquare - i >= 0)
+        {
+            moves.push_back(currSquare - i);
+            j += j;
+        }
+    }
+    while (true)
+    {
+        if (b + currSquare <= 63)
+        {
+            moves.push_back(i + currSquare);
+            b += b;
+        }
+        else
+        {
+            break;
+        }
+    }
+    while (true)
+    {
+        if (currSquare - a >= 0)
+        {
+            moves.push_back(currSquare - a);
+            a += a;
+        }
+    }
+
+    for (int i = 0; i < moves.size(); ++i)
+    {
+        if (targetSquare == moves[i])
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
