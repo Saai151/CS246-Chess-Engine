@@ -51,10 +51,12 @@ class AbstractPiece {
             squareIndex = index;
         }
 
-        virtual std::string printable() const = 0;
-        virtual void move(int newIndex);
-        virtual ~AbstractPiece();
-        //virtual bool validMove(int targetSquare, vector<AbstractPiece*> boardState);
+    void move(int newIndex);
+    
+    virtual ~AbstractPiece();
+    virtual std::string printable() const = 0;
+    virtual bool validMove(int targetSquare) = 0;
+    virtual std::vector<int> allMoves() = 0;
 };
 
 class PieceRemovedObserver
@@ -66,63 +68,62 @@ public:
 class PieceMovedObserver
 {
 public:
-    virtual void handlePieceMoved(AbstractPiece *p) = 0;
+    virtual bool handlePieceMoved(AbstractPiece *p) = 0;
 };
 
 class Pawn : public AbstractPiece
 {
     bool isFirst;
 
-public:
-    Pawn(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Pawn", pieceRemovedObserver) {}
+    public:
+        Pawn(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Pawn", pieceRemovedObserver) {}
 
-    std::string printable() const override;
-
-    std::vector<Location> getValidMoves()
-    {
-    }
-
-    bool validMove(int targetSquare, vector<AbstractPiece *> boardState);
+        std::string printable() const override;
+        std::vector<int> allMoves() override;
+        bool validMove(int targetSquare) override;
 };
+
+
 
 class Queen : public AbstractPiece
 {
-public:
-    Queen(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Queen", pieceRemovedObserver) {}
+    public:
+        Queen(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Queen", pieceRemovedObserver) {}
 
-    std::string printable() const override;
-
-    bool validMove(int targetSquare, vector<AbstractPiece *> boardState);
+        std::string printable() const override;
+        std::vector<int> allMoves() override;
+        bool validMove(int targetSquare) override;
 };
 
 class King : public AbstractPiece
 {
-public:
-    King(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "King", pieceRemovedObserver) {}
+    public:
+        King(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "King", pieceRemovedObserver) {}
 
-    std::string printable() const override;
-
-    bool validMove(int targetSquare, vector<AbstractPiece *> boardState);    
+        std::string printable() const override;
+        std::vector<int> allMoves() override;
+        bool validMove(int targetSquare) override;
 };
 
 class Knight : public AbstractPiece
 {
-public:
-    Knight(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Knight", pieceRemovedObserver) {}
+    public:
+        Knight(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Knight", pieceRemovedObserver) {}
 
-    std::string printable() const override;
-    bool validMove(int targetSquare, vector<AbstractPiece *> boardState);
+        std::string printable() const override;
+        std::vector<int> allMoves() override;
+        bool validMove(int targetSquare) override;
 
 };
 
 class Rook : public AbstractPiece
 {
-public:
-    Rook(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Rook", pieceRemovedObserver) {}
+    public:
+        Rook(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Rook", pieceRemovedObserver) {}
 
-    std::string printable() const override;
-    bool validMove(int targetSquare, vector<AbstractPiece *> boardState);
-
+        std::string printable() const override;
+        std::vector<int> allMoves() override;
+        bool validMove(int targetSquare) override;
 };
 
 class Bishop : public AbstractPiece
@@ -131,8 +132,8 @@ public:
     Bishop(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Bishop", pieceRemovedObserver) {}
 
     std::string printable() const override;
-    bool validMove(int targetSquare, vector<AbstractPiece *> boardState);
-
+    std::vector<int> allMoves() override;
+    bool validMove(int targetSquare) override;
 };
 
 #endif

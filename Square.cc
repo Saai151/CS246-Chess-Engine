@@ -1,7 +1,9 @@
 #include "Square.h"
 
-Square::Square(Location location, ChessColor squareColor, AbstractPiece* occupant)
-            : location{location}, squareColor{squareColor}, occupant{occupant} {}
+Square::Square(Location location, ChessColor squareColor, AbstractPiece* occupant, DisplayObserver* g)
+            : location{location}, squareColor{squareColor}, occupant{occupant}, g{g} {
+        g->handleStateChange(this);
+    }
 
 bool Square::isOccupied() const {
     return occupant != nullptr;
@@ -20,14 +22,17 @@ void Square::reset() {
         delete occupant;
         occupant = nullptr;
     }
+    g->handleStateChange(this);
 }
 
 void Square::setOccupant(AbstractPiece* occupant) {
-    this->occupant = occupant;
-
     if (occupant != nullptr) {
         occupant->setSquare(location.getIndex());
+        delete this->occupant;
     }
+
+    this->occupant = occupant;
+    g->handleStateChange(this);
 }
 
 AbstractPiece* Square::getOccupant() const {

@@ -6,9 +6,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include "Board.h"
-
-class Board;
+#include "Square.h"
 
 class Xwindow {
   Display *d;
@@ -31,16 +29,15 @@ class Xwindow {
   void drawString(int x, int y, std::string msg);
 };
 
-class GraphicsDisplay {
+class GraphicsDisplay: public DisplayObserver {
   Xwindow w;
-  Board *b;
   int gridSize;
-  std::vector<int> map(Square s);
+  std::vector<int> map(Square* s);
   void drawBorders(int width, int colour);
 
  public:
-  GraphicsDisplay(Xwindow &w, Board *b);
-  void DisplayUpdate();
+  GraphicsDisplay(Xwindow &w);
+  void handleStateChange(Square *s) override;
 
   ~GraphicsDisplay();
 };

@@ -77,9 +77,9 @@ void Xwindow::drawString(int x, int y, string msg) {
   XFreeFont(d, fontInfo);
 }
 
-std::vector<int> GraphicsDisplay::map(Square s) { 
+std::vector<int> GraphicsDisplay::map(Square* s) { 
   int cell_len = 500/gridSize; 
-  Location l = s.getLocation();
+  Location l = s->getLocation();
   int col = fileToInt(l.getFile());
   //cout << col << endl;
   int row = l.getRank(); 
@@ -96,27 +96,23 @@ void GraphicsDisplay::drawBorders(int width, int colour) {
   w.fillRectangle(500-width, 0, width, 500, colour);
 }
 
-GraphicsDisplay::GraphicsDisplay(Xwindow &w, Board *b) : w{w}, b{b} {
+GraphicsDisplay::GraphicsDisplay(Xwindow &w) : w{w} {
   gridSize = 8; // 8 x 8 chess board
   w.fillRectangle(0, 0, 500, 500);
 }
 
-void GraphicsDisplay::DisplayUpdate() {
-  for (Square s : b->squares) {
+void GraphicsDisplay::handleStateChange(Square* s) {
     std::vector<int> dimensions = map(s);
     int x = dimensions[0];
     int y = dimensions[1];
     int len = dimensions[2];
-    //cout << "x,y = " << x << "," << y << endl;
-    int colour = s.getColor() == ChessColor::White ? Xwindow::Beige : Xwindow::Tan;
+    int colour = s->getColor() == ChessColor::White ? Xwindow::Beige : Xwindow::Tan;
     w.fillRectangle(x, y, len, len, colour);
 
-    if (s.isOccupied()) {
-      string message = s.getOccupant()->printable();
+    if (s->isOccupied()) {
+      string message = s->getOccupant()->printable();
       w.drawString(x + (len/2 - 5), y + len - (len / 2 - 5), message);
     }
-  }
-  drawBorders(5, Xwindow::Black);
 }
 
 GraphicsDisplay::~GraphicsDisplay() {

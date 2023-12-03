@@ -1,6 +1,6 @@
 #include "Board.h"
 
-Board::Board(Player* white, Player* black) {
+Board::Board(Player* white, Player* black, DisplayObserver* g) {
     std::vector<AbstractPiece*> selectedPieces;
     squares.reserve(64); // Reserve space for 64 squares
 
@@ -9,7 +9,7 @@ Board::Board(Player* white, Player* black) {
             bool isWhite = (file + rank) % 2 != 0;
             ChessColor currColor = (isWhite) ? ChessColor::White : ChessColor::Black;
             Location loc(rank, static_cast<File>(file));
-            Square mySquare(loc, currColor, nullptr);
+            Square mySquare(loc, currColor, nullptr, g);
             squares.push_back(mySquare);
         }
     }
@@ -75,6 +75,66 @@ Board::Board(Player* white, Player* black) {
     squares[3].setOccupant(selectedPieces.back());
 }
 
+bool Board::isInCheck(ChessColor c) {
+    AbstractPiece* king;
+    for (auto& s : squares) {
+        if (s.isOccupied() && s.getOccupant()->getName() == "King" && s.getOccupant()->getPieceColor() == c) {
+            king = s.getOccupant();
+        }
+    }
+
+    for (auto& s : squares) {
+        if (s.isOccupied() && s.getOccupant()->getPieceColor() != c && s.getOccupant()->validMove(king->getSquare())) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool Board::isCheckmate(ChessColor c) {
+    AbstractPiece* king;
+    for (auto& s : squares) {
+        if (s.isOccupied() && s.getOccupant()->getName() == "King" && s.getOccupant()->getPieceColor() == c) {
+            king = s.getOccupant();
+        }
+    }
+
+    bool canMakeMove = true;
+    for (auto& s : squares) {
+        if (s.isOccupied() && s.getOccupant()->getPieceColor() != c && s.getOccupant()->validMove(king->getSquare())) {
+            for (int move : king->allMoves()) {
+                canMakeMove = true;
+
+                for (auto& s_ : squares) {
+                    if (s_.isOccupied() && s_.getOccupant()->getPieceColor() != c && s_.getOccupant()->validMove(move)) {
+                        canMakeMove = false;
+                        break;
+                    }
+                }
+
+                if (canMakeMove) return false; // not in checkmate
+            }
+        }
+    }
+
+    // CHECK IF WE CAN MOVE SOME OTHER PIECE IN FRONT OF THE KING
+
+    return true;
+}
+
+bool Board::isStalemate() {
+    if (isInCheck(ChessColor::White) || isInCheck(ChessColor::Black)) return false;
+
+    for (auto& s : squares) {
+        if (s.isOccupied() && s.getOccupant()->allMoves().size() != 0) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 void Board::placePiece(AbstractPiece* piece, int square) {
     if (squares[square].isOccupied()) {
         squares[square].reset();
@@ -82,14 +142,15 @@ void Board::placePiece(AbstractPiece* piece, int square) {
     squares[square].setOccupant(piece);
 }
 
-Square* Board::getSquare(int index){
-    return &squares[index];
+void Board::resetSquare(int index) {
+    squares[index].reset();
 }
 
-void Board::handlePieceMoved(AbstractPiece* piece) {
+bool Board::handlePieceMoved(AbstractPiece* piece) {
     squares[piece->getPreviousSquare()].setOccupant(nullptr);
     squares[piece->getSquare()].setOccupant(piece); 
     // Validate isChecked, pieceHopping, isCheckMated, inBoardArea
+    return true;
 }
 
 Board::~Board() {}

@@ -7,7 +7,7 @@
 
 class Player: public PieceRemovedObserver {
     ChessColor c;
-    
+
     protected:
         std::vector<AbstractPiece*> pieces;
 

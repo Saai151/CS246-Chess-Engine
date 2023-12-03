@@ -3,6 +3,12 @@
 #include <iostream>
 #include <string>
 
+class EmptyDisplay: public DisplayObserver {
+    void handleStateChange(Square* s) override {
+        return;
+    }
+};
+
 AbstractPiece* parsePieceSymbol(char p, ChessColor color, PieceRemovedObserver* owner) {
     if (tolower(p) == 'p') return new Pawn(color, owner);
     else if (tolower(p) == 'q') return new Queen(color, owner);
@@ -15,11 +21,10 @@ AbstractPiece* parsePieceSymbol(char p, ChessColor color, PieceRemovedObserver* 
 int main(){
     Player* white = new HumanPlayer(ChessColor::White);
     Player* black = new HumanPlayer(ChessColor::Black);
-    Board* board = new Board(white, black);
     Game* game = nullptr;
     Xwindow w = Xwindow();
-    GraphicsDisplay gd(w, board);
-    gd.DisplayUpdate();
+    GraphicsDisplay gd(w);
+    Board* board = new Board(white, black, &gd);
     std::string command;
 
     while (std::cin >> command) {
@@ -61,13 +66,12 @@ int main(){
             std::string location;
             std::cin >> location;
             int parsedLocation = parseLocation(location);
-            board->getSquare(parsedLocation)->reset();
+            board->resetSquare(parsedLocation);
         } else if (command == "move") {
             game->makeMove();
         }
 
         std::cout << *board;
-        gd.DisplayUpdate();
     }
 
     delete game;
