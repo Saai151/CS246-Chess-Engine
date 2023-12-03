@@ -29,24 +29,18 @@ class Xwindow {
 
   // Draws a string
   void drawString(int x, int y, std::string msg);
-
-  // Places a piece on a square;
-  //void placePiece(const char* xpm_data[], int x, int y);
 };
 
 class GraphicsDisplay {
   Xwindow w;
-  Board b;
+  Board *b;
   int gridSize;
   std::vector<int> map(Square s);
   void drawBorders(int width, int colour);
-  //const char *nameToimgPath(std::string name, pieceColor color);
 
  public:
-  GraphicsDisplay(Xwindow &w, Board &b);
+  GraphicsDisplay(Xwindow &w, Board *b);
   void DisplayUpdate();
-  //void notify(Cell &c) override;
-  //SubscriptionType subType() override;
 
   ~GraphicsDisplay();
 };

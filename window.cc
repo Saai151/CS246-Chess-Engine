@@ -96,13 +96,13 @@ void GraphicsDisplay::drawBorders(int width, int colour) {
   w.fillRectangle(500-width, 0, width, 500, colour);
 }
 
-GraphicsDisplay::GraphicsDisplay(Xwindow &w, Board &b) : w{w}, b{b} {
+GraphicsDisplay::GraphicsDisplay(Xwindow &w, Board *b) : w{w}, b{b} {
   gridSize = 8; // 8 x 8 chess board
   w.fillRectangle(0, 0, 500, 500);
 }
 
 void GraphicsDisplay::DisplayUpdate() {
-  for (Square s : b.squares) {
+  for (Square s : b->squares) {
     std::vector<int> dimensions = map(s);
     int x = dimensions[0];
     int y = dimensions[1];
@@ -121,7 +121,3 @@ void GraphicsDisplay::DisplayUpdate() {
 
 GraphicsDisplay::~GraphicsDisplay() {
 }
-
-// SubscriptionType GraphicsDisplay::subType() {
-//   return SubscriptionType::All;
-// }

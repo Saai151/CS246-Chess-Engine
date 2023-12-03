@@ -18,7 +18,7 @@ int main(){
     Board* board = new Board(white, black);
     Game* game = nullptr;
     Xwindow w = Xwindow();
-    GraphicsDisplay gd(w, *board);
+    GraphicsDisplay gd(w, board);
     gd.DisplayUpdate();
     std::string command;
 
