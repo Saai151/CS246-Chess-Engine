@@ -111,42 +111,32 @@ void HumanPlayer::move(Board* b)
 ComputerPlayer_1::ComputerPlayer_1(ChessColor c) : Player(c) {}
 ComputerPlayer_1::ComputerPlayer_1(Player &&p) : Player(std::move(p)) {}
 
-void ComputerPlayer_1::move(Board* b)
-{
-    std::vector<AbstractPiece *> copy_pieces = pieces;
-
-    while (copy_pieces.size() > 0)
-    {
+void ComputerPlayer_1::move(Board* b) {
+    std::vector<AbstractPiece*> copy_pieces = pieces;
+    
+    while (copy_pieces.size() > 0) {
         int num_pieces = copy_pieces.size();
         int rand_index = rand() % num_pieces; // Generate random number
-        cout << "Random index: " << rand_index << endl;
-        AbstractPiece *curr_piece = copy_pieces[rand_index];
-        cout << "Name: " << curr_piece->getName() << endl;
-        // int index = 0;
-        // for (AbstractPiece* cpy_p : copy_pieces) {
-        //     if (index == rand_index) {
-        //         curr_piece = cpy_p;
-        //         break;
-        //     }
-        //     index++;
-        // }
-        // generate all moves vector all moves.
-        std::vector<int> all_moves = curr_piece->allMoves();
+        //cout << "Random index: " << rand_index << endl;
+        
 
-        // for (int move : all_moves) {
-        //     try
-        //     if (validBoard(boardState, curr_piece, move)) {
-        //         cout << "move: " << move << endl;
-        //         curr_piece->move(move);
-        //         //cout << "Works" << endl;
-        //         return;
-        //     }
-        // }
+        AbstractPiece* curr_piece = copy_pieces[rand_index];
+       //cout << "Name: " << curr_piece->getName() << endl;
+
+        //cout << "<ADE IT" << endl;
+        std::vector<int>all_moves = curr_piece->allMoves();
+        //cout << "<ADE IT 2" << endl;
+
+        for (int move : all_moves) {
+            if (b->isValidMove(curr_piece, curr_piece->getSquare(), move)) {
+                curr_piece->move(move);
+                return;
+            }
+        }
         // Else there are no valid moves for the given piece.
         // Remove piece from cpy_pices array. And keep looking.
         copy_pieces.erase(copy_pieces.begin() + rand_index);
     }
-    // cout << "Didn't work" << endl;
 }
 
 ComputerPlayer_2::ComputerPlayer_2(ChessColor c) : Player(c) {}
@@ -192,7 +182,7 @@ void ComputerPlayer_2::move(Board* board) {
                 curr_piece->move(move);
                 // try valid move to index of king 
                 if (!curr_piece->validMove(opposing_king_index)) { // it is not valid move to king.
-                    curr_piece->move(original_square); // Else, move it back to start location.
+                    curr_piece->move(original_square); // You cannot move certain pieces backward. MUST FIX
             // TODO FIX THIS   
                 } else {
                     return;
