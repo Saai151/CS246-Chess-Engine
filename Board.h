@@ -1,7 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "Player.h"
+#include "Square.h"
 
 #include <ostream>
 #include <vector>
@@ -12,12 +12,14 @@
 class Board: public PieceMovedObserver {    
     DisplayAggregator* g;
 
+    bool isPieceCheckingTheKing(Square* s, AbstractPiece* king, ChessColor c);
+
     public:
         std::vector<Square> squares;
-        Board(Player* white, Player* black, DisplayAggregator* g);
+        Board(std::vector<AbstractPiece*> white, std::vector<AbstractPiece*> black, DisplayAggregator* g);
         void resetSquare(int index);
         void placePiece(AbstractPiece* piece, int square);
-        bool isInCheck(ChessColor c);
+        std::vector<Square*> isInCheck(ChessColor c);
         bool isCheckmate(ChessColor c);
         bool isStalemate();
         bool isValidMove(AbstractPiece* target, int startLocation, int endLocation);

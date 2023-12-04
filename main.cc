@@ -31,7 +31,7 @@ int main(){
     std::vector<DisplayObserver*> displays = {&gd, &td};
     DisplayAggregator allDisplays = DisplayAggregator(displays);
 
-    Board* board = new Board(white, black, &allDisplays);
+    Board* board = new Board(white->pieces, black->pieces, &allDisplays);
     std::string command;
 
     while (std::cin >> command) {

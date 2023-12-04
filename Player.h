@@ -5,6 +5,7 @@
 #include <iostream>
 #include "AbstractPiece.h"
 #include "Square.h"
+#include "Board.h"
 #include <cstdlib>
 #include <ctime>
 //#include <random>
@@ -12,14 +13,13 @@
 class Player: public PieceRemovedObserver {
     ChessColor c;
 
-    protected:
+    public:
         std::vector<AbstractPiece*> pieces;
 
     public:
         Player(Player&& p);
         Player(ChessColor c);
 
-        std::vector<AbstractPiece*> getPieces(std::string type);
         void addPiece(AbstractPiece* piece);
         void addPieces(std::vector<AbstractPiece*> pieces);
         void clearPieces();
@@ -28,7 +28,7 @@ class Player: public PieceRemovedObserver {
         void attachBoardToPieces(PieceMovedObserver* board);
 
         ChessColor getColor();
-        virtual void move(vector<Square> boardState) = 0;
+        virtual void move(Board* board = nullptr) = 0;
         virtual ~Player();
 };
 
@@ -36,21 +36,21 @@ class HumanPlayer: public Player {
     public:
         HumanPlayer(Player&& p);
         HumanPlayer(ChessColor c);
-        void move(vector<Square> boardState) override;
+        void move(Board* b = nullptr) override;
 };
 
 class ComputerPlayer_1: public Player {
     public:
         ComputerPlayer_1(Player&& p);
         ComputerPlayer_1(ChessColor c);
-        void move(vector<Square> boardState) override;
+        void move(Board* b = nullptr) override;
 };
 
 class ComputerPlayer_2: public Player {
     public:
         ComputerPlayer_2(Player&& p);
         ComputerPlayer_2(ChessColor c);
-        void move(vector<Square> boardState) override;
+        void move(Board* b = nullptr) override;
 };
 
 

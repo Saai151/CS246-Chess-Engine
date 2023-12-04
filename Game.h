@@ -1,4 +1,5 @@
 #include "Board.h"
+#include "Player.h"
 
 class Game {
     Player* white;

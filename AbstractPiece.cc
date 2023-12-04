@@ -1,16 +1,5 @@
 #include "AbstractPiece.h"
 
-/**
- * CHRISTIAN, REMEMBER THIS:
- * SINCE THE checkmate() function is in the board class, we should be able
- * to pass in some move to validate it with the overall board.
- * 
- * The validation will be two steps:
- * 1. piece.isValidMove()
- * 2. board.isValidMove(piece, newLocation)
- * If both pass, the move is valid
-*/
-
 AbstractPiece::~AbstractPiece()
 {
     pieceRemovedObserver->handlePieceRemoved(this);
@@ -154,7 +143,11 @@ bool King::validMove(int targetSquare)
 }
 
 std::vector<int> King::allMoves() {
-        vector<int> validMoves;
+    vector<int> validMoves;
+
+    std::cout << "INSIDE 1" << std::endl;
+    this->getSquare();
+    std::cout << "INSIDE 2" << std::endl;
 
     // Define increments for horizontal, vertical, and diagonal movements
     vector<int> kingOffsets = { -9, -8, -7, -1, 1, 7, 8, 9 }; // All directions
@@ -219,10 +212,8 @@ std::string Rook::printable() const
     }
 }
 
-bool Rook::validMove(int targetSquare)
-{
+bool Rook::validMove(int targetSquare) {
     int currSquare = this->getSquare();
-
     int delta = targetSquare - currSquare;
 
     if ((delta % 8 == 0 && delta != 0) || (abs(delta) <= 7 && abs(delta) != 0)) {

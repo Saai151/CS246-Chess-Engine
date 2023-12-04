@@ -1,6 +1,18 @@
 #include "Board.h"
 
-Board::Board(Player* white, Player* black, DisplayAggregator* g) {
+std::vector<AbstractPiece*> getPieces(std::string name, std::vector<AbstractPiece*> pieces) {
+    std::vector<AbstractPiece *> result;
+
+    for (auto &p : pieces)
+    {
+        if (p->getName() == name)
+            result.push_back(p);
+    }
+
+    return result;
+}
+
+Board::Board(std::vector<AbstractPiece*> white, std::vector<AbstractPiece*> black, DisplayAggregator* g) {
     std::vector<AbstractPiece*> selectedPieces;
     squares.reserve(64); // Reserve space for 64 squares
 
@@ -15,67 +27,76 @@ Board::Board(Player* white, Player* black, DisplayAggregator* g) {
     }
 
     /* Place down white pieces */
-    selectedPieces = white->getPieces("Pawn");
+    selectedPieces = getPieces("Pawn", white);
     for (int i = 48; i < 56; i++) {
         squares[i].setOccupant(selectedPieces.back());
         selectedPieces.pop_back();
     }
 
-    selectedPieces = white->getPieces("Rook");
+    selectedPieces = getPieces("Rook", white);
     squares[63].setOccupant(selectedPieces.back());
     selectedPieces.pop_back();
     squares[56].setOccupant(selectedPieces.back());
     selectedPieces.pop_back();
 
-    selectedPieces = white->getPieces("Knight");
+    selectedPieces = getPieces("Knight", white);
     squares[62].setOccupant(selectedPieces.back());
     selectedPieces.pop_back();
     squares[57].setOccupant(selectedPieces.back());
     selectedPieces.pop_back();
 
-    selectedPieces = white->getPieces("Bishop");
+    selectedPieces = getPieces("Bishop", white);
     squares[61].setOccupant(selectedPieces.back());
     selectedPieces.pop_back();
     squares[58].setOccupant(selectedPieces.back());
 
-    selectedPieces = white->getPieces("King");
+    selectedPieces = getPieces("King", white);
     squares[60].setOccupant(selectedPieces.back());
 
-    selectedPieces = white->getPieces("Queen");
+    selectedPieces = getPieces("Queen", white);
     squares[59].setOccupant(selectedPieces.back());
 
     /* Place down black pieces */
-    selectedPieces = black->getPieces("Pawn");
+    selectedPieces = getPieces("Pawn", black);
     for (int i = 8; i < 16; i++) {
         squares[i].setOccupant(selectedPieces.back());
         selectedPieces.pop_back();
     }
 
-    selectedPieces = black->getPieces("Rook");
+    selectedPieces = getPieces("Rook", black);
     squares[0].setOccupant(selectedPieces.back());
     selectedPieces.pop_back();
     squares[7].setOccupant(selectedPieces.back());
     selectedPieces.pop_back();
 
-    selectedPieces = black->getPieces("Knight");
+    selectedPieces = getPieces("Knight", black);
     squares[1].setOccupant(selectedPieces.back());
     selectedPieces.pop_back();
     squares[6].setOccupant(selectedPieces.back());
     selectedPieces.pop_back();
 
-    selectedPieces = black->getPieces("Bishop");
+    selectedPieces = getPieces("Bishop", black);
     squares[2].setOccupant(selectedPieces.back());
     selectedPieces.pop_back();
     squares[5].setOccupant(selectedPieces.back());
 
-    selectedPieces = black->getPieces("King");
+    selectedPieces = getPieces("King", black);
     squares[4].setOccupant(selectedPieces.back());
 
-    selectedPieces = black->getPieces("Queen");
+    selectedPieces = getPieces("Queen", black);
     squares[3].setOccupant(selectedPieces.back());
 }
 
-bool Board::isInCheck(ChessColor c) {
+bool Board::isPieceCheckingTheKing(Square* s, AbstractPiece* king, ChessColor c) {
+    return s->isOccupied() 
+        && s->getOccupant()->getPieceColor() != c 
+        && s->getOccupant()->validMove(king->getSquare())
+        && isValidMove(s->getOccupant(), s->getOccupant()->getSquare(), king->getSquare());
+
+}
+
+std::vector<Square*> Board::isInCheck(ChessColor c) {
+    std::vector<Square*> checked;
     AbstractPiece* king;
     for (auto& s : squares) {
         if (s.isOccupied() && s.getOccupant()->getName() == "King" && s.getOccupant()->getPieceColor() == c) {
@@ -84,12 +105,12 @@ bool Board::isInCheck(ChessColor c) {
     }
 
     for (auto& s : squares) {
-        if (s.isOccupied() && s.getOccupant()->getPieceColor() != c && s.getOccupant()->validMove(king->getSquare())) {
-            return true;
+        if (isPieceCheckingTheKing(&s, king, c)) {
+            checked.push_back(&s);
         }
     }
 
-    return false;
+    return checked;
 }
 
 bool Board::isCheckmate(ChessColor c) {
@@ -100,31 +121,33 @@ bool Board::isCheckmate(ChessColor c) {
         }
     }
 
+
+    std::vector<Square*> checkedPieces = isInCheck(c);
+    if (!checkedPieces.size()) return false;
+
     bool canMakeMove = true;
-    for (auto& s : squares) {
-        if (s.isOccupied() && s.getOccupant()->getPieceColor() != c && s.getOccupant()->validMove(king->getSquare())) {
-            for (int move : king->allMoves()) {
-                canMakeMove = true;
+    for (auto& s : checkedPieces) {
+        for (int move : king->allMoves()) {
+            canMakeMove = true;
 
-                for (auto& s_ : squares) {
-                    if (s_.isOccupied() && s_.getOccupant()->getPieceColor() != c && s_.getOccupant()->validMove(move)) {
-                        canMakeMove = false;
-                        break;
-                    }
+            for (auto& s_ : squares) {
+                if (isPieceCheckingTheKing(s, king, c)) {
+                    canMakeMove = false;
+                    break;
                 }
-
-                if (canMakeMove) return false; // not in checkmate
             }
+
+            if (canMakeMove) return false; // not in checkmate
         }
     }
 
     // CHECK IF WE CAN MOVE SOME OTHER PIECE IN FRONT OF THE KING
 
-    return true;
+    return false;
 }
 
 bool Board::isStalemate() {
-    if (isInCheck(ChessColor::White) || isInCheck(ChessColor::Black)) return false;
+    if (isInCheck(ChessColor::White).size() || isInCheck(ChessColor::Black).size()) return false;
 
     for (auto& s : squares) {
         if (s.isOccupied() && s.getOccupant()->allMoves().size() != 0) {
@@ -170,20 +193,14 @@ bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocatio
     }
 
 
-    std::cout << "HERE 3" << std::endl;
     if (squares[endLocation].isOccupied() && squares[endLocation].getOccupant()->getPieceColor() != captureColor) {
         return false;
     }
-    std::cout << "HERE 4" << std::endl;
-
 
     if (target->getName() == "Knight") return true;
-    std::cout << "HERE 7" << std::endl;
 
-    int startRank = startLocation / 8;
     int delta = abs(endLocation - startLocation);
     if (delta % 9 == 0 || delta % 7 == 0) {
-        std::cout << "HERE 5" << std::endl;
 
         int x;
 
@@ -194,13 +211,11 @@ bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocatio
         }
 
         int steps = delta / x;
-        std::cout << "HERE 1" << std::endl;
         for (int i = 1; i < steps; ++i) {
             int index = (startLocation < endLocation) ? startLocation + (i * x) : startLocation - (i * x);
             if (squares[index].isOccupied()) return false;
         }
 
-        std::cout << "HERE 2" << std::endl;
         if (target->getName() == "Pawn") {
             if (squares[endLocation].isOccupied()) return true;
             else return false;
