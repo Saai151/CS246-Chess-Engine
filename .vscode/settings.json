@@ -81,6 +81,7 @@
         "condition_variable": "cpp",
         "map": "cpp",
         "thread": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "filesystem": "cpp"
     }
 }
