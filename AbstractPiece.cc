@@ -272,7 +272,7 @@ std::vector<int> Bishop::allMoves() {
     return validMoves;}
 
 void AbstractPiece::move(int newIndex) {
-    if (!validMove(newIndex)) throw std::invalid_argument("Invalid move");
+    if (!validMove(newIndex)) throw std::invalid_argument("Invalid move 5");
     int previousSquareIndexCopy = previousSquareIndex;
     int squareIndexCopy = squareIndex;
 
@@ -283,6 +283,6 @@ void AbstractPiece::move(int newIndex) {
     if (!validatedByBoard) {
         previousSquareIndex = previousSquareIndexCopy;
         squareIndex = squareIndexCopy;
-        throw std::invalid_argument("Invalid move");
+        throw std::invalid_argument("Invalid move 4");
     }
 }
