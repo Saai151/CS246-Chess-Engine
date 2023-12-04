@@ -1,6 +1,6 @@
 #include "Board.h"
 
-Board::Board(Player* white, Player* black, DisplayObserver* g) {
+Board::Board(Player* white, Player* black, DisplayAggregator* g) {
     std::vector<AbstractPiece*> selectedPieces;
     squares.reserve(64); // Reserve space for 64 squares
 
@@ -152,22 +152,87 @@ void Board::resetSquare(int index) {
 }
 
 bool Board::handlePieceMoved(AbstractPiece* piece) {
-    squares[piece->getPreviousSquare()].setOccupant(nullptr);
-    squares[piece->getSquare()].setOccupant(piece); 
-    // Validate isChecked, pieceHopping, isCheckMated, inBoardArea
+    if (isValidMove(piece, piece->getPreviousSquare(), piece->getSquare())) {
+        squares[piece->getPreviousSquare()].setOccupant(nullptr);
+        squares[piece->getSquare()].setOccupant(piece); 
+        // Validate isChecked, pieceHopping, isCheckMated, inBoardArea
+        return true;
+    }
+    
+    return false;
+}
+
+bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocation) {
+    if (endLocation < 0 || endLocation >= 64){
+        throw std::invalid_argument("invalid target square");
+    }
+
+    ChessColor captureColor;
+    if (target->getPieceColor() == ChessColor::Black){
+        captureColor = ChessColor::White;
+    } else{
+        captureColor = ChessColor::Black;
+    }
+
+
+    std::cout << "HERE 3" << std::endl;
+    if (squares[endLocation].isOccupied() && squares[endLocation].getOccupant()->getPieceColor() != captureColor) {
+        return false;
+    }
+    std::cout << "HERE 4" << std::endl;
+
+
+    if (target->getName() == "Knight") return true;
+    std::cout << "HERE 7" << std::endl;
+
+    int startRank = startLocation / 8;
+    int delta = abs(endLocation - startLocation);
+    if (delta % 9 == 0 || delta % 7 == 0) {
+        std::cout << "HERE 5" << std::endl;
+
+        int x;
+
+        if (delta % 9 == 0) {
+            x = 9;
+        } else if (delta % 7 == 0) {
+            x = 7;
+        }
+
+        int steps = delta / x;
+        std::cout << "HERE 1" << std::endl;
+        for (int i = 1; i < steps; ++i) {
+            int index = (startLocation < endLocation) ? startLocation + (i * x) : startLocation - (i * x);
+            if (squares[index].isOccupied()) return false;
+        }
+
+        std::cout << "HERE 2" << std::endl;
+        if (target->getName() == "Pawn") {
+            if (squares[endLocation].isOccupied()) return true;
+            else return false;
+        }
+    } else if (delta % 8 == 0) { // veritcal move
+        if (startLocation > endLocation) {
+            for (int i = 1; i < (delta / 8); i++) {
+                if (squares[startLocation - (i * 8)].isOccupied()) return false;
+            }
+         } else {
+            for (int i = 1; i < (delta / 8); i++) {
+                if (squares[startLocation + (i * 8)].isOccupied()) return false;
+            }
+         }
+    } else {
+        if (startLocation > endLocation) {
+            for (int i = 1; i < delta; i++) {
+                if (squares[startLocation - i].isOccupied()) return false;
+            }
+        } else {
+            for (int i = 0; i < delta; i++) {
+                if (squares[startLocation + i].isOccupied()) return false;
+            }
+        }
+    }
+
     return true;
 }
 
 Board::~Board() {}
-
-std::ostream& operator<<(std::ostream& out, Board& board) {
-    for (size_t i = 0; i < 64; ++i) {
-        out << board.squares[i];
-
-        if ((i + 1) % 8 == 0) {
-            out << '\n'; // Start a new line after printing 8 squares (end of a row)
-        }
-    }
-    return out;
-}
-

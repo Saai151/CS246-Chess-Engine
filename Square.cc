@@ -1,12 +1,8 @@
 #include "Square.h"
 
-Square::Square(Location location, ChessColor squareColor, AbstractPiece* occupant, DisplayObserver* g)
-            : location{location}, squareColor{squareColor}, occupant{occupant}, g{g} {
+Square::Square(Location location, ChessColor squareColor, AbstractPiece* occupant, DisplayAggregator* g)
+            : occupant{occupant}, location{location}, squareColor{squareColor}, g{g} {
         g->handleStateChange(this);
-    }
-
-bool Square::isOccupied() const {
-    return occupant != nullptr;
 }
 
 ChessColor Square::getColor() const {
@@ -15,6 +11,10 @@ ChessColor Square::getColor() const {
 
 Location Square::getLocation() const {
     return location; 
+}
+
+bool Square::isOccupied() const {
+    return occupant != nullptr;
 }
 
 void Square::reset() {
@@ -35,15 +35,28 @@ void Square::setOccupant(AbstractPiece* occupant) {
     g->handleStateChange(this);
 }
 
+std::string Square::printable() const {
+    if (isOccupied()) {
+        return getOccupant()->printable();
+    } else {
+        return (getColor() == ChessColor::White ? " " : "_");
+    }
+}
+
 AbstractPiece* Square::getOccupant() const {
     return occupant;
 }
 
-std::ostream& operator<<(std::ostream& out, const Square& square) {
-    if (square.isOccupied()) {
-        out << square.getOccupant()->printable();
-    } else {
-        out << (square.getColor() == ChessColor::White ? " " : "_");
+DisplayAggregator::DisplayAggregator(std::vector<DisplayObserver*> displays) : displays{displays} {}
+
+void DisplayAggregator::handleStateChange(Square* s) {
+    for (auto& d : displays) {
+        d->handleStateChange(s);
     }
-    return out;
+}
+
+void DisplayAggregator::render() {
+    for (auto& d : displays) {
+        d->render();
+    }
 }

@@ -1,5 +1,16 @@
 #include "AbstractPiece.h"
 
+/**
+ * CHRISTIAN, REMEMBER THIS:
+ * SINCE THE checkmate() function is in the board class, we should be able
+ * to pass in some move to validate it with the overall board.
+ * 
+ * The validation will be two steps:
+ * 1. piece.isValidMove()
+ * 2. board.isValidMove(piece, newLocation)
+ * If both pass, the move is valid
+*/
+
 AbstractPiece::~AbstractPiece()
 {
     pieceRemovedObserver->handlePieceRemoved(this);
@@ -42,11 +53,29 @@ bool Pawn::validMove(int targetSquare)
             return true;
         }
     }
+
     return false;
-    }
+}
 
 std::vector<int> Pawn::allMoves() {
-    return {}; // Not srue yet, might need a vector of pieces reprsenting the board
+    int currSquare = this->getSquare();
+    vector<int> moves = {currSquare + 8};
+    if (this->getPieceColor() == ChessColor::White){
+        moves.push_back(currSquare - 8);
+        moves.push_back(currSquare - 7);
+        moves.push_back(currSquare - 9);
+    } else{
+        moves.push_back(currSquare + 8);
+        moves.push_back(currSquare + 7);
+        moves.push_back(currSquare + 9);
+    }
+    if (this->getPieceColor() == ChessColor::White && isFirst){
+        moves.push_back(currSquare - 16);
+    }
+    if (this->getPieceColor() == ChessColor::Black && isFirst){
+        moves.push_back(currSquare + 16);
+    }
+
 }
 
 std::string Queen::printable() const

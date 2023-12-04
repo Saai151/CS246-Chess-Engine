@@ -83,8 +83,6 @@ class Pawn : public AbstractPiece
         bool validMove(int targetSquare) override;
 };
 
-
-
 class Queen : public AbstractPiece
 {
     public:

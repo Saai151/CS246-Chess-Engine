@@ -29,7 +29,6 @@ class Player: public PieceRemovedObserver {
 
         ChessColor getColor();
         virtual void move(vector<Square> boardState) = 0;
-        bool validBoard(vector<Square> boardState, AbstractPiece *target, int endLocation);
         virtual ~Player();
 };
 
@@ -53,5 +52,7 @@ class ComputerPlayer_2: public Player {
         ComputerPlayer_2(ChessColor c);
         void move(vector<Square> boardState) override;
 };
+
+
 
 #endif

@@ -77,6 +77,10 @@
         "cinttypes": "cpp",
         "list": "cpp",
         "fstream": "cpp",
-        "stack": "cpp"
+        "stack": "cpp",
+        "condition_variable": "cpp",
+        "map": "cpp",
+        "thread": "cpp",
+        "valarray": "cpp"
     }
 }
