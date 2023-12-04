@@ -8,15 +8,10 @@ Game::Game(Player* white, Player* black, Board* board) : white{white}, black{bla
 
 void Game::makeMove() {
     try {
-        currentTurn->move();
+        currentTurn->move(board->squares);
     } catch (std::invalid_argument& _) {
         std::cout << "NOT VALID" << std::endl;
         return;
-    }
-
-    if (!validBoard){
-        std::cout << "Invalid move" << std::endl;
-        // reverse the move
     }
 
     if (currentTurn == white) currentTurn = black;
@@ -29,10 +24,6 @@ void Game::makeMove() {
     if (board->isStalemate()) {
         std::cout << "STALEMATE" << std::endl; 
     }
-}
-
-bool validBoard(){
-    
 }
 
 Game::~Game() {

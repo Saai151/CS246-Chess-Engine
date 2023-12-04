@@ -147,10 +147,175 @@ void Board::resetSquare(int index) {
 }
 
 bool Board::handlePieceMoved(AbstractPiece* piece) {
-    squares[piece->getPreviousSquare()].setOccupant(nullptr);
-    squares[piece->getSquare()].setOccupant(piece); 
-    // Validate isChecked, pieceHopping, isCheckMated, inBoardArea
-    return true;
+    if (isValidMove(piece, piece->getPreviousSquare(), piece->getSquare())) {
+        squares[piece->getPreviousSquare()].setOccupant(nullptr);
+        squares[piece->getSquare()].setOccupant(piece); 
+        // Validate isChecked, pieceHopping, isCheckMated, inBoardArea
+        return true;
+    }
+    
+    return false;
+}
+
+bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocation) {
+    std::cout << "HERE 1" << std::endl;
+    std::cout << startLocation << ", " << endLocation << std::endl;
+    if (endLocation < 0 || endLocation >= 64){
+        throw std::invalid_argument("invalid target square");
+    }
+
+     ChessColor captureColor;
+
+    
+    if (target->getPieceColor() == ChessColor::Black){
+        captureColor = ChessColor::White;
+    } else{
+        captureColor = ChessColor::Black;
+    }
+
+    if (squares[endLocation].isOccupied() && squares[endLocation].getOccupant()->getPieceColor() != captureColor) {
+        return false;
+    }
+
+    if(target->getName() == "Pawn"){
+        if (endLocation == startLocation + 8 || endLocation == startLocation - 8){
+            if (!squares[endLocation].isOccupied()){
+                return true;
+            }
+        } else if (endLocation == startLocation + 16 || endLocation == startLocation - 16){
+            int inBetweenSquare = (startLocation + endLocation) / 2;
+            if (!(squares[endLocation].isOccupied()) && !(squares[inBetweenSquare]).isOccupied()){
+                return true;
+            }            
+        }
+
+        int delta = abs(endLocation - startLocation);
+        std::cout << delta << std::endl;
+        if (delta == 9 || delta == 7) {
+            if (squares[endLocation].isOccupied() && squares[endLocation].getOccupant()->getPieceColor() == captureColor) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    else if(target->getName() == "Queen"){
+        int startRank = startLocation / 8;
+        int startFile = startLocation % 8;
+        int endRank = endLocation / 8;
+        int endFile = endLocation % 8;
+
+        // Check if the movement is along a rank, file, or diagonal
+        if ((startRank != endRank) && (startFile != endFile) && (abs(startRank - endRank) != abs(startFile - endFile))) {
+            // Invalid movement for a Queen (not along a rank, file, or diagonal)
+            return false;
+        }
+
+        int x = (startRank == endRank) ? 1 : ((startFile == endFile) ? 8 : ((endLocation - startLocation) / abs(endLocation - startLocation)));
+        int steps = abs(endLocation - startLocation) / abs(x);
+
+        // Check for obstacles or capture along the path
+        for (int i = 1; i <= steps; ++i) {
+            int index = startLocation + (i * x);
+            if (index == endLocation && squares[index].isOccupied() && squares[index].getColor() == captureColor) {
+                return true; // Capture possible on the last square of the path
+            }
+            if (squares[index].isOccupied()) {
+                return false; // Obstacle found in the path
+            }
+        }
+
+        return true; // No obstacles in the rank, file, or diagonal path
+
+    }
+
+    else if(target->getName() == "King"){
+            // Check if the movement is within one square horizontally, vertically, or diagonally
+            if (abs(endLocation / 8 - startLocation / 8) > 1 || abs(endLocation % 8 - startLocation % 8) > 1) {
+                // Invalid movement for a King (more than one square away)
+                return false;
+            }
+
+            // Calculate the number of steps (which is always 1 for the King)
+            int steps = 1;
+
+            // Check for obstacles or capture along the path
+            if (squares[endLocation].isOccupied() && squares[endLocation].getColor() == captureColor) {
+                return true; // Capture possible at the end location
+            }
+
+        return !squares[endLocation].isOccupied();
+    }
+
+    else if(target->getName() == "Bishop"){
+        // Current location of the bishop
+        int diff = abs(endLocation - startLocation);
+        int x;
+
+        // Determine if the movement is along a diagonal
+        if (diff % 9 == 0) {
+            x = 9;
+        } else if (diff % 7 == 0) {
+            x = 7;
+        } else {
+            return false;
+        }
+
+        int steps = diff / x;
+
+        for (int i = 1; i <= steps; ++i) {
+            int index = (startLocation < endLocation) ? startLocation + (i * x) : startLocation - (i * x);
+            if (index == endLocation && squares[index].isOccupied() && squares[index].getColor() == captureColor){
+                return true;
+            }
+            if (squares[index].isOccupied()) {
+                return false; 
+            }
+        }
+
+        return true;
+        
+    }
+    else if(target->getName() == "Rook"){
+        int diff = abs(endLocation - startLocation);
+        int x = 0;
+
+        // Determine if the movement is along a diagonal
+        if (diff % 8 == 0) {
+            x = 8;
+        } else if (diff % 1 == 0) {
+            x = 1;
+        } else {
+            return false;
+        }
+
+        int steps = diff / x;
+
+        for (int i = 1; i <= steps; ++i) {
+            int index = (startLocation < endLocation) ? startLocation + (i * x) : startLocation - (i * x);
+            if (index == endLocation && squares[index].isOccupied() && squares[endLocation].getColor() == squares[startLocation].getColor()){
+                return true;
+            }
+            if (squares[index].isOccupied()) {
+                return false; 
+            }
+        }
+
+        return true;
+
+    }
+    else if(target->getName() == "Knight"){
+
+        if (squares[endLocation].isOccupied() && squares[endLocation].getColor() == captureColor) {
+            return true; // Capture possible at the end location
+        }
+
+        return !squares[endLocation].isOccupied();
+    }
+
+    cout << "board validation didn't work" << std::endl;
+    return false;
 }
 
 Board::~Board() {}

@@ -96,13 +96,12 @@ void Player::attachBoardToPieces(PieceMovedObserver* board) {
 HumanPlayer::HumanPlayer(ChessColor c) : Player(c) {}
 HumanPlayer::HumanPlayer(Player&& p) : Player(std::move(p)) {}
 
-void HumanPlayer::move() {
+void HumanPlayer::move(vector<Square> boardState) {
     std::string start, end;
     std::cin >> start >> end;
 
     int startLocation = parseLocation(start);
     int endLocation = parseLocation(end);
-
 
     AbstractPiece* target = nullptr;
     for (auto& p : pieces) {
@@ -110,16 +109,12 @@ void HumanPlayer::move() {
     }
     if (target == nullptr) throw std::invalid_argument("Invalid start position");
 
-    if (endLocation < 0 || endLocation >= 64){
-        throw std::invalid_argument("invalid target square");
-    }
-    
     target->move(endLocation);
 }
 
 ComputerPlayer::ComputerPlayer(ChessColor c) : Player(c) {}
 ComputerPlayer::ComputerPlayer(Player&& p) : Player(std::move(p)) {}
 
-void ComputerPlayer::move() {
+void ComputerPlayer::move(vector<Square> boardState) {
 
 }

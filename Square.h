@@ -1,25 +1,26 @@
 #ifndef SQUARE_H
 #define SQUARE_H
 
-#include <iostream>
 #include "AbstractPiece.h"
+
+#include <iostream>
 
 class DisplayObserver;
 class DisplayAggregator;
 
 class Square {
-    private:
-        Location location;
-        ChessColor squareColor;
-        AbstractPiece* occupant;
-        DisplayAggregator* g;
+    Location location;
+    ChessColor squareColor;
+    DisplayAggregator* g;
+    AbstractPiece* occupant;
+    
     public:
         Square(Location location, ChessColor squareColor, AbstractPiece* occupant, DisplayAggregator* g);
-        bool isOccupied() const;
         ChessColor getColor() const;
         Location getLocation() const;
         void setOccupant(AbstractPiece* occupant);
         void reset();
+        bool isOccupied() const;
         AbstractPiece* getOccupant() const;
         std::string printable() const;
 };

@@ -1,12 +1,8 @@
 #include "Square.h"
 
 Square::Square(Location location, ChessColor squareColor, AbstractPiece* occupant, DisplayAggregator* g)
-            : location{location}, squareColor{squareColor}, occupant{occupant}, g{g} {
+            : occupant{occupant}, location{location}, squareColor{squareColor}, g{g} {
         g->handleStateChange(this);
-    }
-
-bool Square::isOccupied() const {
-    return occupant != nullptr;
 }
 
 ChessColor Square::getColor() const {
@@ -15,6 +11,10 @@ ChessColor Square::getColor() const {
 
 Location Square::getLocation() const {
     return location; 
+}
+
+bool Square::isOccupied() const {
+    return occupant != nullptr;
 }
 
 void Square::reset() {
