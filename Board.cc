@@ -170,22 +170,40 @@ bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocatio
     }
 
 
+    std::cout << "HERE 3" << std::endl;
     if (squares[endLocation].isOccupied() && squares[endLocation].getOccupant()->getPieceColor() != captureColor) {
         return false;
     }
+    std::cout << "HERE 4" << std::endl;
+
 
     if (target->getName() == "Knight") return true;
+    std::cout << "HERE 7" << std::endl;
 
+    int startRank = startLocation / 8;
     int delta = abs(endLocation - startLocation);
-    if (delta < 8) { // horizontal move
-        if (startLocation > endLocation) {
-            for (int i = 1; i < delta; i++) {
-                if (squares[startLocation - i].isOccupied()) return false;
-            }
-        } else {
-            for (int i = 0; i < delta; i++) {
-                if (squares[startLocation + i].isOccupied()) return false;
-            }
+    if (delta % 9 == 0 || delta % 7 == 0) {
+        std::cout << "HERE 5" << std::endl;
+
+        int x;
+
+        if (delta % 9 == 0) {
+            x = 9;
+        } else if (delta % 7 == 0) {
+            x = 7;
+        }
+
+        int steps = delta / x;
+        std::cout << "HERE 1" << std::endl;
+        for (int i = 1; i < steps; ++i) {
+            int index = (startLocation < endLocation) ? startLocation + (i * x) : startLocation - (i * x);
+            if (squares[index].isOccupied()) return false;
+        }
+
+        std::cout << "HERE 2" << std::endl;
+        if (target->getName() == "Pawn") {
+            if (squares[endLocation].isOccupied()) return true;
+            else return false;
         }
     } else if (delta % 8 == 0) { // veritcal move
         if (startLocation > endLocation) {
@@ -197,28 +215,15 @@ bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocatio
                 if (squares[startLocation + (i * 8)].isOccupied()) return false;
             }
          }
-    } else { // diagnal move
-        int x;
-
-        // Determine if the movement is along a diagonal
-        if (delta % 9 == 0) {
-            x = 9;
-        } else if (delta % 7 == 0) {
-            x = 7;
+    } else {
+        if (startLocation > endLocation) {
+            for (int i = 1; i < delta; i++) {
+                if (squares[startLocation - i].isOccupied()) return false;
+            }
         } else {
-            return false;
-        }
-
-        int steps = delta / x;
-
-        for (int i = 1; i < steps; ++i) {
-            int index = (startLocation < endLocation) ? startLocation + (i * x) : startLocation - (i * x);
-            if (squares[index].isOccupied()) return false;
-        }
-
-        if (target->getName() == "Pawn") {
-            if (squares[endLocation].isOccupied()) return true;
-            else return false;
+            for (int i = 0; i < delta; i++) {
+                if (squares[startLocation + i].isOccupied()) return false;
+            }
         }
     }
 
