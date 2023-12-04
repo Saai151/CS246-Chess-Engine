@@ -338,7 +338,23 @@ void ComputerPlayer_2::move(vector<Square> boardState) {
         for (int move : all_moves) {
             if (validBoard(boardState, curr_piece, move)) {
                 // Check if the move puts the opposing king in check.
-                //      Still need to figure this out.
+                // Go through loop, find out index square of king.
+                int opposing_king_index = -1;
+                int original_square = curr_piece->getSquare();
+                for (Square s : boardState) {
+                    if (s.getOccupant()->getName() == "King" && s.getOccupant()->getPieceColor() != curr_piece->getPieceColor()) {
+                        opposing_king_index = s.getOccupant()->getSquare();
+                    }
+                }
+                // Move the piece to move.
+                curr_piece->move(move);
+                // try valid move to index of king 
+                if (!curr_piece->validMove(opposing_king_index)) { // it is not valid move to king.
+                    curr_piece->move(original_square); // Else, move it back to start location.
+                } else {
+                    return;
+                }
+                
                 // Check if the move captures another piece.
                 if (boardState[move].isOccupied()) {
                     curr_piece->move(move);
