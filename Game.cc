@@ -14,11 +14,6 @@ void Game::makeMove() {
         return;
     }
 
-    if (!validBoard){
-        std::cout << "Invalid move" << std::endl;
-        // reverse the move
-    }
-
     if (currentTurn == white) currentTurn = black;
     else currentTurn = white;
 
@@ -29,10 +24,6 @@ void Game::makeMove() {
     if (board->isStalemate()) {
         std::cout << "STALEMATE" << std::endl; 
     }
-}
-
-bool validBoard(){
-    return true;
 }
 
 Game::~Game() {
