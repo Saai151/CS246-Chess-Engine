@@ -46,7 +46,24 @@ bool Pawn::validMove(int targetSquare)
     }
 
 std::vector<int> Pawn::allMoves() {
-    return {}; // Not srue yet, might need a vector of pieces reprsenting the board
+    int currSquare = this->getSquare();
+    vector<int> moves = {currSquare + 8};
+    if (this->getPieceColor() == ChessColor::White){
+        moves.push_back(currSquare - 8);
+        moves.push_back(currSquare - 7);
+        moves.push_back(currSquare - 9);
+    } else{
+        moves.push_back(currSquare + 8);
+        moves.push_back(currSquare + 7);
+        moves.push_back(currSquare + 9);
+    }
+    if (this->getPieceColor() == ChessColor::White && isFirst){
+        moves.push_back(currSquare - 16);
+    }
+    if (this->getPieceColor() == ChessColor::Black && isFirst){
+        moves.push_back(currSquare + 16);
+    }
+
 }
 
 std::string Queen::printable() const
