@@ -48,15 +48,24 @@ int main(){
             std::string whitePlayerType, blackPlayerType;
             std::cin >> whitePlayerType >> blackPlayerType;
             
-            if (whitePlayerType != "human") {
+            if (whitePlayerType == "computer[1]") {
                 ComputerPlayer_1* newWhite = new ComputerPlayer_1(std::move(*white)); //change once more levels
+                                                                                      //are implemented.
+                delete white;
+                white = newWhite;
+            } else if (whitePlayerType == "computer[2]") {
+                ComputerPlayer_2* newWhite = new ComputerPlayer_2(std::move(*white)); //change once more levels
                                                                                       //are implemented.
                 delete white;
                 white = newWhite;
             }
 
-            if (blackPlayerType != "human") {
+            if (blackPlayerType == "computer[1]") {
                 ComputerPlayer_1* newBlack = new ComputerPlayer_1(std::move(*black));
+                delete black;
+                black = newBlack;
+            } else if (blackPlayerType == "computer[2]") {
+                ComputerPlayer_2* newBlack = new ComputerPlayer_2(std::move(*black));
                 delete black;
                 black = newBlack;
             }

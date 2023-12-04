@@ -47,4 +47,11 @@ class ComputerPlayer_1: public Player {
         void move(vector<Square> boardState) override;
 };
 
+class ComputerPlayer_2: public Player {
+    public:
+        ComputerPlayer_2(Player&& p);
+        ComputerPlayer_2(ChessColor c);
+        void move(vector<Square> boardState) override;
+};
+
 #endif
