@@ -279,26 +279,29 @@ ComputerPlayer_1::ComputerPlayer_1(Player&& p) : Player(std::move(p)) {}
 
 void ComputerPlayer_1::move(vector<Square> boardState) {
     std::vector<AbstractPiece*> copy_pieces = pieces;
+    srand(static_cast<unsigned int>(time(0)));
     while (copy_pieces.size() > 0) {
         int num_pieces = copy_pieces.size();
-        // generate random piece index
-        int rand_index = rand() % num_pieces;
-        AbstractPiece* curr_piece;
-        int index = 0;
-        for (AbstractPiece* cpy_p : copy_pieces) {
-            if (index == rand_index) {
-                curr_piece = cpy_p;
-                break;
-            }
-            index++;
-        }
+        int rand_index = rand() % num_pieces; // Generate random number
+        cout << "Random index: " << rand_index << endl;
+        AbstractPiece* curr_piece = copy_pieces[rand_index];
+        cout << "Name: " << curr_piece->getName() << endl;
+        // int index = 0;
+        // for (AbstractPiece* cpy_p : copy_pieces) {
+        //     if (index == rand_index) {
+        //         curr_piece = cpy_p;
+        //         break;
+        //     }
+        //     index++;
+        // }
         // generate all moves vector all moves.
         std::vector<int>all_moves = curr_piece->allMoves();
 
         for (int move : all_moves) {
             if (validBoard(boardState, curr_piece, move)) {
+                cout << "move: " << move << endl;
                 curr_piece->move(move);
-                cout << "Works" << endl;
+                //cout << "Works" << endl;
                 return;
             }
         }
@@ -306,5 +309,5 @@ void ComputerPlayer_1::move(vector<Square> boardState) {
         // Remove piece from cpy_pices array. And keep looking.
         copy_pieces.erase(copy_pieces.begin() + rand_index);
     }
-    cout << "Didn't work" << endl;
+    //cout << "Didn't work" << endl;
 }

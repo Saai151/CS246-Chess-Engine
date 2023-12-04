@@ -19,6 +19,7 @@ AbstractPiece* parsePieceSymbol(char p, ChessColor color, PieceRemovedObserver* 
 }
 
 int main(){
+    srand(static_cast<unsigned int>(time(0))); // for generating random computer moves.
     Player* white = new HumanPlayer(ChessColor::White);
     Player* black = new HumanPlayer(ChessColor::Black);
     Game* game = nullptr;

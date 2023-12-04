@@ -6,6 +6,8 @@
 #include "AbstractPiece.h"
 #include "Square.h"
 #include <cstdlib>
+#include <ctime>
+//#include <random>
 
 class Player: public PieceRemovedObserver {
     ChessColor c;
