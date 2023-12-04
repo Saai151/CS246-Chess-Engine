@@ -46,13 +46,14 @@ Player::Player(ChessColor c) : c{c}
 
 Player::Player(Player &&p) : c{p.getColor()}
 {
-    pieces = {};
+    std::vector<AbstractPiece*> pieces_ = {};
 
-    for (auto& newP : pieces) {
-        pieces.push_back(newP);
+    for (AbstractPiece *p : p.pieces) {
+        pieces_.push_back(p);
     }
-
+    cout << pieces_.size() << " CHECK" << endl;
     p.pieces.clear();
+    pieces = pieces_;
 }
 
 ChessColor Player::getColor()
@@ -113,9 +114,12 @@ ComputerPlayer_1::ComputerPlayer_1(Player &&p) : Player(std::move(p)) {}
 
 void ComputerPlayer_1::move(Board* b) {
     std::vector<int>piece_indexs = {};
-    for (int i = 0; i < pieces.size(); i++) {
+    int s = pieces.size();
+    for (int i = 0; i < s; i++) {
         piece_indexs.push_back(i);
     }
+
+
     while (piece_indexs.size() > 0) {
         int num_pieces = piece_indexs.size();
         int random_val = rand() % num_pieces; // Generate random number
@@ -128,9 +132,10 @@ void ComputerPlayer_1::move(Board* b) {
 
         //cout << "<ADE IT" << endl;
         std::vector<int>all_moves = curr_piece->allMoves();
-        //cout << "<ADE IT 2" << endl;
+        cout << "<ADE IT 2" << endl;
 
         for (int move : all_moves) {
+            std::cout << curr_piece->getSquare() << std::endl;
             if (b->isValidMove(curr_piece, curr_piece->getSquare(), move)) {
                 curr_piece->move(move);
                 return;
@@ -161,16 +166,17 @@ void ComputerPlayer_2::move(Board* board) {
         int num_pieces = copy_pieces.size();
         int rand_index = rand() % num_pieces; // Generate random number
         //cout << "Random index: " << rand_index << endl;
-        cout << "Name" << endl;
+        std::cout << "Name" << std::endl;
 
         AbstractPiece* curr_piece = copy_pieces[rand_index];
-        cout << "Name: " << curr_piece->getName() << endl;
+        std::cout << "Name: " << curr_piece->getName() << std::endl;
 
-        cout << "<ADE IT" << endl;
+        std::cout << "<ADE IT" << std::endl;
         std::vector<int>all_moves = curr_piece->allMoves();
-        cout << "<ADE IT 2" << endl;
+        std::cout << "<ADE IT 2" << std::endl;
 
         for (int move : all_moves) {
+            cout << move << endl;
             if (board->isValidMove(curr_piece, curr_piece->getSquare(), move)) {
                 // Check if the move puts the opposing king in check.
                 // Go through loop, find out index square of king.
