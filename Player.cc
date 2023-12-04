@@ -112,15 +112,18 @@ ComputerPlayer_1::ComputerPlayer_1(ChessColor c) : Player(c) {}
 ComputerPlayer_1::ComputerPlayer_1(Player &&p) : Player(std::move(p)) {}
 
 void ComputerPlayer_1::move(Board* b) {
-    std::vector<AbstractPiece*> copy_pieces = pieces;
-    
-    while (copy_pieces.size() > 0) {
-        int num_pieces = copy_pieces.size();
-        int rand_index = rand() % num_pieces; // Generate random number
+    std::vector<int>piece_indexs = {};
+    for (int i = 0; i < pieces.size(); i++) {
+        piece_indexs.push_back(i);
+    }
+    while (piece_indexs.size() > 0) {
+        int num_pieces = piece_indexs.size();
+        int random_val = rand() % num_pieces; // Generate random number
         //cout << "Random index: " << rand_index << endl;
-        
+        int rand_index = piece_indexs[random_val];
 
-        AbstractPiece* curr_piece = copy_pieces[rand_index];
+
+        AbstractPiece* curr_piece = pieces[rand_index];
        //cout << "Name: " << curr_piece->getName() << endl;
 
         //cout << "<ADE IT" << endl;
@@ -135,7 +138,7 @@ void ComputerPlayer_1::move(Board* b) {
         }
         // Else there are no valid moves for the given piece.
         // Remove piece from cpy_pices array. And keep looking.
-        copy_pieces.erase(copy_pieces.begin() + rand_index);
+        piece_indexs.erase(piece_indexs.begin() + random_val);
     }
 }
 
