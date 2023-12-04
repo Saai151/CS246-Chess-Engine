@@ -274,9 +274,37 @@ void HumanPlayer::move(vector<Square> boardState) {
     target->move(endLocation);
 }
 
-ComputerPlayer::ComputerPlayer(ChessColor c) : Player(c) {}
-ComputerPlayer::ComputerPlayer(Player&& p) : Player(std::move(p)) {}
+ComputerPlayer_1::ComputerPlayer_1(ChessColor c) : Player(c) {}
+ComputerPlayer_1::ComputerPlayer_1(Player&& p) : Player(std::move(p)) {}
 
-void ComputerPlayer::move(vector<Square> boardState) {
+void ComputerPlayer_1::move(vector<Square> boardState) {
+    std::vector<AbstractPiece*> copy_pieces = pieces;
+    while (copy_pieces.size() > 0) {
+        int num_pieces = copy_pieces.size();
+        // generate random piece index
+        int rand_index = rand() % num_pieces;
+        AbstractPiece* curr_piece;
+        int index = 0;
+        for (AbstractPiece* cpy_p : copy_pieces) {
+            if (index == rand_index) {
+                curr_piece = cpy_p;
+                break;
+            }
+            index++;
+        }
+        // generate all moves vector all moves.
+        std::vector<int>all_moves = curr_piece->allMoves();
 
+        for (int move : all_moves) {
+            if (validBoard(boardState, curr_piece, move)) {
+                curr_piece->move(move);
+                cout << "Works" << endl;
+                return;
+            }
+        }
+        // Else there are no valid moves for the given piece.
+        // Remove piece from cpy_pices array. And keep looking.
+        copy_pieces.erase(copy_pieces.begin() + rand_index);
+    }
+    cout << "Didn't work" << endl;
 }

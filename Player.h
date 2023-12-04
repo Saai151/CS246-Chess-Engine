@@ -5,6 +5,7 @@
 #include <iostream>
 #include "AbstractPiece.h"
 #include "Square.h"
+#include <cstdlib>
 
 class Player: public PieceRemovedObserver {
     ChessColor c;
@@ -37,10 +38,10 @@ class HumanPlayer: public Player {
         void move(vector<Square> boardState) override;
 };
 
-class ComputerPlayer: public Player {
+class ComputerPlayer_1: public Player {
     public:
-        ComputerPlayer(Player&& p);
-        ComputerPlayer(ChessColor c);
+        ComputerPlayer_1(Player&& p);
+        ComputerPlayer_1(ChessColor c);
         void move(vector<Square> boardState) override;
 };
 
