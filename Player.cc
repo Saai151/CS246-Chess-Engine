@@ -113,7 +113,9 @@ ComputerPlayer_1::ComputerPlayer_1(Player &&p) : Player(std::move(p)) {}
 
 void ComputerPlayer_1::move(Board* b) {
     std::vector<int>piece_indexs = {};
-    for (int i = 0; i < pieces.size(); i++) {
+    int s = pieces.size();
+    std::cout << s << endl;
+    for (int i = 0; i < s; i++) {
         piece_indexs.push_back(i);
     }
     while (piece_indexs.size() > 0) {
@@ -124,13 +126,14 @@ void ComputerPlayer_1::move(Board* b) {
 
 
         AbstractPiece* curr_piece = pieces[rand_index];
-       //cout << "Name: " << curr_piece->getName() << endl;
+       std::cout << "Name: " << curr_piece->getName();
 
         //cout << "<ADE IT" << endl;
         std::vector<int>all_moves = curr_piece->allMoves();
         //cout << "<ADE IT 2" << endl;
 
         for (int move : all_moves) {
+            std::cout << " Move: " << move << endl;
             if (b->isValidMove(curr_piece, curr_piece->getSquare(), move)) {
                 curr_piece->move(move);
                 return;
