@@ -17,6 +17,7 @@ class Board: public PieceMovedObserver {
     public:
         std::vector<Square> squares;
         Board(Player* white, Player* black, DisplayObserver* g);
+        Board(Board& b); //copy constructor
         void resetSquare(int index);
         void placePiece(AbstractPiece* piece, int square);
         bool isInCheck(ChessColor c);

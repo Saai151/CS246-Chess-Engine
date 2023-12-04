@@ -75,6 +75,11 @@ Board::Board(Player* white, Player* black, DisplayObserver* g) {
     squares[3].setOccupant(selectedPieces.back());
 }
 
+//copy constructor
+Board::Board(Board& b) {
+    this->squares = b.squares;
+}
+
 bool Board::isInCheck(ChessColor c) {
     AbstractPiece* king;
     for (auto& s : squares) {
