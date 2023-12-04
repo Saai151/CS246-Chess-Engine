@@ -292,6 +292,7 @@ std::vector<int> Bishop::allMoves() {
     return validMoves;}
 
 void AbstractPiece::move(int newIndex) {
+    std::cout << "HEREEEE, " << newIndex << std::endl;
     if (!validMove(newIndex)) throw std::invalid_argument("Invalid move 5");
     int previousSquareIndexCopy = previousSquareIndex;
     int squareIndexCopy = squareIndex;
