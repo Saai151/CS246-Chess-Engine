@@ -3,6 +3,7 @@
 #include "TextDisplay.h"
 #include <iostream>
 #include <string>
+#include <cstring>
 
 class EmptyDisplay: public DisplayObserver {
     void handleStateChange(Square* s) override {
@@ -12,10 +13,10 @@ class EmptyDisplay: public DisplayObserver {
 
 int main(){
     srand(static_cast<unsigned int>(time(0))); // for generating random computer moves.
-    Player* white = new HumanPlayer(ChessColor::White);
-    Player* black = new HumanPlayer(ChessColor::Black);
-    Player* oldWhite = nullptr;
-    Player* oldBlack = nullptr;
+    float whiteScore = 0;
+    float blackScore = 0;
+    Player* white = nullptr;
+    Player* black = nullptr;
     Game* game = nullptr;
     //Xwindow w = Xwindow();
     //GraphicsDisplay gd(w);
@@ -24,11 +25,21 @@ int main(){
     std::vector<DisplayObserver*> displays = {&td};
     DisplayAggregator allDisplays = DisplayAggregator(displays);
 
-    Board* board = new Board(white->pieces, black->pieces, &allDisplays);
+    Board* board = nullptr;
     std::string command;
 
     while (std::cin >> command) {
-        if (command == "setup") {
+        if (white == nullptr) {
+            white = new HumanPlayer(ChessColor::White);
+        }
+        if (black == nullptr) {
+            black = new HumanPlayer(ChessColor::Black);
+        }
+        if (board == nullptr) {
+            board = new Board(white->pieces, black->pieces, &allDisplays);
+        }
+
+        if (command == "setup" && game == nullptr) {
             board->reset();
             white->clearPieces();
             black->clearPieces();
@@ -102,16 +113,59 @@ int main(){
 
             game = new Game(white, black, board);
         } else if (command == "move") {
-            game->makeMove();
+            bool isOver = game->makeMove(&whiteScore, &blackScore);
+            if (isOver) {
+                delete game;
+                game = nullptr;
+
+                delete white;
+                white = nullptr;
+
+                delete black;
+                black = nullptr;
+
+                delete board;
+                board = nullptr;
+            }
+        } else if (command == "color") {
+            std::string t = "";
+            std::cin >> t;
+            if (t == "white") {
+                game->setTurn(ChessColor::White);
+            } else if (t == "black") {
+                game->setTurn(ChessColor::Black);
+            }
+        } else if (command == "resign") {
+            if (game->turn() == ChessColor::White) {
+                blackScore += 1;
+            } else {
+                whiteScore += 1;
+            }
+
+            delete game;
+            game = nullptr;
+
+            delete white;
+            white = nullptr;
+
+            delete black;
+            black = nullptr;
+
+            delete board;
+            board = nullptr;
         }
 
         allDisplays.render();
+    }
+
+    if (std::cin.eof()) {
+        std::cout << "Final Score:" << std::endl;
+        std::cout << "White: " << whiteScore << std::endl;
+        std::cout << "Black: " << blackScore << std::endl;
     }
 
     delete game;
     delete white;
     delete black;
     delete board;
-    delete oldBlack;
-    delete oldWhite;
 }

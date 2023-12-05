@@ -372,10 +372,8 @@ bool ComputerPlayer_3::canBeCaptured(AbstractPiece* curr_piece, Board* b) {
     //      is valid. If it is, then it can eat the current_piece. Then return true.
     for (Square s : b->squares) {
         if (s.isOccupied() && s.getOccupant()->getPieceColor() != curr_piece->getPieceColor()) {
-            for (int move : s.getOccupant()->allMoves()) {
-                if (b->isValidMove(s.getOccupant(), s.getOccupant()->getSquare(), curr_piece->getSquare())) {
-                    return true;
-                }
+            if (s.getOccupant()->validMove(curr_piece->getSquare()) && b->isValidMove(s.getOccupant(), s.getOccupant()->getSquare(), curr_piece->getSquare())) {
+                return true;
             }
         }
     }

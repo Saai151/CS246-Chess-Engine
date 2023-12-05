@@ -9,6 +9,7 @@ class Game {
 
     public:
         Game(Player* white, Player* black, Board* board);
-        void makeMove();
-        ~Game();
+        bool makeMove(float* whiteScore, float* blackScore);
+        ChessColor turn();
+        void setTurn(ChessColor c);
 };

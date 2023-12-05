@@ -6,33 +6,45 @@ Game::Game(Player* white, Player* black, Board* board) : white{white}, black{bla
     black->attachBoardToPieces(board);
 }
 
-void Game::makeMove() {
+ChessColor Game::turn() {
+    return this->currentTurn->getColor();
+}
+
+void Game::setTurn(ChessColor c) {
+    if (c == ChessColor::White) {
+        this->currentTurn = white;
+    } else {
+        this->currentTurn = black;
+    }
+}
+
+bool Game::makeMove(float* whiteScore, float* blackScore) {
     cout << ((currentTurn->getColor() == ChessColor::Black) ? "Black" : "White") << endl;
     if (board->isStalemate(currentTurn->getColor())) {
+        *blackScore += 0.5;
+        *whiteScore += 0.5;
         std::cout << "STALEMATE" << std::endl; 
-        return;
+        return true;
     }
     try {
         currentTurn->move(board);
     } catch (std::invalid_argument& e) {
         std::cout << "INVALID MOVE: " << e.what() << std::endl;
-        return;
+        return false;
     }
 
     if (currentTurn == white) currentTurn = black;
     else currentTurn = white;
 
    if (board->isCheckmate(currentTurn->getColor())) {
-       std::cout << (currentTurn->getColor() == ChessColor::White ? "White" : "Black") << " IS IN CHECKMATE" << std::endl; 
+        std::cout << (currentTurn->getColor() == ChessColor::White ? "White" : "Black") << " IS IN CHECKMATE" << std::endl; 
+        if (currentTurn->getColor() == ChessColor::White) {
+            *blackScore += 1;
+        } else {
+            *whiteScore += 1;
+        }
+        return true;
    }
 
-    if (board->isStalemate(currentTurn->getColor())) {
-        std::cout << "STALEMATE" << std::endl; 
-    }
-}
-
-Game::~Game() {
-    //delete white;
-    //delete black;
-    //delete board;
+   return false;
 }

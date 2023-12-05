@@ -1,7 +1,7 @@
 #include "Square.h"
 
 Square::Square(Location location, ChessColor squareColor, AbstractPiece* occupant, DisplayAggregator* g)
-            : occupant{occupant}, location{location}, squareColor{squareColor}, g{g} {
+            : location{location}, squareColor{squareColor}, g{g}, occupant{occupant} {
         g->handleStateChange(this);
 }
 

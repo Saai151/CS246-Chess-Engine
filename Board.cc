@@ -371,9 +371,9 @@ bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocatio
         }
 
         for (auto& s : squares) {
-            if (startLocation > endLocation)
+            if (startLocation > endLocation) {
                 if (s.isOccupied() && s.getColor() == captureColor && s.getOccupant()->validMove(startLocation - delta) && isValidMove(s.getOccupant(), s.getLocation().getIndex(), startLocation - delta)) return false;
-            else {
+            } else {
                 if (s.isOccupied() && s.getColor() == captureColor && s.getOccupant()->validMove(startLocation + delta) && isValidMove(s.getOccupant(), s.getLocation().getIndex(), startLocation + delta)) return false;
             }
         }
@@ -387,7 +387,6 @@ bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocatio
     }
 
     if (target->getName() == "King"){
-        int previous = target->getPreviousSquare();
         std::vector<Square> boardState = squares;
         boardState[endLocation].setOccupant(target);
         //target->move(endLocation);
