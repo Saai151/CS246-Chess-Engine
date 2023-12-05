@@ -8,10 +8,10 @@ Game::Game(Player* white, Player* black, Board* board) : white{white}, black{bla
 
 void Game::makeMove() {
     cout << ((currentTurn->getColor() == ChessColor::Black) ? "Black" : "White") << endl;
-    // if (board->isStalemate(currentTurn->getColor())) {
-    //     std::cout << "STALEMATE" << std::endl; 
-    //     return;
-    // }
+    if (board->isStalemate(currentTurn->getColor())) {
+        std::cout << "STALEMATE" << std::endl; 
+        return;
+    }
     try {
         currentTurn->move(board);
     } catch (std::invalid_argument& _) {
