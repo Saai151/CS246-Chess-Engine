@@ -153,9 +153,11 @@ bool Board::isCheckmate(ChessColor c) {
 }
 
 bool Board::isStalemate(ChessColor current_colour) {
-    if (isInCheck(ChessColor::White).size() || isInCheck(ChessColor::Black).size()) return false;
-
-    for (auto& s : squares) {
+    cout << "in stalemate" << endl;
+    if (isInCheck(current_colour).size() > 0) return false;
+    
+    cout << "oin" << endl;
+    for (Square s : squares) {
         if (s.isOccupied() && s.getColor() == current_colour) {
             for (int move : s.getOccupant()->allMoves()) {
                 if (isValidMove(s.getOccupant(), s.getOccupant()->getSquare(), move)) {
