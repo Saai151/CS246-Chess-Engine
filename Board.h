@@ -23,7 +23,7 @@ class Board: public PieceMovedObserver {
         bool isCheckmate(ChessColor c);
         bool isStalemate();
         bool isValidMove(AbstractPiece* target, int startLocation, int endLocation);
-        bool handlePieceMoved(AbstractPiece* piece) override;
+        bool handlePieceMoved(AbstractPiece* piece, bool overrideValidation = false) override;
         friend class GraphicsDisplay;
 
         virtual ~Board();

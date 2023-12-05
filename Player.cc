@@ -100,11 +100,14 @@ void HumanPlayer::move(Board* b)
     AbstractPiece *target = nullptr;
     for (auto &p : pieces)
     {
-        if (p->getSquare() == startLocation)
+        std::cout << p->getSquare() << std::endl;
+        if (p->getSquare() == startLocation) {
             target = p;
+        }
     }
-    if (target == nullptr)
+    if (target == nullptr) {
         throw std::invalid_argument("Invalid start position");
+    }
 
     target->move(endLocation);
 }
@@ -204,7 +207,9 @@ void ComputerPlayer_2::move(Board* b) {
                 // Else check if move results in a check to the king:
                 // Move the piece to move.
                 ChessColor opposing_king_color = curr_piece->getPieceColor() == ChessColor::White ? ChessColor::Black : ChessColor::White;
-                curr_piece->move(move);
+                int original_square = curr_piece->getSquare();
+                int previous_square = curr_piece->getPreviousSquare();
+                //curr_piece->move(move);
                 // Loop through all the squares on the board checking the opposing king currently.
                 for (Square* s : b->isInCheck(opposing_king_color)) {
                     if (s->getOccupant()->getSquare() == move) { // Check if the piece we just moved is checking the king.
@@ -212,13 +217,14 @@ void ComputerPlayer_2::move(Board* b) {
                     }
                 }
                 // Else, the move did not result in a check. Revert move back to original square.
-                // INPUT REVERT FUNCTION HERE.
+                //curr_piece->revertLastMove(original_square,previous_square);
             }
         }
         // Else there are no valid moves for the given piece.
         // Remove piece from cpy_pices array. And keep looking.
         piece_indexs.erase(piece_indexs.begin() + random_val);
     }
+    std::cout << "HERE 33" << std::endl;
     backup->move(backup_move);
 }
 
@@ -322,16 +328,22 @@ void ComputerPlayer_3::move(Board* b) {
                 if (MoveRank < 2) {
                     // Move the piece to move.
                     ChessColor opposing_king_color = curr_piece->getPieceColor() == ChessColor::White ? ChessColor::Black : ChessColor::White;
+                    int original_square = curr_piece->getSquare();
+                    int previous_square = curr_piece->getPreviousSquare();
                     curr_piece->move(move);
                     // Loop through all the squares on the board checking the opposing king currently.
                     for (Square* s : b->isInCheck(opposing_king_color)) {
                         if (s->getOccupant()->getSquare() == move) { // Check if the piece we just moved is checking the king.
                             // move leads to a check. We already know backup move is worst han a rank 2 move. 
                             // Revert move back to original square;
+<<<<<<< HEAD
                             // 
                             // .....
 
 
+=======
+                            curr_piece->revertLastMove(original_square,previous_square);
+>>>>>>> 400846bdd7281c7c5429cba19eb88d0088538250
                             // Now set it as the backup.
                             backup = curr_piece;
                             backup_move = move; 
