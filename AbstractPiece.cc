@@ -171,7 +171,6 @@ std::vector<int> King::allMoves() {
 
     // Define increments for horizontal, vertical, and diagonal movements
     vector<int> kingOffsets = { -9, -8, -7, -1, 1, 7, 8, 9 }; // All directions
-
     for (size_t i = 0; i < 8; ++i) {
         int newSquare = this->getSquare() + kingOffsets[i];
         validMoves.push_back(newSquare);  
@@ -377,7 +376,6 @@ std::vector<int> Bishop::allMoves() {
 }
 
 void AbstractPiece::move(int newIndex) {
-    std::cout << "HEREEEE, " << newIndex << std::endl;
     if (!validMove(newIndex)) throw std::invalid_argument("Invalid move 5");
     int previousSquareIndexCopy = previousSquareIndex;
     int squareIndexCopy = squareIndex;

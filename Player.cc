@@ -103,10 +103,8 @@ void HumanPlayer::move(Board* b)
     int endLocation = parseLocation(end);
 
     AbstractPiece *target = nullptr;
-    std::cout << "LEN: " << pieces.size() << std::endl;
     for (auto &p : pieces)
     {
-        std::cout << p->getName() << " : LOC :" << p->getSquare() << " addr: " << p << std::endl;
         if (p->getSquare() == startLocation) {
             target = p;
         }
@@ -115,10 +113,6 @@ void HumanPlayer::move(Board* b)
         throw std::invalid_argument("Invalid start position");
     }
 
-    std::cout << "TARGET; " << target->getName() << std::endl;
-    for (auto& i : target->allMoves()) {
-        std::cout << i << std::endl;
-    }
     target->move(endLocation);
 }
 
@@ -138,14 +132,10 @@ void ComputerPlayer_1::move(Board* b) {
         int rand_index = piece_indexs[random_val];
 
         AbstractPiece* curr_piece = pieces[rand_index];
-        cout << curr_piece->getName() << endl;
         std::vector<int>all_moves = curr_piece->allMoves();
 
         for (int move : all_moves) {
-            cout << move << endl;
             if (b->isValidMove(curr_piece, curr_piece->getSquare(), move)) {
-                std::cout << "SELECTED: " << curr_piece->getName() << std::endl;
-                std::cout << "FROM: " << curr_piece->getSquare() << " , TO: " << move << std::endl;
                 curr_piece->move(move);
                 return;
             }
@@ -153,7 +143,6 @@ void ComputerPlayer_1::move(Board* b) {
         // Else there are no valid moves for the given piece.
         // Remove piece from cpy_pices array. And keep looking.
         piece_indexs.erase(piece_indexs.begin() + random_val);
-        cout << "erased" << endl;
     }
 }
 
@@ -181,7 +170,6 @@ bool ComputerPlayer_2::checkFromMove(AbstractPiece* curr_piece, Board* b, int mo
             black_pieces.push_back(new_p);
         }
     }
-    cout << "pieces successfully copied" << endl;
     // Generate cpy board.
     std::vector<DisplayObserver*> empty_displays = {};
     DisplayAggregator allDisplays = DisplayAggregator(empty_displays);
@@ -197,10 +185,7 @@ bool ComputerPlayer_2::checkFromMove(AbstractPiece* curr_piece, Board* b, int mo
     // Locate the curr_piece in the cpy board.
     for (Square s : cpy_board->squares) {
         if (s.isOccupied() && s.getOccupant()->getSquare() == curr_piece->getSquare()) {
-            std::cout << "BEFORE" << std::endl;
-            std::cout << "Name: " << s.getOccupant()->getName() << " Move: " << move << std::endl;
             s.getOccupant()->move(move); //make the move on the copy board.
-            std::cout << "AFter" << std::endl;
             break;
         }
     }
@@ -293,7 +278,6 @@ void ComputerPlayer_2::move(Board* b) {
         // Else there are no valid moves for the given piece.
         // Remove piece from cpy_pices array. And keep looking.
         piece_indexs.erase(piece_indexs.begin() + random_val);
-        cout << "erased once" << endl;
     }
     backup->move(backup_move);
 }
@@ -322,7 +306,6 @@ bool ComputerPlayer_3::checkFromMove(AbstractPiece* curr_piece, Board* b, int mo
             black_pieces.push_back(new_p);
         }
     }
-    cout << "pieces successfully copied" << endl;
     // Generate cpy board.
     std::vector<DisplayObserver*> empty_displays = {};
     DisplayAggregator allDisplays = DisplayAggregator(empty_displays);
@@ -338,10 +321,7 @@ bool ComputerPlayer_3::checkFromMove(AbstractPiece* curr_piece, Board* b, int mo
     // Locate the curr_piece in the cpy board.
     for (Square s : cpy_board->squares) {
         if (s.isOccupied() && s.getOccupant()->getSquare() == curr_piece->getSquare()) {
-            std::cout << "BEFORE" << std::endl;
-            std::cout << "Name: " << s.getOccupant()->getName() << " Move: " << move << std::endl;
             s.getOccupant()->move(move); //make the move on the copy board.
-            std::cout << "AFter" << std::endl;
             break;
         }
     }

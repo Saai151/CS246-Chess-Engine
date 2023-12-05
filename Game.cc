@@ -7,9 +7,9 @@ Game::Game(Player* white, Player* black, Board* board) : white{white}, black{bla
 }
 
 void Game::makeMove() {
-    /*if (board->isStalemate(currentTurn->getColor())) {
+    if (board->isStalemate(currentTurn->getColor())) {
         std::cout << "STALEMATE" << std::endl; 
-    }*/
+    }
     try {
         currentTurn->move(board);
     } catch (std::invalid_argument& e) {
