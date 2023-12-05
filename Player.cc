@@ -140,6 +140,7 @@ void ComputerPlayer_1::move(Board* b) {
         cout << "ALL MOVES END : " << endl;
 
         for (int move : all_moves) {
+            std::cout << move << std::endl;
             if (b->isValidMove(curr_piece, curr_piece->getSquare(), move)) {
                 std::cout << "DECIDED MOVE: " << move << ", CURR SQUARE: " << curr_piece->getSquare() << std::endl;
                 curr_piece->move(move);
