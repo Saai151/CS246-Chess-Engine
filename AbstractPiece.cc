@@ -1,8 +1,26 @@
 #include "AbstractPiece.h"
 
+AbstractPiece* parsePieceSymbol(char p, ChessColor color, PieceRemovedObserver* owner) {
+    if (tolower(p) == 'p') return new Pawn(color, owner);
+    else if (tolower(p) == 'q') return new Queen(color, owner);
+    else if (tolower(p) == 'k') return new King(color, owner);
+    else if (tolower(p) == 'n') return new Knight(color, owner);
+    else if (tolower(p) == 'r') return new Rook(color, owner);
+    else return new Bishop(color, owner);
+}
+
 AbstractPiece::~AbstractPiece()
 {
-    pieceRemovedObserver->handlePieceRemoved(this);
+    if (pieceRemovedObserver != nullptr) {
+        pieceRemovedObserver->handlePieceRemoved(this);
+    }
+}
+
+bool AbstractPiece::validMove(int targetSquare) {
+    for (auto& i : allMoves()) {
+        if (i == targetSquare) return true;
+    }
+    return false;
 }
 
 void AbstractPiece::revertLastMove(int newSquare, int prevSquare) {
@@ -14,6 +32,16 @@ void AbstractPiece::revertLastMove(int newSquare, int prevSquare) {
     squareIndex = newSquare;
     pieceMovedObserver->handlePieceMoved(this, true);
     previousSquareIndex = prevSquare;
+}
+
+AbstractPiece* Pawn::promote() {
+    std::string added;
+    std::cin >> added;
+
+    AbstractPiece* addedPiece = parsePieceSymbol(added[0], this->color, this->pieceRemovedObserver);
+
+    addedPiece->attachMoveObserver(this->pieceMovedObserver);
+    return addedPiece;
 }
 
 std::string Pawn::printable() const
@@ -28,39 +56,11 @@ std::string Pawn::printable() const
     }
 }
 
-bool Pawn::validMove(int targetSquare)
-{
-    int currSquare = this->getSquare();
-
-    int delta = targetSquare - currSquare;
-    //std::cout << this->isFirst << std::endl;
-
-    if (getPieceColor() == ChessColor::Black) {
-        if ((delta == 8 || delta == 16) && isFirst) {
-            return true;
-        } else if (delta == 8) {
-            return true;
-        } else if (delta == 7 || delta == 9) {
-            return true;
-        }
-    } else { // For white pawns
-        if ((delta == -8 || delta == -16) && isFirst) {
-            return true;
-        } else if (delta == -8) {
-            return true;
-        } else if (delta == -7 || delta == -9) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 std::vector<int> Pawn::allMoves() {
     //std::cout << this->getSquare() << " GET SQUARE" << std::endl;
     int currSquare = this->getSquare();
     vector<int> moves = {};
-    if (this->getPieceColor() == ChessColor::White){
+    if (this->getPieceColor() == ChessColor::White) {
         moves.push_back(currSquare - 8);
         moves.push_back(currSquare - 7);
         moves.push_back(currSquare - 9);
@@ -89,22 +89,6 @@ std::string Queen::printable() const
     {
         return "q";
     }
-}
-
-bool Queen::validMove(int targetSquare)
-{
-    int currSquare = this->getSquare();
-
-    // Calculate the difference between the target and current square
-    int delta = targetSquare - currSquare;
-
-    if ((delta % 8 == 0 && delta != 0) || (abs(delta) <= 7 && abs(delta) != 0) ||
-        (abs(delta) % 9 == 0 || abs(delta) % 7 == 0)) {
-        if (targetSquare >= 0 && targetSquare < 64) {
-            return true;
-        }
-    }
-    return false; 
 }
 
 std::vector<int> Queen::allMoves() {
@@ -174,16 +158,8 @@ std::string King::printable() const
     }
 }
 
-bool King::validMove(int targetSquare)
-{
-    for (auto& i : allMoves()) {
-        if (i == targetSquare) return true;
-    }
-    return false;
-}
-
 std::vector<int> King::allMoves() {
-    vector<int> validMoves;
+    vector<int> validMoves = {};
 
     // Define increments for horizontal, vertical, and diagonal movements
     vector<int> kingOffsets = { -9, -8, -7, -1, 1, 7, 8, 9 }; // All directions
@@ -218,36 +194,6 @@ std::string Knight::printable() const
     }
 }
 
-bool Knight::validMove(int targetSquare)
-{
-    std::vector<int> valid = {};
-    int currSquare = targetSquare;
-    int x = currSquare % 8;
-    int y = currSquare / 8;
-
-    if ((x % 8) == ((x + 2) % 8)) {
-        valid.push_back((x + 2) + ((y + 1) * 8));
-        valid.push_back((x + 2) + ((y - 1) * 8));
-    } else if ((x % 8) == ((x - 2) % 8)) {
-        valid.push_back((x - 2) + ((y + 1) * 8));
-        valid.push_back((x - 2) + ((y - 1) * 8));
-    } else if ((x % 8) == ((x - 1) % 8)) {
-        valid.push_back((x - 1) + ((y + 2) * 8));
-        valid.push_back((x - 1) + ((y - 2) * 8));
-    } else if ((x % 8) == ((x + 1) % 8)) {
-        valid.push_back((x + 1) + ((y + 1) * 8));
-        valid.push_back((x + 1) + ((y - 2) * 8));
-    }    
-
-    for (size_t i = 0; i < valid.size(); ++i)
-    {
-        if (targetSquare == valid[i])
-        {
-            return true;
-        }
-    }
-    return false;
-}
 std::vector<int> Knight::allMoves() {
 
     int currSquare = this->getSquare();
@@ -304,18 +250,6 @@ std::string Rook::printable() const
     }
 }
 
-bool Rook::validMove(int targetSquare) {
-    int currSquare = this->getSquare();
-    int delta = targetSquare - currSquare;
-
-    if ((delta % 8 == 0 && delta != 0) || (abs(delta) <= 7 && abs(delta) != 0)) {
-        if (targetSquare >= 0 && targetSquare < 64) {
-            return true;
-        }
-    }
-    return false;
-}
-
 std::vector<int> Rook::allMoves() {
     vector<int> validMoves = {};
 
@@ -363,18 +297,6 @@ std::string Bishop::printable() const
     }
 }
 
-bool Bishop::validMove(int targetSquare)
-{
-     int currSquare = this->getSquare();
-
-    int delta = targetSquare - currSquare;
-
-    if (abs(delta) % 9 == 0 || abs(delta) % 7 == 0) {
-        return true;      
-    }
-    return false;
-}
-
 std::vector<int> Bishop::allMoves() {
    vector<int> validMoves;
 
@@ -411,7 +333,7 @@ std::vector<int> Bishop::allMoves() {
 }
 
 void AbstractPiece::move(int newIndex) {
-    if (!validMove(newIndex)) throw std::invalid_argument("Invalid move 5");
+    if (!validMove(newIndex)) throw std::invalid_argument("Invalid move 5, " + this->getName());
 
     int previousSquareIndexCopy = previousSquareIndex;
     int squareIndexCopy = squareIndex;

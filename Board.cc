@@ -3,6 +3,7 @@
 bool isCastling(std::vector<Square> squares, int startLocation, int endLocation) {
     if (squares[startLocation].getOccupant()->getName() == "King" 
             && squares[startLocation].getOccupant()->getIsFirst()
+            && squares[endLocation].isOccupied()
             && squares[endLocation].getOccupant()->getName() == "Rook"
             && squares[endLocation].getOccupant()->getIsFirst()) {
         return true;
@@ -164,10 +165,8 @@ bool Board::isCheckmate(ChessColor c) {
 }
 
 bool Board::isStalemate(ChessColor current_colour) {
-    cout << "in stalemate" << endl;
     if (isInCheck(current_colour).size() > 0) return false;
     
-    cout << "oin" << endl;
     for (Square s : squares) {
         if (s.isOccupied() && s.getColor() == current_colour) {
             for (int move : s.getOccupant()->allMoves()) {
@@ -193,8 +192,6 @@ void Board::resetSquare(int index) {
 }
 
 bool Board::handlePieceMoved(AbstractPiece* piece, bool overrideValidation) {
-    std::cout << isValidMove(piece, piece->getPreviousSquare(), piece->getSquare()) << std::endl;
-
     if (overrideValidation || isValidMove(piece, piece->getPreviousSquare(), piece->getSquare())) {
 
         if (isCastling(squares, piece->getPreviousSquare(), piece->getSquare())) {
@@ -212,6 +209,22 @@ bool Board::handlePieceMoved(AbstractPiece* piece, bool overrideValidation) {
         } else {
             squares[piece->getPreviousSquare()].setOccupant(nullptr);
             squares[piece->getSquare()].setOccupant(piece);
+
+            if (piece->getName() == "Pawn" && ((7 - piece->getSquare() >= 0) || (63 - piece->getSquare()) <= 7)) {
+                Pawn* p = (Pawn*)this;
+                AbstractPiece* promotedPiece = p->promote();
+                int ind = piece->getSquare();
+                squares[ind].setOccupant(nullptr);
+
+                piece->detachRemovedObserver();
+                delete piece;
+                piece = promotedPiece;
+                squares[ind].setOccupant(piece);
+                std::cout << squares[ind].getOccupant()->getName() << " : " << squares[ind].getOccupant()->getSquare() << std::endl;
+                std::cout << piece << " Addr" << std::endl;
+                std::cout << squares[ind].getOccupant() << " Addr 2" << std::endl;
+            } 
+
             return true;
         }
     }

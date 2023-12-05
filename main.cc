@@ -10,15 +10,6 @@ class EmptyDisplay: public DisplayObserver {
     }
 };
 
-AbstractPiece* parsePieceSymbol(char p, ChessColor color, PieceRemovedObserver* owner) {
-    if (tolower(p) == 'p') return new Pawn(color, owner);
-    else if (tolower(p) == 'q') return new Queen(color, owner);
-    else if (tolower(p) == 'k') return new King(color, owner);
-    else if (tolower(p) == 'n') return new Knight(color, owner);
-    else if (tolower(p) == 'r') return new Rook(color, owner);
-    else return new Bishop(color, owner);
-}
-
 int main(){
     srand(static_cast<unsigned int>(time(0))); // for generating random computer moves.
     Player* white = new HumanPlayer(ChessColor::White);
@@ -73,12 +64,14 @@ int main(){
             if (whitePlayerType == "computer[1]") {
                 ComputerPlayer_1* newWhite = new ComputerPlayer_1(std::move(*white)); //change once more levels
                                                                                       //are implemented.
-                oldWhite = white;
+                delete white;
+                //oldWhite = white;
                 white = newWhite;
             } else if (whitePlayerType == "computer[2]") {
                 ComputerPlayer_2* newWhite = new ComputerPlayer_2(std::move(*white)); //change once more levels
                                                                                       //are implemented.
-                oldWhite = white;
+                delete white;
+                //oldWhite = white;
                 white = newWhite;
             } else if (whitePlayerType == "computer[3]") {
                 ComputerPlayer_3* newWhite = new ComputerPlayer_3(std::move(*white)); //change once more levels
@@ -90,12 +83,14 @@ int main(){
             if (blackPlayerType == "computer[1]") {
                 ComputerPlayer_1* newBlack = new ComputerPlayer_1(std::move(*black));
                 
-                oldBlack = black;
+                delete black;
+                //oldBlack = black;
                 black = newBlack;
             } else if (blackPlayerType == "computer[2]") {
                 ComputerPlayer_2* newBlack = new ComputerPlayer_2(std::move(*black));
 
-                oldBlack = black;
+                delete black;
+                //oldBlack = black;
                 black = newBlack;
             } else if (blackPlayerType == "computer[3]") {
                 ComputerPlayer_3* newBlack = new ComputerPlayer_3(std::move(*black));
