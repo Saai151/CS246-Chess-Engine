@@ -9,6 +9,7 @@
 
 using namespace std;
 
+
 class PieceRemovedObserver;
 class PieceMovedObserver;
 
@@ -29,14 +30,24 @@ protected:
 
 public:
     AbstractPiece(ChessColor color, std::string name, PieceRemovedObserver *pieceRemovedObserver) : color{color}, name{name}, pieceRemovedObserver{pieceRemovedObserver} {}
-    AbstractPiece(const AbstractPiece &other);
+    AbstractPiece(AbstractPiece& p);
 
     bool getIsFirst() const {
         return isFirst;
     }
 
+    PieceRemovedObserver* detachRemovedObserver() {
+        PieceRemovedObserver* p = this->pieceRemovedObserver;
+        this->pieceRemovedObserver = nullptr;
+        return p;
+    }
+
     void hasMoved() {
         isFirst = false;
+    }
+
+    void attachPieceRemovedObserver(PieceRemovedObserver* p) {
+        this->pieceRemovedObserver = p;
     }
 
     ChessColor getPieceColor() const
@@ -74,9 +85,12 @@ public:
     
     virtual ~AbstractPiece();
     virtual std::string printable() const = 0;
-    virtual bool validMove(int targetSquare) = 0;
+    virtual bool validMove(int targetSquare);
     virtual std::vector<int> allMoves() = 0;
 };
+
+AbstractPiece* parsePieceSymbol(char p, ChessColor color, PieceRemovedObserver* owner);
+AbstractPiece* parsePieceSymbolAndCopy(char p, AbstractPiece* toCopy);
 
 class PieceRemovedObserver
 {
@@ -95,10 +109,10 @@ class Pawn : public AbstractPiece
 
     public:
         Pawn(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Pawn", pieceRemovedObserver) {}
+        Pawn(AbstractPiece& p) : AbstractPiece(p) {};
 
         std::string printable() const override;
         std::vector<int> allMoves() override;
-        bool validMove(int targetSquare) override;
 };
 
 
@@ -107,51 +121,50 @@ class Queen : public AbstractPiece
 {
     public:
         Queen(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Queen", pieceRemovedObserver) {}
+        Queen(AbstractPiece& p) : AbstractPiece(p) {}; 
 
         std::string printable() const override;
         std::vector<int> allMoves() override;
-        bool validMove(int targetSquare) override;
 };
 
 class King : public AbstractPiece
 {
     public:
         King(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "King", pieceRemovedObserver) {}
+        King(AbstractPiece& p) : AbstractPiece(p) {}; 
 
         std::string printable() const override;
         std::vector<int> allMoves() override;
-        bool validMove(int targetSquare) override;
 };
 
 class Knight : public AbstractPiece
 {
     public:
         Knight(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Knight", pieceRemovedObserver) {}
+        Knight(AbstractPiece& p) : AbstractPiece(p) {}; 
 
         std::string printable() const override;
         std::vector<int> allMoves() override;
-        bool validMove(int targetSquare) override;
-
 };
 
 class Rook : public AbstractPiece
 {
     public:
         Rook(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Rook", pieceRemovedObserver) {}
+        Rook(AbstractPiece& p) : AbstractPiece(p) {}; 
 
         std::string printable() const override;
         std::vector<int> allMoves() override;
-        bool validMove(int targetSquare) override;
 };
 
 class Bishop : public AbstractPiece
 {
 public:
     Bishop(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Bishop", pieceRemovedObserver) {}
+    Bishop(AbstractPiece& p) : AbstractPiece(p) {}; 
 
     std::string printable() const override;
     std::vector<int> allMoves() override;
-    bool validMove(int targetSquare) override;
 };
 
 #endif

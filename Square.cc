@@ -25,6 +25,10 @@ void Square::reset() {
     g->handleStateChange(this);
 }
 
+void Square::refresh() {
+    g->handleStateChange(this);
+}
+
 void Square::setOccupant(AbstractPiece* occupant) {
     if (occupant != nullptr) {
         if (occupant->getSquare() == -1) occupant->setSquare(location.getIndex());
