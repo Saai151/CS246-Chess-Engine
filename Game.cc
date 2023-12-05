@@ -7,6 +7,17 @@ Game::Game(Player* white, Player* black, Board* board) : white{white}, black{bla
 }
 
 void Game::makeMove() {
+<<<<<<< HEAD
+    cout << ((currentTurn->getColor() == ChessColor::Black) ? "Black" : "White") << endl;
+    // if (board->isStalemate(currentTurn->getColor())) {
+    //     std::cout << "STALEMATE" << std::endl; 
+    //     return;
+    // }
+    try {
+        currentTurn->move(board);
+    } catch (std::invalid_argument& _) {
+        std::cout << "INVALID MOVE 2" << std::endl;
+=======
     /*if (board->isStalemate(currentTurn->getColor())) {
         std::cout << "STALEMATE" << std::endl; 
     }*/
@@ -14,6 +25,7 @@ void Game::makeMove() {
         currentTurn->move(board);
     } catch (std::invalid_argument& e) {
         std::cout << "INVALID MOVE: " << e.what() << std::endl;
+>>>>>>> 7a3505ba711c03ed763a27aa291ceeff007c2903
         return;
     }
 
