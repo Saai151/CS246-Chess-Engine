@@ -20,13 +20,13 @@ void Game::makeMove() {
     if (currentTurn == white) currentTurn = black;
     else currentTurn = white;
 
-  //  if (board->isCheckmate(currentTurn->getColor())) {
-  //      std::cout << (currentTurn->getColor() == ChessColor::White ? "White" : "Black") << " IS IN CHECKMATE" << std::endl; 
-  //  }
+   if (board->isCheckmate(currentTurn->getColor())) {
+       std::cout << (currentTurn->getColor() == ChessColor::White ? "White" : "Black") << " IS IN CHECKMATE" << std::endl; 
+   }
 
-    // if (board->isStalemate(currentTurn->getColor())) {
-    //     std::cout << "STALEMATE" << std::endl; 
-    // }
+    if (board->isStalemate(currentTurn->getColor())) {
+        std::cout << "STALEMATE" << std::endl; 
+    }
 }
 
 Game::~Game() {
