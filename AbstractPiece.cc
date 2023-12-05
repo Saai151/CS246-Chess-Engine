@@ -6,12 +6,10 @@ AbstractPiece::~AbstractPiece()
 }
 
 void AbstractPiece::revertLastMove(int newSquare, int prevSquare) {
-    if (this->getName() == "Pawn") {
-        Pawn* p = (Pawn*)this;
-        if (abs(squareIndex - previousSquareIndex) == 16) {
-            p->reset();
-        }
+    if (this->lastMoveWasFirstMove) {
+        this->isFirst = true;
     }
+
     previousSquareIndex = squareIndex;
     squareIndex = newSquare;
     pieceMovedObserver->handlePieceMoved(this, true);
@@ -38,7 +36,6 @@ bool Pawn::validMove(int targetSquare)
 
     if (getPieceColor() == ChessColor::Black) {
         if ((delta == 8 || delta == 16) && isFirst) {
-            isFirst = false; // Set isFirst to false after the initial move
             return true;
         } else if (delta == 8) {
             return true;
@@ -47,7 +44,6 @@ bool Pawn::validMove(int targetSquare)
         }
     } else { // For white pawns
         if ((delta == -8 || delta == -16) && isFirst) {
-            isFirst = false; // Set isFirst to false after the initial move
             return true;
         } else if (delta == -8) {
             return true;
@@ -414,5 +410,12 @@ void AbstractPiece::move(int newIndex) {
         previousSquareIndex = previousSquareIndexCopy;
         squareIndex = squareIndexCopy;
         throw std::invalid_argument("Invalid move 4");
+    }
+
+    if (isFirst) {
+        isFirst = false;
+        lastMoveWasFirstMove = true;
+    } else {
+        lastMoveWasFirstMove = false;
     }
 }

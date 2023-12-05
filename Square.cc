@@ -32,6 +32,7 @@ void Square::setOccupant(AbstractPiece* occupant) {
     }
 
     this->occupant = occupant;
+
     g->handleStateChange(this);
 }
 

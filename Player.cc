@@ -44,6 +44,10 @@ Player::Player(ChessColor c) : c{c}
     }
 }
 
+void Player::clearPieces() {
+    pieces.clear();
+}
+
 Player::Player(Player &&p) : c{p.getColor()}
 {
     std::vector<AbstractPiece*> pieces_ = {};
@@ -108,7 +112,10 @@ void HumanPlayer::move(Board* b)
         throw std::invalid_argument("Invalid start position");
     }
 
+    int t1 = target->getSquare();
+    int t2 = target->getPreviousSquare();
     target->move(endLocation);
+    target->revertLastMove(t1, t2);
 }
 
 ComputerPlayer_1::ComputerPlayer_1(ChessColor c) : Player(c) {}

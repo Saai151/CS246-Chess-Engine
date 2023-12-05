@@ -37,21 +37,35 @@ int main(){
     std::string command;
 
     while (std::cin >> command) {
-        if (command == "+") {
-            std::string piece, location;
-            std::cin >> piece >> location;
+        if (command == "setup") {
+            board->reset();
+            white->clearPieces();
+            black->clearPieces();
+            std::string setupCommand = "";
+            while (std::cin >> setupCommand) {
+                if (setupCommand == "+") {
+                    std::string piece, location;
+                    std::cin >> piece >> location;
 
-            ChessColor color;
-            Player* owner;
-            AbstractPiece* newPiece;
+                    ChessColor color;
+                    Player* owner;
+                    AbstractPiece* newPiece;
 
-            isupper(piece[0]) ? color = ChessColor::White : color = ChessColor::Black;
-            isupper(piece[0]) ? owner = white : owner = black;
+                    isupper(piece[0]) ? color = ChessColor::White : color = ChessColor::Black;
+                    isupper(piece[0]) ? owner = white : owner = black;
 
-            newPiece = parsePieceSymbol(piece[0], color, owner);
-            owner->addPiece(newPiece);
-            board->placePiece(newPiece, parseLocation(location));
-            
+                    newPiece = parsePieceSymbol(piece[0], color, owner);
+                    owner->addPiece(newPiece);
+                    board->placePiece(newPiece, parseLocation(location));
+                } else if (setupCommand == "-") {
+                    std::string location;
+                    std::cin >> location;
+                    int parsedLocation = parseLocation(location);
+                    board->resetSquare(parsedLocation);
+                } else if (setupCommand == "done") {
+                    break;
+                }
+            }
         } else if (command == "game") {
             std::string whitePlayerType, blackPlayerType;
             std::cin >> whitePlayerType >> blackPlayerType;
@@ -81,13 +95,6 @@ int main(){
             }
 
             game = new Game(white, black, board);
-        } else if (command == "done") {
-            break;
-        } else if (command == "-") {
-            std::string location;
-            std::cin >> location;
-            int parsedLocation = parseLocation(location);
-            board->resetSquare(parsedLocation);
         } else if (command == "move") {
             game->makeMove();
         }

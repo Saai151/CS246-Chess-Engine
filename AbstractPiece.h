@@ -21,12 +21,18 @@ protected:
     int squareIndex = -1;
     int previousSquareIndex = -1;
     int prevPrevSquareIndex = -1;
+    bool isFirst = true;
+    bool lastMoveWasFirstMove = false;
     std::string name;
     PieceRemovedObserver *pieceRemovedObserver;
     PieceMovedObserver *pieceMovedObserver;
 
 public:
     AbstractPiece(ChessColor color, std::string name, PieceRemovedObserver *pieceRemovedObserver) : color{color}, name{name}, pieceRemovedObserver{pieceRemovedObserver} {}
+
+    bool getIsFirst() const {
+        return isFirst;
+    }
 
     ChessColor getPieceColor() const
     {
@@ -81,7 +87,6 @@ public:
 
 class Pawn : public AbstractPiece
 {
-    bool isFirst = true;
 
     public:
         Pawn(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Pawn", pieceRemovedObserver) {}
@@ -89,9 +94,6 @@ class Pawn : public AbstractPiece
         std::string printable() const override;
         std::vector<int> allMoves() override;
         bool validMove(int targetSquare) override;
-        void reset() {
-            isFirst = true;
-        }
 };
 
 

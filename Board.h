@@ -18,6 +18,7 @@ class Board: public PieceMovedObserver {
         std::vector<Square> squares;
         Board(std::vector<AbstractPiece*> white, std::vector<AbstractPiece*> black, DisplayAggregator* g);
         void resetSquare(int index);
+        void reset();
         void placePiece(AbstractPiece* piece, int square);
         std::vector<Square*> isInCheck(ChessColor c);
         bool isCheckmate(ChessColor c);

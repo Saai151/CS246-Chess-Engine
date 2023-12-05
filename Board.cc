@@ -87,6 +87,12 @@ Board::Board(std::vector<AbstractPiece*> white, std::vector<AbstractPiece*> blac
     squares[3].setOccupant(selectedPieces.back());
 }
 
+void Board::reset() {
+    for (auto& s : squares) {
+        s.setOccupant(nullptr);
+    }
+}
+
 bool Board::isPieceCheckingTheKing(Square* s, AbstractPiece* king, ChessColor c) {
     return s->isOccupied() 
         && s->getOccupant()->getPieceColor() != c 
@@ -173,7 +179,6 @@ bool Board::handlePieceMoved(AbstractPiece* piece, bool overrideValidation) {
     if (overrideValidation || isValidMove(piece, piece->getPreviousSquare(), piece->getSquare())) {
         squares[piece->getPreviousSquare()].setOccupant(nullptr);
         std::cout << piece->getSquare() << std::endl;
-        std::cout << "MADE IT HERE" << std::endl;
         squares[piece->getSquare()].setOccupant(piece); // broken
         return true;
     }
@@ -199,6 +204,15 @@ bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocatio
     }
 
     if (target->getName() == "Knight") return true;
+
+    /* CHECK FOR CASTLING */
+    if (squares[startLocation].getOccupant()->getName() == "King" 
+            && startLocation == 60 
+            && squares[startLocation].getOccupant()->getIsFirst()
+            && squares[endLocation].getOccupant()->getName() == "Rook"
+            && startLocation == 63 || startLocation) {
+        
+    }
 
     int delta = abs(endLocation - startLocation);
     if (delta % 9 == 0 || delta % 7 == 0) {
