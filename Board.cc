@@ -300,7 +300,7 @@ bool Board::handlePieceMoved(AbstractPiece* piece, bool overrideValidation) {
     cout << "handle piece moved" << endl;
     cout << "previous: " << piece->getPreviousSquare() << endl;
     cout << "squareindex " << piece->getSquare() << endl;
-    if (overrideValidation || isValidMove(piece, piece->getPreviousSquare(), piece->getSquare())) {\
+    if (overrideValidation || isValidMove(piece, piece->getPreviousSquare(), piece->getSquare())) {
         cout << "MADE IT HERE" << endl;
         if (isCastling(squares, piece->getPreviousSquare(), piece->getSquare())) {
             cout << "Castiling is true" << endl;

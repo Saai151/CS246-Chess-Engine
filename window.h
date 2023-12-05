@@ -26,7 +26,8 @@ class Xwindow {
   void fillRectangle(int x, int y, int width, int height, int colour=Black);
 
   // Draws a string
-  void drawString(int x, int y, std::string msg);
+  void drawString(int x, int y, std::string msg, int colour, const std::string& fontName);
+  void setUpFont(const std::string& fontname);
 };
 
 class GraphicsDisplay: public DisplayObserver {

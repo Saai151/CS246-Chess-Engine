@@ -66,16 +66,22 @@ void Xwindow::fillRectangle(int x, int y, int width, int height, int colour) {
   XSetForeground(d, gc, colours[Black]);
 }
 
-void Xwindow::drawString(int x, int y, string msg) {
-  // Load a bold font with a larger size
-  XFontStruct *fontInfo;
-  fontInfo = XLoadQueryFont(d, "lucidasanstypewriter-bold-24"); // This is an example font name
-  // Set the font for the graphics context
-  XSetFont(d, DefaultGC(d, s), fontInfo->fid);
-  XDrawString(d, w, DefaultGC(d, s), x, y, msg.c_str(), msg.length());
-  // Free the font structure when done
-  XFreeFont(d, fontInfo);
-}
+void Xwindow::setUpFont(const std::string& fontname) {
+    XFontStruct * font = XLoadQueryFont(d, fontname.c_str() );
+    if (! font ) {
+        cerr << "unable to load font " << fontname << ": using fixed" << endl;
+        font = XLoadQueryFont(d, "lucidasans-12");
+    }
+    XSetFont(d, gc, font->fid);
+} // Xwindow::setUpFont
+
+void Xwindow::drawString(int x, int y, string msg, int colour, const std::string& fontName) {
+    unsigned long prevCol = 1;
+    XSetForeground(d, gc, colours[colour]);
+    setUpFont(fontName);
+    XDrawString(d, w, gc, x, y, msg.c_str(), msg.length());
+    XSetForeground(d, gc, prevCol);
+} // Xwindow::drawString
 
 std::vector<int> GraphicsDisplay::map(Square* s) { 
   int cell_len = 500/gridSize; 
@@ -111,7 +117,8 @@ void GraphicsDisplay::handleStateChange(Square* s) {
 
     if (s->isOccupied()) {
       string message = s->getOccupant()->printable();
-      w.drawString(x + (len/2 - 5), y + len - (len / 2 - 5), message);
+      string font = "-adobe-helvetica-bold-o-normal--10-100-75-75-p-60-iso8859-15";
+      w.drawString(x + (len/2 - 5), y + len - (len / 2 - 5), message, 1, font);
     }
 }
 
