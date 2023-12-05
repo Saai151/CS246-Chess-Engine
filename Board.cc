@@ -1,5 +1,17 @@
 #include "Board.h"
 
+bool isCastling(std::vector<Square> squares, int startLocation, int endLocation) {
+    if (squares[startLocation].getOccupant()->getName() == "King" 
+            && squares[startLocation].getOccupant()->getIsFirst()
+            && squares[endLocation].isOccupied()
+            && squares[endLocation].getOccupant()->getName() == "Rook"
+            && squares[endLocation].getOccupant()->getIsFirst()) {
+        return true;
+    }
+
+    return false;
+}
+
 std::vector<AbstractPiece*> getPieces(std::string name, std::vector<AbstractPiece*> pieces) {
     std::vector<AbstractPiece *> result;
 
@@ -171,10 +183,8 @@ bool Board::isCheckmate(ChessColor c) {
 }
 
 bool Board::isStalemate(ChessColor current_colour) {
-    cout << "in stalemate" << endl;
     if (isInCheck(current_colour).size() > 0) return false;
     
-    cout << "oin" << endl;
     for (Square s : squares) {
         if (s.isOccupied() && s.getOccupant()->getPieceColor() == current_colour) {
             cout << s.getOccupant()->getName() << endl;
@@ -210,10 +220,41 @@ bool Board::handlePieceMoved(AbstractPiece* piece, bool overrideValidation) {
     cout << "squareindex " << piece->getSquare();
 
     if (overrideValidation || isValidMove(piece, piece->getPreviousSquare(), piece->getSquare())) {
-        squares[piece->getPreviousSquare()].setOccupant(nullptr);
-        std::cout << piece->getSquare() << std::endl;
-        squares[piece->getSquare()].setOccupant(piece); // broken
-        return true;
+
+        if (isCastling(squares, piece->getPreviousSquare(), piece->getSquare())) {
+            AbstractPiece* temp_1 = squares[piece->getPreviousSquare()].getOccupant();
+            AbstractPiece* temp_2 = squares[piece->getSquare()].getOccupant();
+            
+            squares[piece->getSquare()].setOccupant(nullptr);
+            squares[piece->getPreviousSquare()].setOccupant(nullptr);
+
+            squares[piece->getSquare()].setOccupant(temp_1);
+            temp_1->hasMoved();
+
+            squares[piece->getPreviousSquare()].setOccupant(temp_2);
+            temp_2->hasMoved();
+        } else {
+            squares[piece->getPreviousSquare()].setOccupant(nullptr);
+            squares[piece->getSquare()].setOccupant(piece);
+
+            if (piece->getName() == "Pawn" && ((7 - piece->getSquare() >= 0) || (63 - piece->getSquare()) <= 7)) {
+                std::string added;
+                std::cin >> added;
+
+                AbstractPiece* addedPiece = parsePieceSymbolAndCopy(added[0], piece);
+                int ind = piece->getSquare();
+                squares[ind].setOccupant(nullptr);
+
+                piece->detachRemovedObserver();
+                delete piece;
+
+                piece = addedPiece;
+                squares[ind].setOccupant(piece);
+                std::cout << "ADDR: " << piece << std::endl;
+            } 
+
+            return true;
+        }
     }
     
     return false;
@@ -224,6 +265,7 @@ bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocatio
         return false;
     }
 
+    int delta = abs(endLocation - startLocation);
     ChessColor captureColor;
     if (target->getPieceColor() == ChessColor::Black){
         captureColor = ChessColor::White;
@@ -231,6 +273,17 @@ bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocatio
         captureColor = ChessColor::Black;
     }
 
+    if (isCastling(squares, startLocation, endLocation)) {
+        for (int i = 1; i < delta; i++) {
+            if (startLocation > endLocation) {
+                if (squares[startLocation - i].isOccupied()) return false;
+            } else {
+                if (squares[startLocation + i].isOccupied()) return false;
+            }
+        }
+       return true;
+        
+    }
 
     if (squares[endLocation].isOccupied() && squares[endLocation].getOccupant()->getPieceColor() != captureColor) {
         return false;
@@ -247,18 +300,9 @@ bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocatio
             return false;
         }
     }
+    
     if (target->getName() == "Knight") return true;
 
-    /* CHECK FOR CASTLING */
-    if (squares[startLocation].getOccupant()->getName() == "King" 
-            && startLocation == 60 
-            && squares[startLocation].getOccupant()->getIsFirst()
-            && squares[endLocation].getOccupant()->getName() == "Rook"
-            && startLocation == 63 || startLocation) {
-        
-    }
-
-    int delta = abs(endLocation - startLocation);
     if (delta % 9 == 0 || delta % 7 == 0) {
 
         int x;

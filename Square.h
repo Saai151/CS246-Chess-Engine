@@ -21,6 +21,7 @@ class Square {
         void setOccupant(AbstractPiece* occupant);
         void reset();
         bool isOccupied() const;
+        void refresh();
         AbstractPiece* getOccupant() const;
         std::string printable() const;
 };

@@ -53,6 +53,7 @@ Player::Player(Player &&p) : c{p.getColor()}
     std::vector<AbstractPiece*> pieces_ = {};
 
     for (AbstractPiece *p : p.pieces) {
+        p->attachPieceRemovedObserver(this);
         pieces_.push_back(p);
     }
 
@@ -102,8 +103,10 @@ void HumanPlayer::move(Board* b)
     int endLocation = parseLocation(end);
 
     AbstractPiece *target = nullptr;
+    std::cout << "LEN: " << pieces.size() << std::endl;
     for (auto &p : pieces)
     {
+        std::cout << p->getName() << " : LOC :" << p->getSquare() << " addr: " << p << std::endl;
         if (p->getSquare() == startLocation) {
             target = p;
         }
@@ -112,10 +115,11 @@ void HumanPlayer::move(Board* b)
         throw std::invalid_argument("Invalid start position");
     }
 
-    int t1 = target->getSquare();
-    int t2 = target->getPreviousSquare();
+    std::cout << "TARGET; " << target->getName() << std::endl;
+    for (auto& i : target->allMoves()) {
+        std::cout << i << std::endl;
+    }
     target->move(endLocation);
-    target->revertLastMove(t1, t2);
 }
 
 ComputerPlayer_1::ComputerPlayer_1(ChessColor c) : Player(c) {}
@@ -140,7 +144,12 @@ void ComputerPlayer_1::move(Board* b) {
         for (int move : all_moves) {
             cout << move << endl;
             if (b->isValidMove(curr_piece, curr_piece->getSquare(), move)) {
+<<<<<<< HEAD
                 
+=======
+                std::cout << "SELECTED: " << curr_piece->getName() << std::endl;
+                std::cout << "FROM: " << curr_piece->getSquare() << " , TO: " << move << std::endl;
+>>>>>>> 7a3505ba711c03ed763a27aa291ceeff007c2903
                 curr_piece->move(move);
                 return;
             }

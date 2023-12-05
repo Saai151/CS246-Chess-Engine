@@ -21,7 +21,6 @@ class Player: public PieceRemovedObserver {
         Player(ChessColor c);
 
         void addPiece(AbstractPiece* piece);
-        void addPieces(std::vector<AbstractPiece*> pieces);
         void clearPieces();
 
         void handlePieceRemoved(AbstractPiece* p) override;
