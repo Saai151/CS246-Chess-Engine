@@ -155,66 +155,68 @@ void ComputerPlayer_1::move(Board* b) {
 ComputerPlayer_2::ComputerPlayer_2(ChessColor c) : Player(c) {}
 ComputerPlayer_2::ComputerPlayer_2(Player &&p) : Player(std::move(p)) {}
 
-void ComputerPlayer_2::move(Board* board) {
+void ComputerPlayer_2::move(Board* b) {
     // How it works: 
     // Same functionality as ComputerPlayer_1 except for each valid move found, 
     // see if it checks the opposing king or captures a piece. If it does, complete
     // the move.
     // If no move is found that leads to a check or capture, choose the first piece and move that
     // is valid. i.e make the first random move available.
-    std::vector<AbstractPiece*> copy_pieces = pieces;
-    // For backup in case a better option is not found.
-    AbstractPiece* valid_piece;
-    int valid_move;
+    //std::cout << pieces.size() << " : SIZE" << std::endl;
+    std::vector<int>piece_indexs = {};
+    int s = pieces.size();
+    for (int i = 0; i < s; i++) {
+        piece_indexs.push_back(i);
+    }
+
+    // Initialize backup random piece and move;
+    AbstractPiece* backup;
+    int backup_move;
     
-    while (copy_pieces.size() > 0) {
-        int num_pieces = copy_pieces.size();
-        int rand_index = rand() % num_pieces; // Generate random number
+    while (piece_indexs.size() > 0) {
+        size_t num_pieces = piece_indexs.size();
+        int random_val = rand() % num_pieces; // Generate random number
         //cout << "Random index: " << rand_index << endl;
-        std::cout << "Name" << std::endl;
+        int rand_index = piece_indexs[random_val];
 
-        AbstractPiece* curr_piece = copy_pieces[rand_index];
-        std::cout << "Name: " << curr_piece->getName() << std::endl;
+        AbstractPiece* curr_piece = pieces[rand_index];
+        //std::cout << "Name: " << curr_piece->getName();
 
-        std::cout << "<ADE IT" << std::endl;
+        //cout << curr_piece->getName() << " -> DECIDED PIECE" << endl;
         std::vector<int>all_moves = curr_piece->allMoves();
-        std::cout << "<ADE IT 2" << std::endl;
 
         for (int move : all_moves) {
-            cout << move << endl;
-            if (board->isValidMove(curr_piece, curr_piece->getSquare(), move)) {
-                // Check if the move puts the opposing king in check.
-                // Go through loop, find out index square of king.
-                int opposing_king_index = -1;
-                int original_square = curr_piece->getSquare();
-                for (Square s : board->squares) {
-                    if (s.getOccupant()->getName() == "King" && s.getOccupant()->getPieceColor() != curr_piece->getPieceColor()) {
-                        opposing_king_index = s.getOccupant()->getSquare();
+            //std::cout << move << std::endl;
+            if (b->isValidMove(curr_piece, curr_piece->getSquare(), move)) {
+                //std::cout << "DECIDED MOVE: " << move << ", CURR SQUARE: " << curr_piece->getSquare() << std::endl;
+
+                //initialize backup moves;
+                backup = curr_piece;
+                backup_move = move;
+
+                // Check if move results in a check to the king:
+                // Move the piece to move.
+                ChessColor opposing_king_color = curr_piece->getPieceColor() == ChessColor::White ? ChessColor::Black : ChessColor::White;
+                curr_piece->move(move);
+                // Loop through all the squares on the board checking the opposing king currently.
+                for (Square* s : b->isInCheck(opposing_king_color)) {
+                    if (s->getOccupant()->getSquare() == move) { // Check if the piece we just moved is checking the king.
+                        return; // nothing is to be done, a move was just made that placed the opposing king in check.
                     }
                 }
-                // Move the piece to move.
-                curr_piece->move(move);
-                // try valid move to index of king 
-                if (!curr_piece->validMove(opposing_king_index)) { // it is not valid move to king.
-                    curr_piece->move(original_square); // You cannot move certain pieces backward. MUST FIX
-            // TODO FIX THIS   
-                } else {
-                    return;
-                }
+                // Else, the move did not result in a check. Revert move back to original square.
+                // INPUT REVERT FUNCTION HERE.
                 
                 // Check if the move captures another piece.
-                if (board->squares[move].isOccupied()) {
+                if (b->squares[move].isOccupied()) {
                     curr_piece->move(move);
                     return;
                 }
-                valid_piece = curr_piece;
-                valid_move = move;
             }
         }
         // Else there are no valid moves for the given piece.
         // Remove piece from cpy_pices array. And keep looking.
-        copy_pieces.erase(copy_pieces.begin() + rand_index);
+        piece_indexs.erase(piece_indexs.begin() + random_val);
     }
-    valid_piece->move(valid_move);
-    //cout << "Didn't work" << endl;
+    backup->move(backup_move);
 }
