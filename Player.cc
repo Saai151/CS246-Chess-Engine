@@ -169,12 +169,17 @@ bool ComputerPlayer_2::checkFromMove(AbstractPiece* curr_piece, Board* b, int mo
     std::vector<AbstractPiece*>black_pieces;
     for (Square s : b->squares) {
         if (s.isOccupied() && s.getOccupant()->getPieceColor() == ChessColor::White) {
-            white_pieces.push_back(s.getOccupant());
+            // Create copy;
+            AbstractPiece* new_p = parsePieceSymbolAndCopy(s.getOccupant()->printable()[0], s.getOccupant());
+            new_p->detachRemovedObserver();
+            white_pieces.push_back(new_p);
         } else if (s.isOccupied()) {
-            black_pieces.push_back(s.getOccupant());
+            AbstractPiece* new_p = parsePieceSymbolAndCopy(s.getOccupant()->printable()[0], s.getOccupant());
+            new_p->detachRemovedObserver();
+            black_pieces.push_back(new_p);
         }
     }
-
+    cout << "pieces successfully copied" << endl;
     // Generate cpy board.
     std::vector<DisplayObserver*> empty_displays = {};
     DisplayAggregator allDisplays = DisplayAggregator(empty_displays);
@@ -191,7 +196,10 @@ bool ComputerPlayer_2::checkFromMove(AbstractPiece* curr_piece, Board* b, int mo
     // Locate the curr_piece in the cpy board.
     for (Square s : cpy_board->squares) {
         if (s.getOccupant()->getSquare() == curr_piece->getSquare()) {
+            std::cout << "BEFORE" << std::endl;
+            std::cout << "Name: " << s.getOccupant()->getName() << " Move: " << move << std::endl;
             s.getOccupant()->move(move); //make the move on the copy board.
+            std::cout << "AFter" << std::endl;
             break;
         }
     }
@@ -204,6 +212,13 @@ bool ComputerPlayer_2::checkFromMove(AbstractPiece* curr_piece, Board* b, int mo
     }
 
     // Else it did not. Return false and delete copy board.
+    // Delete each piece.
+    for (AbstractPiece* p : white_pieces) {
+        delete p;
+    }
+    for (AbstractPiece* p : black_pieces) {
+        delete p;
+    }
     delete cpy_board;
     return false;
 }
@@ -254,24 +269,24 @@ void ComputerPlayer_2::move(Board* b) {
 
                 // Else check if move results in a check to the king:
                 // Move the piece to move.
-                // // TESTING NEW FUNCTION:
-                // if (checkFromMove(curr_piece, b, move)) {
-                //     curr_piece->move(move);
-                //     return;
-                // }
-
-                ChessColor opposing_king_color = curr_piece->getPieceColor() == ChessColor::White ? ChessColor::Black : ChessColor::White;
-                int original_square = curr_piece->getSquare();
-                int previous_square = curr_piece->getPreviousSquare();
-                curr_piece->move(move);
-                // Loop through all the squares on the board checking the opposing king currently.
-                for (Square* s : b->isInCheck(opposing_king_color)) {
-                    if (s->getOccupant()->getSquare() == move) { // Check if the piece we just moved is checking the king.
-                        return; // nothing is to be done, a move was just made that placed the opposing king in check.
-                    }
+                // TESTING NEW FUNCTION:
+                if (checkFromMove(curr_piece, b, move)) {
+                    curr_piece->move(move);
+                    return;
                 }
-                // Else, the move did not result in a check. Revert move back to original square.
-                curr_piece->revertLastMove(original_square,previous_square);
+
+                // ChessColor opposing_king_color = curr_piece->getPieceColor() == ChessColor::White ? ChessColor::Black : ChessColor::White;
+                // int original_square = curr_piece->getSquare();
+                // int previous_square = curr_piece->getPreviousSquare();
+                // curr_piece->move(move);
+                // // Loop through all the squares on the board checking the opposing king currently.
+                // for (Square* s : b->isInCheck(opposing_king_color)) {
+                //     if (s->getOccupant()->getSquare() == move) { // Check if the piece we just moved is checking the king.
+                //         return; // nothing is to be done, a move was just made that placed the opposing king in check.
+                //     }
+                // }
+                // // Else, the move did not result in a check. Revert move back to original square.
+                // curr_piece->revertLastMove(original_square,previous_square);
             }
         }
         // Else there are no valid moves for the given piece.

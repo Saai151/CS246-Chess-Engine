@@ -29,6 +29,10 @@ AbstractPiece::AbstractPiece(AbstractPiece& p) {
     this->color = p.getPieceColor();
     this->pieceMovedObserver = p.pieceMovedObserver;
     this->pieceRemovedObserver = p.pieceRemovedObserver;
+    this->name = p.getName();
+    this->squareIndex = p.getSquare();
+    this->previousSquareIndex = p.getPreviousSquare();
+    this->isFirst = p.getIsFirst();
 }
 
 bool AbstractPiece::validMove(int targetSquare) {
