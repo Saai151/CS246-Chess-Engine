@@ -128,8 +128,9 @@ void ComputerPlayer_1::move(Board* b) {
 
         AbstractPiece* curr_piece = pieces[rand_index];
         //std::cout << "Name: " << curr_piece->getName();
+       std::cout << "Name: " << curr_piece->getName() << endl;
 
-        cout << curr_piece->getName() << " -> DECIDED PIECE" << endl;
+        cout << curr_piece->getSquare() << " -> DECIDED PIECE index" << endl;
         std::vector<int>all_moves = curr_piece->allMoves();
 
         cout << "ALL MOVES START" << endl;
