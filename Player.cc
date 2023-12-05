@@ -113,26 +113,24 @@ ComputerPlayer_1::ComputerPlayer_1(ChessColor c) : Player(c) {}
 ComputerPlayer_1::ComputerPlayer_1(Player &&p) : Player(std::move(p)) {}
 
 void ComputerPlayer_1::move(Board* b) {
-    std::vector<int>piece_indexs = {};
-    int s = pieces.size();
-    for (int i = 0; i < s; i++) {
+    std::vector<size_t>piece_indexs = {};
+    size_t s = pieces.size();
+    for (size_t i = 0; i < s; i++) {
         piece_indexs.push_back(i);
     }
-
-
+    cout << "piece_index.size() = " << piece_indexs.size();
     while (piece_indexs.size() > 0) {
-        int num_pieces = piece_indexs.size();
+        size_t num_pieces = piece_indexs.size();
         int random_val = rand() % num_pieces; // Generate random number
         //cout << "Random index: " << rand_index << endl;
         int rand_index = piece_indexs[random_val];
 
-
         AbstractPiece* curr_piece = pieces[rand_index];
-       std::cout << "Name: " << curr_piece->getName();
+        //std::cout << "Name: " << curr_piece->getName();
 
         //cout << "<ADE IT" << endl;
         std::vector<int>all_moves = curr_piece->allMoves();
-        cout << "<ADE IT 2" << endl;
+        //cout << "<ADE IT 2" << endl;
 
         for (int move : all_moves) {
             std::cout << curr_piece->getSquare() << std::endl;
