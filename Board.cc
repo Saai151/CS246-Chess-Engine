@@ -220,7 +220,6 @@ bool Board::handlePieceMoved(AbstractPiece* piece, bool overrideValidation) {
     cout << "squareindex " << piece->getSquare();
 
     if (overrideValidation || isValidMove(piece, piece->getPreviousSquare(), piece->getSquare())) {
-
         if (isCastling(squares, piece->getPreviousSquare(), piece->getSquare())) {
             AbstractPiece* temp_1 = squares[piece->getPreviousSquare()].getOccupant();
             AbstractPiece* temp_2 = squares[piece->getSquare()].getOccupant();
@@ -277,10 +276,25 @@ bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocatio
         for (int i = 1; i < delta; i++) {
             if (startLocation > endLocation) {
                 if (squares[startLocation - i].isOccupied()) return false;
+                for (auto& s : squares) {
+                    if (s.isOccupied() && s.getColor() == captureColor && s.getOccupant()->validMove(startLocation - i) && isValidMove(s.getOccupant(), s.getLocation().getIndex(), startLocation - i)) return false;
+                }
             } else {
                 if (squares[startLocation + i].isOccupied()) return false;
+                for (auto& s : squares) {
+                    if (s.isOccupied() && s.getColor() == captureColor && s.getOccupant()->validMove(startLocation + i) && isValidMove(s.getOccupant(), s.getLocation().getIndex(), startLocation + i)) return false;
+                }
             }
         }
+
+        for (auto& s : squares) {
+            if (startLocation > endLocation)
+                if (s.isOccupied() && s.getColor() == captureColor && s.getOccupant()->validMove(startLocation - delta) && isValidMove(s.getOccupant(), s.getLocation().getIndex(), startLocation - delta)) return false;
+            else {
+                if (s.isOccupied() && s.getColor() == captureColor && s.getOccupant()->validMove(startLocation + delta) && isValidMove(s.getOccupant(), s.getLocation().getIndex(), startLocation + delta)) return false;
+            }
+        }
+
        return true;
         
     }
@@ -342,7 +356,7 @@ bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocatio
                 if (squares[startLocation - i].isOccupied()) return false;
             }
         } else {
-            for (int i = 0; i < delta; i++) {
+            for (int i = 1; i < delta; i++) {
                 if (squares[startLocation + i].isOccupied()) return false;
             }
         }

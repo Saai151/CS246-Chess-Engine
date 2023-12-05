@@ -214,24 +214,21 @@ std::vector<int> Knight::allMoves() {
     for (int i = 0; i < 8; ++i){
         int newRow = currRow + rows[i];
         int newCol = currCol + cols[i];
-
         newRows.push_back(newRow);
         newCols.push_back(newCol);
-        
     }
 
     for (int i =0; i < 8; ++i){
         if (newCols[i] >= 8){
             newCols.erase(newCols.begin() + i);
             newRows.erase(newRows.begin() + i);
-        }
-        else if (newRows[i] >= 8){
+        } else if (newRows[i] >= 8){
             newCols.erase(newCols.begin() + i);
             newRows.erase(newRows.begin() + i);
         }
     }
 
-    for (size_t i = 0; i < newRows.size(); ++i){
+    for (size_t i = 0; i < newRows.size(); ++i) {
         int move = newCols[i]*8 + newRows[i];
         moves.push_back(move);
     }
@@ -372,7 +369,6 @@ std::vector<int> Bishop::allMoves() {
 }
 
 void AbstractPiece::move(int newIndex) {
-    std::cout << "HEREEEE, " << newIndex << std::endl;
     if (!validMove(newIndex)) throw std::invalid_argument("Invalid move 5");
     int previousSquareIndexCopy = previousSquareIndex;
     int squareIndexCopy = squareIndex;

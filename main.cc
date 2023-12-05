@@ -17,11 +17,11 @@ int main(){
     Player* oldWhite = nullptr;
     Player* oldBlack = nullptr;
     Game* game = nullptr;
-    Xwindow w = Xwindow();
-    GraphicsDisplay gd(w);
+    //Xwindow w = Xwindow();
+    //GraphicsDisplay gd(w);
     TextDisplay td;
 
-    std::vector<DisplayObserver*> displays = {&gd, &td};
+    std::vector<DisplayObserver*> displays = {&td};
     DisplayAggregator allDisplays = DisplayAggregator(displays);
 
     Board* board = new Board(white->pieces, black->pieces, &allDisplays);
@@ -56,6 +56,8 @@ int main(){
                 } else if (setupCommand == "done") {
                     break;
                 }
+
+                allDisplays.render();
             }
         } else if (command == "game") {
             std::string whitePlayerType, blackPlayerType;
