@@ -134,18 +134,30 @@ std::vector<int> Queen::allMoves() {
     }
 
     for (int i = 1; i <= 8; i++) {
+        if ((currSquare + (i*7)) % 8 == 0){
+            break;
+        }
         validMoves.push_back(currSquare + (i * 7));
     }
 
     for (int i = 1; i <= 8; i++) {
+        if ((currSquare - (i*7)) % 8 == 0){
+            break;
+        }
         validMoves.push_back(currSquare - (i * 7));
     }
 
     for (int i = 1; i <= 8; i++) {
+        if ((currSquare + (i*9)) % 8 == 0){
+            break;
+        }
         validMoves.push_back(currSquare + (i * 9));
     }
 
     for (int i = 1; i <= 8; i++) {
+        if ((currSquare - (i*9)) % 8 == 0){
+            break;
+        }
         validMoves.push_back(currSquare - (i * 9));
     }
 
@@ -235,14 +247,48 @@ bool Knight::validMove(int targetSquare)
     }
     return false;
 }
-
 std::vector<int> Knight::allMoves() {
-    std::vector<int> validMoves = {};
+
     int currSquare = this->getSquare();
+
+    int currRow = currSquare % 8;
+    int currCol = currSquare / 8;
+
+    std::vector<int> rows = {2, 2, -2, -2, 1, 1, -1, -1};
+    std::vector<int> cols = {1, -1, 1, -1, 2, -2, 2, -2};
+
+    std::vector<int> newRows;
+    std::vector<int> newCols;
+    std::vector<int> moves;
+
+    for (int i = 0; i < 8; ++i){
+        int newRow = currRow + rows[i];
+        int newCol = currCol + cols[i];
+
+        newRows.push_back(newRow);
+        newCols.push_back(newCol);
+        
+    }
+
+    for (int i =0; i < 8; ++i){
+        if (newCols[i] >= 8){
+            newCols.erase(newCols.begin() + i);
+            newRows.erase(newRows.begin() + i);
+        }
+        else if (newRows[i] >= 8){
+            newCols.erase(newCols.begin() + i);
+            newRows.erase(newRows.begin() + i);
+        }
+    }
+
+    for (size_t i = 0; i < newRows.size(); ++i){
+        int move = newCols[i]*8 + newRows[i];
+        moves.push_back(move);
+    }
     
     
 
-    return validMoves;
+    return moves;
 }
 
 std::string Rook::printable() const
@@ -325,18 +371,30 @@ std::vector<int> Bishop::allMoves() {
 
     int curr = this->getSquare();
     for (int i = 1; i <= 8; i++) {
+        if ((curr + (i*7)) % 8 == 0){
+            break;
+        }
         validMoves.push_back(curr + (i * 7));
     }
 
     for (int i = 1; i <= 8; i++) {
+        if ((curr - (i*7)) % 8 == 0){
+            break;
+        }
         validMoves.push_back(curr - (i * 7));
     }
 
     for (int i = 1; i <= 8; i++) {
+        if ((curr + (i*9)) % 8 == 0){
+            break;
+        }
         validMoves.push_back(curr + (i * 9));
     }
 
     for (int i = 1; i <= 8; i++) {
+        if ((curr - (i*9)) % 8 == 0){
+            break;
+        }
         validMoves.push_back(curr - (i * 9));
     }
 
