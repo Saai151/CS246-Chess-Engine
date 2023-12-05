@@ -122,18 +122,30 @@ std::vector<int> Queen::allMoves() {
     }
 
     for (int i = 1; i <= 8; i++) {
+        if ((currSquare + (i*7)) % 8 == 0){
+            break;
+        }
         validMoves.push_back(currSquare + (i * 7));
     }
 
     for (int i = 1; i <= 8; i++) {
+        if ((currSquare - (i*7)) % 8 == 0){
+            break;
+        }
         validMoves.push_back(currSquare - (i * 7));
     }
 
     for (int i = 1; i <= 8; i++) {
+        if ((currSquare + (i*9)) % 8 == 0){
+            break;
+        }
         validMoves.push_back(currSquare + (i * 9));
     }
 
     for (int i = 1; i <= 8; i++) {
+        if ((currSquare - (i*9)) % 8 == 0){
+            break;
+        }
         validMoves.push_back(currSquare - (i * 9));
     }
 
@@ -231,7 +243,18 @@ std::vector<int> Knight::allMoves() {
         
     }
 
-    for (int i = 0; i < 8; ++i){
+    for (int i =0; i < 8; ++i){
+        if (newCols[i] >= 8){
+            newCols.erase(newCols.begin() + i);
+            newRows.erase(newRows.begin() + i);
+        }
+        else if (newRows[i] >= 8){
+            newCols.erase(newCols.begin() + i);
+            newRows.erase(newRows.begin() + i);
+        }
+    }
+
+    for (size_t i = 0; i < newRows.size(); ++i){
         int move = newCols[i]*8 + newRows[i];
         moves.push_back(move);
     }
