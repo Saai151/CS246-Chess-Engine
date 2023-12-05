@@ -144,7 +144,8 @@ void ComputerPlayer_1::move(Board* b) {
         for (int move : all_moves) {
             cout << move << endl;
             if (b->isValidMove(curr_piece, curr_piece->getSquare(), move)) {
-                
+                std::cout << "SELECTED: " << curr_piece->getName() << std::endl;
+                std::cout << "FROM: " << curr_piece->getSquare() << " , TO: " << move << std::endl;
                 curr_piece->move(move);
                 return;
             }
@@ -205,14 +206,14 @@ bool ComputerPlayer_2::checkFromMove(AbstractPiece* curr_piece, Board* b, int mo
         }
     }
     // Check if the board is in check.
+    bool isInCheck = false;
     ChessColor opposing_king = curr_piece->getPieceColor() == ChessColor::White ? ChessColor::Black : ChessColor::White;
     for (Square *s : cpy_board->isInCheck(opposing_king)) {
         if (s->getOccupant()->getSquare() == move) {
-            return true; // The move did lead to a check.
+            isInCheck = true; // The move did lead to a check.
         }
     }
 
-    // Else it did not. Return false and delete copy board.
     // Delete each piece.
     for (AbstractPiece* p : white_pieces) {
         delete p;
@@ -221,7 +222,7 @@ bool ComputerPlayer_2::checkFromMove(AbstractPiece* curr_piece, Board* b, int mo
         delete p;
     }
     delete cpy_board;
-    return false;
+    return isInCheck;
 }
 
 void ComputerPlayer_2::move(Board* b) {
@@ -301,6 +302,71 @@ void ComputerPlayer_2::move(Board* b) {
 ComputerPlayer_3::ComputerPlayer_3(ChessColor c) : Player(c) {}
 ComputerPlayer_3::ComputerPlayer_3(Player &&p) : Player(std::move(p)) {}
 
+bool ComputerPlayer_3::checkFromMove(AbstractPiece* curr_piece, Board* b, int move) {
+    //Basic Idea:
+    // Create a copy of the board built from the white->pieces, black->pieces, and a nullptr display.
+    // Make the move on the built board.
+    // delete the board.
+
+    // Generate white->pieces and black->pieces;
+    std::vector<AbstractPiece*>white_pieces;
+    std::vector<AbstractPiece*>black_pieces;
+    for (Square s : b->squares) {
+        if (s.isOccupied() && s.getOccupant()->getPieceColor() == ChessColor::White) {
+            // Create copy;
+            AbstractPiece* new_p = parsePieceSymbolAndCopy(s.getOccupant()->printable()[0], s.getOccupant());
+            new_p->detachRemovedObserver();
+            white_pieces.push_back(new_p);
+        } else if (s.isOccupied()) {
+            AbstractPiece* new_p = parsePieceSymbolAndCopy(s.getOccupant()->printable()[0], s.getOccupant());
+            new_p->detachRemovedObserver();
+            black_pieces.push_back(new_p);
+        }
+    }
+    cout << "pieces successfully copied" << endl;
+    // Generate cpy board.
+    std::vector<DisplayObserver*> empty_displays = {};
+    DisplayAggregator allDisplays = DisplayAggregator(empty_displays);
+    Board* cpy_board = new Board(white_pieces, black_pieces, &allDisplays);
+    
+    // Pass cpy_board as an observer of each piece.
+    for (AbstractPiece* p : white_pieces) {
+        p->attachMoveObserver(cpy_board);
+    }
+    for (AbstractPiece* p : black_pieces) {
+        p->attachMoveObserver(cpy_board);
+    }
+
+    // Locate the curr_piece in the cpy board.
+    for (Square s : cpy_board->squares) {
+        if (s.getOccupant()->getSquare() == curr_piece->getSquare()) {
+            std::cout << "BEFORE" << std::endl;
+            std::cout << "Name: " << s.getOccupant()->getName() << " Move: " << move << std::endl;
+            s.getOccupant()->move(move); //make the move on the copy board.
+            std::cout << "AFter" << std::endl;
+            break;
+        }
+    }
+    // Check if the board is in check.
+    bool isInCheck = false;
+    ChessColor opposing_king = curr_piece->getPieceColor() == ChessColor::White ? ChessColor::Black : ChessColor::White;
+    for (Square *s : cpy_board->isInCheck(opposing_king)) {
+        if (s->getOccupant()->getSquare() == move) {
+            isInCheck = true; // The move did lead to a check.
+        }
+    }
+
+    // Delete each piece.
+    for (AbstractPiece* p : white_pieces) {
+        delete p;
+    }
+    for (AbstractPiece* p : black_pieces) {
+        delete p;
+    }
+    delete cpy_board;
+    return isInCheck;
+}
+
 bool ComputerPlayer_3::canBeCaptured(AbstractPiece* curr_piece, Board* b) {
     //Basic idea:
     // Loop through all squares on the board, weeding out all the squares which are occupied by opposing colour pieces.
@@ -370,25 +436,29 @@ void ComputerPlayer_3::move(Board* b) {
                 }
 
                 // Else check if move results in a check to the king: only if rank is smaller than 2.
-                if (MoveRank < 2) {
+                if (MoveRank < 2 && checkFromMove(curr_piece, b, move)) {
+                    backup = curr_piece;
+                    backup_move = move; 
+                    MoveRank = 2;
+
                     // Move the piece to move.
-                    ChessColor opposing_king_color = curr_piece->getPieceColor() == ChessColor::White ? ChessColor::Black : ChessColor::White;
-                    int original_square = curr_piece->getSquare();
-                    int previous_square = curr_piece->getPreviousSquare();
-                    curr_piece->move(move);
-                    // Loop through all the squares on the board checking the opposing king currently.
-                    for (Square* s : b->isInCheck(opposing_king_color)) {
-                        if (s->getOccupant()->getSquare() == move) { // Check if the piece we just moved is checking the king.
-                            // move leads to a check. We already know backup move is worst han a rank 2 move. 
-                            // Revert move back to original square;
-                            curr_piece->revertLastMove(original_square,previous_square);
-                            // Now set it as the backup.
-                            backup = curr_piece;
-                            backup_move = move; 
-                            MoveRank = 2;
-                            break;       
-                        }
-                    }
+                    // ChessColor opposing_king_color = curr_piece->getPieceColor() == ChessColor::White ? ChessColor::Black : ChessColor::White;
+                    // int original_square = curr_piece->getSquare();
+                    // int previous_square = curr_piece->getPreviousSquare();
+                    // curr_piece->move(move);
+                    // // Loop through all the squares on the board checking the opposing king currently.
+                    // for (Square* s : b->isInCheck(opposing_king_color)) {
+                    //     if (s->getOccupant()->getSquare() == move) { // Check if the piece we just moved is checking the king.
+                    //         // move leads to a check. We already know backup move is worst han a rank 2 move. 
+                    //         // Revert move back to original square;
+                    //         curr_piece->revertLastMove(original_square,previous_square);
+                    //         // Now set it as the backup.
+                    //         backup = curr_piece;
+                    //         backup_move = move; 
+                    //         MoveRank = 2;
+                    //         break;       
+                    //     }
+                    // }
                 }
             }
         }
