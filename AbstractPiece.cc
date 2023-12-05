@@ -176,15 +176,8 @@ std::string King::printable() const
 
 bool King::validMove(int targetSquare)
 {
-    int currSquare = this->getSquare();
-    vector<int> moves = {currSquare + 8, currSquare - 8, currSquare + 9, currSquare - 9};
-
-    for (size_t i = 0; i < moves.size(); ++i)
-    {
-        if (targetSquare == moves[i])
-        {
-            return true;
-        }
+    for (auto& i : allMoves()) {
+        if (i == targetSquare) return true;
     }
     return false;
 }
@@ -198,6 +191,16 @@ std::vector<int> King::allMoves() {
     for (size_t i = 0; i < 8; ++i) {
         int newSquare = this->getSquare() + kingOffsets[i];
         validMoves.push_back(newSquare);  
+    }
+
+    if (isFirst) {
+        if (color == ChessColor::White) {
+            validMoves.push_back(63);
+            validMoves.push_back(56);
+        } else {
+            validMoves.push_back(0);
+            validMoves.push_back(7);
+        }
     }
 
     return validMoves;
@@ -337,6 +340,14 @@ std::vector<int> Rook::allMoves() {
         validMoves.push_back(currSquareCopy);
     }
 
+    if (isFirst) {
+        if (color == ChessColor::White) {
+            validMoves.push_back(60);
+        } else {
+            validMoves.push_back(4);
+        }
+    }
+
     return validMoves;
 }
 
@@ -401,6 +412,7 @@ std::vector<int> Bishop::allMoves() {
 
 void AbstractPiece::move(int newIndex) {
     if (!validMove(newIndex)) throw std::invalid_argument("Invalid move 5");
+
     int previousSquareIndexCopy = previousSquareIndex;
     int squareIndexCopy = squareIndex;
 

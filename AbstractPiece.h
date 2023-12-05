@@ -34,6 +34,10 @@ public:
         return isFirst;
     }
 
+    void hasMoved() {
+        isFirst = false;
+    }
+
     ChessColor getPieceColor() const
     {
         return color;
