@@ -23,6 +23,8 @@ int main(){
     srand(static_cast<unsigned int>(time(0))); // for generating random computer moves.
     Player* white = new HumanPlayer(ChessColor::White);
     Player* black = new HumanPlayer(ChessColor::Black);
+    Player* oldWhite = nullptr;
+    Player* oldBlack = nullptr;
     Game* game = nullptr;
     Xwindow w = Xwindow();
     GraphicsDisplay gd(w);
@@ -57,22 +59,24 @@ int main(){
             if (whitePlayerType == "computer[1]") {
                 ComputerPlayer_1* newWhite = new ComputerPlayer_1(std::move(*white)); //change once more levels
                                                                                       //are implemented.
-                delete white;
+                oldWhite = white;
                 white = newWhite;
             } else if (whitePlayerType == "computer[2]") {
                 ComputerPlayer_2* newWhite = new ComputerPlayer_2(std::move(*white)); //change once more levels
                                                                                       //are implemented.
-                delete white;
+                oldWhite = white;
                 white = newWhite;
             }
 
             if (blackPlayerType == "computer[1]") {
                 ComputerPlayer_1* newBlack = new ComputerPlayer_1(std::move(*black));
-                delete black;
+                
+                oldBlack = black;
                 black = newBlack;
             } else if (blackPlayerType == "computer[2]") {
                 ComputerPlayer_2* newBlack = new ComputerPlayer_2(std::move(*black));
-                delete black;
+
+                oldBlack = black;
                 black = newBlack;
             }
 
@@ -95,4 +99,6 @@ int main(){
     delete white;
     delete black;
     delete board;
+    delete oldBlack;
+    delete oldWhite;
 }
