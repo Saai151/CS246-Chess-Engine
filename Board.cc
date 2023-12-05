@@ -182,7 +182,7 @@ bool Board::handlePieceMoved(AbstractPiece* piece) {
 
 bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocation) {
     if (endLocation < 0 || endLocation >= 64){
-        throw std::invalid_argument("invalid target square");
+        return false;
     }
 
     ChessColor captureColor;
