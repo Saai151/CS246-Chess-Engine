@@ -208,15 +208,35 @@ bool Knight::validMove(int targetSquare)
     }
     return false;
 }
-
 std::vector<int> Knight::allMoves() {
 
     // Doesn't check for out of bounds in moves yet
 
     int currSquare = this->getSquare();
 
-    vector<int> moves = {currSquare + 17, currSquare + 15, currSquare - 17,
-                         currSquare - 15, currSquare + 10, currSquare - 10, currSquare + 6, currSquare - 6};
+    int currRow = currSquare % 8;
+    int currCol = currSquare / 8;
+
+    std::vector<int> rows = {2, 2, -2, -2, 1, 1, -1, -1};
+    std::vector<int> cols = {1, -1, 1, -1, 2, -2, 2, -2};
+
+    std::vector<int> newRows;
+    std::vector<int> newCols;
+    std::vector<int> moves;
+
+    for (int i = 0; i < 8; ++i){
+        int newRow = currRow + rows[i];
+        int newCol = currCol + cols[i];
+
+        newRows.push_back(newRow);
+        newCols.push_back(newCol);
+        
+    }
+
+    for (int i = 0; i < 8; ++i){
+        int move = newCols[i]*8 + newRows[i];
+        moves.push_back(move);
+    }
     
     return moves;
 }
