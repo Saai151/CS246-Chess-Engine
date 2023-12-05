@@ -19,17 +19,14 @@ void Game::setTurn(ChessColor c) {
 }
 
 bool Game::makeMove(float* whiteScore, float* blackScore) {
-    cout << ((currentTurn->getColor() == ChessColor::Black) ? "Black" : "White") << endl;
     if (board->isStalemate(currentTurn->getColor())) {
         *blackScore += 0.5;
         *whiteScore += 0.5;
-        std::cout << "STALEMATE" << std::endl; 
         return true;
     }
     try {
         currentTurn->move(board);
     } catch (std::invalid_argument& e) {
-        std::cout << "INVALID MOVE: " << e.what() << std::endl;
         return false;
     }
 
@@ -37,7 +34,6 @@ bool Game::makeMove(float* whiteScore, float* blackScore) {
     else currentTurn = white;
 
    if (board->isCheckmate(currentTurn->getColor())) {
-        std::cout << (currentTurn->getColor() == ChessColor::White ? "White" : "Black") << " IS IN CHECKMATE" << std::endl; 
         if (currentTurn->getColor() == ChessColor::White) {
             *blackScore += 1;
         } else {

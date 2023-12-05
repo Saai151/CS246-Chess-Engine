@@ -66,7 +66,6 @@ std::string Pawn::printable() const
 }
 
 std::vector<int> Pawn::allMoves() {
-    //std::cout << this->getSquare() << " GET SQUARE" << std::endl;
     int currSquare = this->getSquare();
     vector<int> moves = {};
         if (this->getPieceColor() == ChessColor::White && isFirst) {

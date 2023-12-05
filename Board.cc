@@ -148,7 +148,6 @@ bool Board::blockCheck(AbstractPiece* curr_piece, AbstractPiece* king, int move)
             black_pieces.push_back(new_p);
         }
     }
-    cout << "pieces successfully copied" << endl;
     // Generate cpy board.
     std::vector<DisplayObserver*> empty_displays = {};
     DisplayAggregator allDisplays = DisplayAggregator(empty_displays);
@@ -164,10 +163,7 @@ bool Board::blockCheck(AbstractPiece* curr_piece, AbstractPiece* king, int move)
     // Locate the curr_piece in the cpy board.
     for (Square s : cpy_board->squares) {
         if (s.isOccupied() && s.getOccupant()->getSquare() == curr_piece->getSquare()) {
-            std::cout << "BEFORE" << std::endl;
-            std::cout << "Name: " << s.getOccupant()->getName() << " Move: " << move << std::endl;
             s.getOccupant()->move(move); //make the move on the copy board.
-            std::cout << "AFter" << std::endl;
             break;
         }
     }
@@ -270,9 +266,7 @@ bool Board::isStalemate(ChessColor current_colour) {
     for (Square s : squares) {
         if (s.isOccupied() && s.getOccupant()->getPieceColor() == current_colour) {
             for (int move : s.getOccupant()->allMoves()) {
-                cout << move << endl;
                 if (isValidMove(s.getOccupant(), s.getOccupant()->getSquare(), move)) {
-                    cout << s.getOccupant()->getName();
                     return false;
                 }
             }
@@ -295,13 +289,8 @@ void Board::resetSquare(int index) {
 }
 
 bool Board::handlePieceMoved(AbstractPiece* piece, bool overrideValidation) {
-    cout << "handle piece moved" << endl;
-    cout << "previous: " << piece->getPreviousSquare() << endl;
-    cout << "squareindex " << piece->getSquare();
-
     if (overrideValidation || isValidMove(piece, piece->getPreviousSquare(), piece->getSquare())) {
         if (isCastling(squares, piece->getPreviousSquare(), piece->getSquare())) {
-            cout << "Castiling is true" << endl;
             AbstractPiece* temp_1 = squares[piece->getPreviousSquare()].getOccupant();
             AbstractPiece* temp_2 = squares[piece->getSquare()].getOccupant();
             
@@ -314,12 +303,10 @@ bool Board::handlePieceMoved(AbstractPiece* piece, bool overrideValidation) {
             squares[piece->getPreviousSquare()].setOccupant(temp_2);
             temp_2->hasMoved();
         } else {
-            cout << "Else" << endl;
             squares[piece->getPreviousSquare()].setOccupant(nullptr);
             squares[piece->getSquare()].setOccupant(piece);
 
             if (piece->getName() == "Pawn" && ((7 - piece->getSquare() >= 0) || (63 - piece->getSquare()) <= 7)) {
-                cout << "Pawn" << endl;
                 std::string added;
                 std::cin >> added;
 
@@ -332,7 +319,6 @@ bool Board::handlePieceMoved(AbstractPiece* piece, bool overrideValidation) {
 
                 piece = addedPiece;
                 squares[ind].setOccupant(piece);
-                std::cout << "ADDR: " << piece << std::endl;
             } 
 
             return true;
@@ -392,7 +378,6 @@ bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocatio
         //target->move(endLocation);
         if ((this->isInCheck2(target->getPieceColor(), boardState).size() == 0)){
            // target->revertLastMove(startLocation, previous);
-           cout << "Moving to: " << endLocation << "causes a check" << endl;
             return false;
         }
     }

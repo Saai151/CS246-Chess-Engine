@@ -81,7 +81,6 @@ std::vector<int> GraphicsDisplay::map(Square* s) {
   int cell_len = 500/gridSize; 
   Location l = s->getLocation();
   int col = fileToInt(l.getFile());
-  //cout << col << endl;
   int row = l.getRank(); 
   int x = col * cell_len;
   int y = (gridSize - row - 1) * cell_len;
