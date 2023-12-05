@@ -53,6 +53,12 @@ class ComputerPlayer_2: public Player {
         void move(Board* b = nullptr) override;
 };
 
-
+class ComputerPlayer_3: public Player {
+    bool canBeCaptured(AbstractPiece* curr_piece, Board* b);
+    public:
+        ComputerPlayer_3(Player&& p);
+        ComputerPlayer_3(ChessColor c);
+        void move(Board* b = nullptr) override;
+};
 
 #endif
