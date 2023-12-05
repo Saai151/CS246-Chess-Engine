@@ -98,22 +98,43 @@ bool Queen::validMove(int targetSquare)
 }
 
 std::vector<int> Queen::allMoves() {
-    vector<int> validMoves;
+    vector<int> validMoves = {};
 
-    vector<int> horizontalOffsets = { -1, 1, 0, 0, -9, -7, 7, 9 }; //combining capabiliies of rook and bishop
+    int currSquare = this->getSquare();
+    for (int i = 1; i <= 8; i++) {
+        validMoves.push_back(currSquare + (i * 8));
+    }
 
-    for (size_t i = 0; i < 8; ++i) {
-        cout << "HERE 1111" << endl;
-        cout << this->getSquare() << endl;
-        int newSquare = this->getSquare();
-        while (true) {
-            newSquare += horizontalOffsets[i];
+    for (int i = 1; i <= 8; i++) {
+        validMoves.push_back(currSquare - (i * 8));
+    }
 
-            if (newSquare < 0 || newSquare >= 64) {
-                break;
-            }
-            validMoves.push_back(newSquare);
-        }
+    int currSquareCopy = currSquare;
+    while (currSquareCopy % 8 != 0) {
+        currSquareCopy--;
+        validMoves.push_back(currSquareCopy);
+    }
+
+    currSquareCopy = currSquare;
+    while (currSquareCopy % 8 != 0) {
+        currSquareCopy++;
+        validMoves.push_back(currSquareCopy);
+    }
+
+    for (int i = 1; i <= 8; i++) {
+        validMoves.push_back(currSquare + (i * 7));
+    }
+
+    for (int i = 1; i <= 8; i++) {
+        validMoves.push_back(currSquare - (i * 7));
+    }
+
+    for (int i = 1; i <= 8; i++) {
+        validMoves.push_back(currSquare + (i * 9));
+    }
+
+    for (int i = 1; i <= 8; i++) {
+        validMoves.push_back(currSquare - (i * 9));
     }
 
     return validMoves;
@@ -248,9 +269,6 @@ std::vector<int> Rook::allMoves() {
         validMoves.push_back(currSquareCopy);
     }
 
-    for (auto& i : validMoves) {
-        cout << i << endl;
-    }
     return validMoves;
 }
 
@@ -281,18 +299,21 @@ bool Bishop::validMove(int targetSquare)
 std::vector<int> Bishop::allMoves() {
    vector<int> validMoves;
 
-    vector<int> diagonalOffsets = { -9, -7, 7, 9 }; 
+    int curr = this->getSquare();
+    for (int i = 1; i <= 8; i++) {
+        validMoves.push_back(curr + (i * 7));
+    }
 
-    for (size_t i = 0; i < 4; ++i) {
-        int newSquare = this->getSquare();
-        while (true) {
-            newSquare += diagonalOffsets[i];
+    for (int i = 1; i <= 8; i++) {
+        validMoves.push_back(curr - (i * 7));
+    }
 
-            if (newSquare < 0 || newSquare >= 64) {
-                break; // Move is out of bounds
-            }
-            validMoves.push_back(newSquare);
-        }
+    for (int i = 1; i <= 8; i++) {
+        validMoves.push_back(curr + (i * 9));
+    }
+
+    for (int i = 1; i <= 8; i++) {
+        validMoves.push_back(curr - (i * 9));
     }
 
     return validMoves;
