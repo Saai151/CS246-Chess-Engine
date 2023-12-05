@@ -187,8 +187,6 @@ bool Board::isStalemate(ChessColor current_colour) {
     
     for (Square s : squares) {
         if (s.isOccupied() && s.getOccupant()->getPieceColor() == current_colour) {
-            cout << s.getOccupant()->getName() << endl;
-            cout << s.getOccupant()->getSquare() << endl;
             for (int move : s.getOccupant()->allMoves()) {
                 cout << move << endl;
                 if (isValidMove(s.getOccupant(), s.getOccupant()->getSquare(), move)) {
