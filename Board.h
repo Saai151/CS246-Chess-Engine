@@ -21,7 +21,7 @@ class Board: public PieceMovedObserver {
         void placePiece(AbstractPiece* piece, int square);
         std::vector<Square*> isInCheck(ChessColor c);
         bool isCheckmate(ChessColor c);
-        bool isStalemate();
+        bool isStalemate(ChessColor current_colour);
         bool isValidMove(AbstractPiece* target, int startLocation, int endLocation);
         bool handlePieceMoved(AbstractPiece* piece, bool overrideValidation = false) override;
         friend class GraphicsDisplay;

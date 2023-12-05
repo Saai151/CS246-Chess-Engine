@@ -202,13 +202,7 @@ void ComputerPlayer_2::move(Board* b) {
                     }
                 }
                 // Else, the move did not result in a check. Revert move back to original square.
-<<<<<<< HEAD
-                cout << "Just reverted" << endl;
-                //curr_piece->revertLastMove(original_square,previous_square);
-                //cout << "Just reverted" << endl;
-=======
                 curr_piece->revertLastMove(original_square,previous_square);
->>>>>>> 692cb1c4deefa496e7259ce8ab8a7317a99dd1d8
             }
         }
         // Else there are no valid moves for the given piece.
