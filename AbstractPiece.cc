@@ -1,23 +1,5 @@
 #include "AbstractPiece.h"
 
-AbstractPiece* parsePieceSymbol(char p, ChessColor color, PieceRemovedObserver* owner) {
-    if (tolower(p) == 'p') return new Pawn(color, owner);
-    else if (tolower(p) == 'q') return new Queen(color, owner);
-    else if (tolower(p) == 'k') return new King(color, owner);
-    else if (tolower(p) == 'n') return new Knight(color, owner);
-    else if (tolower(p) == 'r') return new Rook(color, owner);
-    else return new Bishop(color, owner);
-}
-
-AbstractPiece* parsePieceSymbolAndCopy(char p, AbstractPiece* toCopy) {
-    if (tolower(p) == 'p') return new Pawn(*toCopy);
-    else if (tolower(p) == 'q') return new Queen(*toCopy);
-    else if (tolower(p) == 'k') return new King(*toCopy);
-    else if (tolower(p) == 'n') return new Knight(*toCopy);
-    else if (tolower(p) == 'r') return new Rook(*toCopy);
-    else return new Bishop(*toCopy);
-}
-
 AbstractPiece::~AbstractPiece()
 {
     if (pieceRemovedObserver != nullptr) {
@@ -77,12 +59,6 @@ std::vector<int> Pawn::allMoves() {
         moves.push_back(currSquare + 8);
         moves.push_back(currSquare + 7);
         moves.push_back(currSquare + 9);
-    }
-    if (this->getPieceColor() == ChessColor::White && isFirst){
-        moves.push_back(currSquare - 16);
-    }
-    if (this->getPieceColor() == ChessColor::Black && isFirst){
-        moves.push_back(currSquare + 16);
     }
 
     return moves;
@@ -260,27 +236,42 @@ std::string Rook::printable() const
 }
 
 std::vector<int> Rook::allMoves() {
-    vector<int> validMoves = {};
+    std::vector<int> validMoves;
 
     int currSquare = this->getSquare();
-    for (int i = 1; i <= 8; i++) {
-        validMoves.push_back(currSquare + (i * 8));
+    int currRow = currSquare / 8; // Row index
+    int currCol = currSquare % 8; // Column index
+
+    // Generate vertical moves (up and down)
+    for (int i = currRow + 1; i < 8; ++i) {
+        if (i >= 8 || i < 0){
+            break;
+        }
+        int move = i * 8 + currCol;
+        validMoves.push_back(move);
+    }
+    for (int i = currRow - 1; i >= 0; --i) {
+        if (i >= 8 || i < 0){
+            break;
+        }
+        int move = i * 8 + currCol;
+        validMoves.push_back(move);
     }
 
-    for (int i = 1; i <= 8; i++) {
-        validMoves.push_back(currSquare - (i * 8));
+    // Generate horizontal moves (left and right)
+    for (int i = currCol + 1; i < 8; ++i) {
+        if (i >= 8 || i < 0){
+            break;
+        }
+        int move = currRow * 8 + i;
+        validMoves.push_back(move);
     }
-
-    int currSquareCopy = currSquare;
-    while (currSquareCopy % 8 != 0) {
-        currSquareCopy--;
-        validMoves.push_back(currSquareCopy);
-    }
-
-    currSquareCopy = currSquare;
-    while (currSquareCopy % 8 != 0) {
-        currSquareCopy++;
-        validMoves.push_back(currSquareCopy);
+    for (int i = currCol - 1; i >= 0; --i) {
+        if (i >= 8 || i < 0){
+            break;
+        }
+        int move = currRow * 8 + i;
+        validMoves.push_back(move);
     }
 
     if (isFirst) {
@@ -292,6 +283,27 @@ std::vector<int> Rook::allMoves() {
     }
 
     return validMoves;
+    // for (int i = 1; i <= 8; i++) {
+    //     validMoves.push_back(currSquare + (i * 8));
+    // }
+
+    // for (int i = 1; i <= 8; i++) {
+    //     validMoves.push_back(currSquare - (i * 8));
+    // }
+
+    // int currSquareCopy = currSquare;
+    // while (currSquareCopy % 8 != 0) {
+    //     currSquareCopy--;
+    //     validMoves.push_back(currSquareCopy);
+    // }
+
+    // currSquareCopy = currSquare;
+    // while (currSquareCopy % 8 != 0) {
+    //     currSquareCopy++;
+    //     validMoves.push_back(currSquareCopy);
+    // }
+
+    
 }
 
 std::string Bishop::printable() const
@@ -349,6 +361,8 @@ void AbstractPiece::move(int newIndex) {
 
     previousSquareIndex = squareIndex;
     squareIndex = newIndex;
+
+
     
     bool validatedByBoard = pieceMovedObserver->handlePieceMoved(this);
     if (!validatedByBoard) {
