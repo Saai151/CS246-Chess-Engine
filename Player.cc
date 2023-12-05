@@ -144,12 +144,7 @@ void ComputerPlayer_1::move(Board* b) {
         for (int move : all_moves) {
             cout << move << endl;
             if (b->isValidMove(curr_piece, curr_piece->getSquare(), move)) {
-<<<<<<< HEAD
                 
-=======
-                std::cout << "SELECTED: " << curr_piece->getName() << std::endl;
-                std::cout << "FROM: " << curr_piece->getSquare() << " , TO: " << move << std::endl;
->>>>>>> 7a3505ba711c03ed763a27aa291ceeff007c2903
                 curr_piece->move(move);
                 return;
             }

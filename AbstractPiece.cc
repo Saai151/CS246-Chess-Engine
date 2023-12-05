@@ -7,6 +7,24 @@ AbstractPiece::~AbstractPiece()
     }
 }
 
+AbstractPiece* parsePieceSymbol(char p, ChessColor color, PieceRemovedObserver* owner) {
+    if (tolower(p) == 'p') return new Pawn(color, owner);
+    else if (tolower(p) == 'q') return new Queen(color, owner);
+    else if (tolower(p) == 'k') return new King(color, owner);
+    else if (tolower(p) == 'n') return new Knight(color, owner);
+    else if (tolower(p) == 'r') return new Rook(color, owner);
+    else return new Bishop(color, owner);
+}
+
+AbstractPiece* parsePieceSymbolAndCopy(char p, AbstractPiece* toCopy) {
+    if (tolower(p) == 'p') return new Pawn(*toCopy);
+    else if (tolower(p) == 'q') return new Queen(*toCopy);
+    else if (tolower(p) == 'k') return new King(*toCopy);
+    else if (tolower(p) == 'n') return new Knight(*toCopy);
+    else if (tolower(p) == 'r') return new Rook(*toCopy);
+    else return new Bishop(*toCopy);
+}
+
 AbstractPiece::AbstractPiece(AbstractPiece& p) {
     this->color = p.getPieceColor();
     this->pieceMovedObserver = p.pieceMovedObserver;
@@ -354,8 +372,8 @@ std::vector<int> Bishop::allMoves() {
 }
 
 void AbstractPiece::move(int newIndex) {
-    if (!validMove(newIndex)) throw std::invalid_argument("Invalid move 5, " + this->getName());
-
+    std::cout << "HEREEEE, " << newIndex << std::endl;
+    if (!validMove(newIndex)) throw std::invalid_argument("Invalid move 5");
     int previousSquareIndexCopy = previousSquareIndex;
     int squareIndexCopy = squareIndex;
 
