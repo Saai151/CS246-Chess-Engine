@@ -211,18 +211,19 @@ bool Board::handlePieceMoved(AbstractPiece* piece, bool overrideValidation) {
             squares[piece->getSquare()].setOccupant(piece);
 
             if (piece->getName() == "Pawn" && ((7 - piece->getSquare() >= 0) || (63 - piece->getSquare()) <= 7)) {
-                Pawn* p = (Pawn*)this;
-                AbstractPiece* promotedPiece = p->promote();
+                std::string added;
+                std::cin >> added;
+
+                AbstractPiece* addedPiece = parsePieceSymbolAndCopy(added[0], piece);
                 int ind = piece->getSquare();
                 squares[ind].setOccupant(nullptr);
 
                 piece->detachRemovedObserver();
                 delete piece;
-                piece = promotedPiece;
+
+                piece = addedPiece;
                 squares[ind].setOccupant(piece);
-                std::cout << squares[ind].getOccupant()->getName() << " : " << squares[ind].getOccupant()->getSquare() << std::endl;
-                std::cout << piece << " Addr" << std::endl;
-                std::cout << squares[ind].getOccupant() << " Addr 2" << std::endl;
+                std::cout << "ADDR: " << piece << std::endl;
             } 
 
             return true;

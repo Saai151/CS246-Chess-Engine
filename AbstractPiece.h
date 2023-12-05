@@ -30,6 +30,7 @@ protected:
 
 public:
     AbstractPiece(ChessColor color, std::string name, PieceRemovedObserver *pieceRemovedObserver) : color{color}, name{name}, pieceRemovedObserver{pieceRemovedObserver} {}
+    AbstractPiece(AbstractPiece& p);
 
     bool getIsFirst() const {
         return isFirst;
@@ -89,6 +90,7 @@ public:
 };
 
 AbstractPiece* parsePieceSymbol(char p, ChessColor color, PieceRemovedObserver* owner);
+AbstractPiece* parsePieceSymbolAndCopy(char p, AbstractPiece* toCopy);
 
 class PieceRemovedObserver
 {
@@ -107,10 +109,10 @@ class Pawn : public AbstractPiece
 
     public:
         Pawn(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Pawn", pieceRemovedObserver) {}
+        Pawn(AbstractPiece& p) : AbstractPiece(p) {};
 
         std::string printable() const override;
         std::vector<int> allMoves() override;
-        AbstractPiece* promote();
 };
 
 
@@ -119,6 +121,7 @@ class Queen : public AbstractPiece
 {
     public:
         Queen(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Queen", pieceRemovedObserver) {}
+        Queen(AbstractPiece& p) : AbstractPiece(p) {}; 
 
         std::string printable() const override;
         std::vector<int> allMoves() override;
@@ -128,6 +131,7 @@ class King : public AbstractPiece
 {
     public:
         King(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "King", pieceRemovedObserver) {}
+        King(AbstractPiece& p) : AbstractPiece(p) {}; 
 
         std::string printable() const override;
         std::vector<int> allMoves() override;
@@ -137,6 +141,7 @@ class Knight : public AbstractPiece
 {
     public:
         Knight(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Knight", pieceRemovedObserver) {}
+        Knight(AbstractPiece& p) : AbstractPiece(p) {}; 
 
         std::string printable() const override;
         std::vector<int> allMoves() override;
@@ -146,6 +151,7 @@ class Rook : public AbstractPiece
 {
     public:
         Rook(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Rook", pieceRemovedObserver) {}
+        Rook(AbstractPiece& p) : AbstractPiece(p) {}; 
 
         std::string printable() const override;
         std::vector<int> allMoves() override;
@@ -155,6 +161,7 @@ class Bishop : public AbstractPiece
 {
 public:
     Bishop(ChessColor color, PieceRemovedObserver *pieceRemovedObserver) : AbstractPiece(color, "Bishop", pieceRemovedObserver) {}
+    Bishop(AbstractPiece& p) : AbstractPiece(p) {}; 
 
     std::string printable() const override;
     std::vector<int> allMoves() override;

@@ -9,11 +9,26 @@ AbstractPiece* parsePieceSymbol(char p, ChessColor color, PieceRemovedObserver* 
     else return new Bishop(color, owner);
 }
 
+AbstractPiece* parsePieceSymbolAndCopy(char p, AbstractPiece* toCopy) {
+    if (tolower(p) == 'p') return new Pawn(*toCopy);
+    else if (tolower(p) == 'q') return new Queen(*toCopy);
+    else if (tolower(p) == 'k') return new King(*toCopy);
+    else if (tolower(p) == 'n') return new Knight(*toCopy);
+    else if (tolower(p) == 'r') return new Rook(*toCopy);
+    else return new Bishop(*toCopy);
+}
+
 AbstractPiece::~AbstractPiece()
 {
     if (pieceRemovedObserver != nullptr) {
         pieceRemovedObserver->handlePieceRemoved(this);
     }
+}
+
+AbstractPiece::AbstractPiece(AbstractPiece& p) {
+    this->color = p.getPieceColor();
+    this->pieceMovedObserver = p.pieceMovedObserver;
+    this->pieceRemovedObserver = p.pieceRemovedObserver;
 }
 
 bool AbstractPiece::validMove(int targetSquare) {
@@ -32,16 +47,6 @@ void AbstractPiece::revertLastMove(int newSquare, int prevSquare) {
     squareIndex = newSquare;
     pieceMovedObserver->handlePieceMoved(this, true);
     previousSquareIndex = prevSquare;
-}
-
-AbstractPiece* Pawn::promote() {
-    std::string added;
-    std::cin >> added;
-
-    AbstractPiece* addedPiece = parsePieceSymbol(added[0], this->color, this->pieceRemovedObserver);
-
-    addedPiece->attachMoveObserver(this->pieceMovedObserver);
-    return addedPiece;
 }
 
 std::string Pawn::printable() const
