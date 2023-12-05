@@ -1,23 +1,5 @@
 #include "AbstractPiece.h"
 
-AbstractPiece* parsePieceSymbol(char p, ChessColor color, PieceRemovedObserver* owner) {
-    if (tolower(p) == 'p') return new Pawn(color, owner);
-    else if (tolower(p) == 'q') return new Queen(color, owner);
-    else if (tolower(p) == 'k') return new King(color, owner);
-    else if (tolower(p) == 'n') return new Knight(color, owner);
-    else if (tolower(p) == 'r') return new Rook(color, owner);
-    else return new Bishop(color, owner);
-}
-
-AbstractPiece* parsePieceSymbolAndCopy(char p, AbstractPiece* toCopy) {
-    if (tolower(p) == 'p') return new Pawn(*toCopy);
-    else if (tolower(p) == 'q') return new Queen(*toCopy);
-    else if (tolower(p) == 'k') return new King(*toCopy);
-    else if (tolower(p) == 'n') return new Knight(*toCopy);
-    else if (tolower(p) == 'r') return new Rook(*toCopy);
-    else return new Bishop(*toCopy);
-}
-
 AbstractPiece::~AbstractPiece()
 {
     if (pieceRemovedObserver != nullptr) {
