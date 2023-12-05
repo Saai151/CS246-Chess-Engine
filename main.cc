@@ -80,6 +80,11 @@ int main(){
                                                                                       //are implemented.
                 oldWhite = white;
                 white = newWhite;
+            } else if (whitePlayerType == "computer[3]") {
+                ComputerPlayer_3* newWhite = new ComputerPlayer_3(std::move(*white)); //change once more levels
+                                                                                      //are implemented.
+                delete white;
+                white = newWhite;
             }
 
             if (blackPlayerType == "computer[1]") {
@@ -91,6 +96,10 @@ int main(){
                 ComputerPlayer_2* newBlack = new ComputerPlayer_2(std::move(*black));
 
                 oldBlack = black;
+                black = newBlack;
+            } else if (blackPlayerType == "computer[3]") {
+                ComputerPlayer_3* newBlack = new ComputerPlayer_3(std::move(*black));
+                delete black;
                 black = newBlack;
             }
 

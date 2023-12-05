@@ -33,6 +33,7 @@ bool Pawn::validMove(int targetSquare)
     int currSquare = this->getSquare();
 
     int delta = targetSquare - currSquare;
+    //std::cout << this->isFirst << std::endl;
 
     if (getPieceColor() == ChessColor::Black) {
         if ((delta == 8 || delta == 16) && isFirst) {
@@ -56,6 +57,7 @@ bool Pawn::validMove(int targetSquare)
 }
 
 std::vector<int> Pawn::allMoves() {
+    //std::cout << this->getSquare() << " GET SQUARE" << std::endl;
     int currSquare = this->getSquare();
     vector<int> moves = {};
     if (this->getPieceColor() == ChessColor::White){

@@ -152,12 +152,16 @@ bool Board::isCheckmate(ChessColor c) {
     return false;
 }
 
-bool Board::isStalemate() {
+bool Board::isStalemate(ChessColor current_colour) {
     if (isInCheck(ChessColor::White).size() || isInCheck(ChessColor::Black).size()) return false;
 
     for (auto& s : squares) {
-        if (s.isOccupied() && s.getOccupant()->allMoves().size() != 0) {
-            return false;
+        if (s.isOccupied() && s.getColor() == current_colour) {
+            for (int move : s.getOccupant()->allMoves()) {
+                if (isValidMove(s.getOccupant(), s.getOccupant()->getSquare(), move)) {
+                    return false;
+                }
+            }
         }
     }
 
@@ -203,6 +207,14 @@ bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocatio
         return false;
     }
 
+    if (target->getName() == "King"){
+        int previous = target->getPreviousSquare();
+        target->move(endLocation);
+        if ((this->isInCheck(target->getPieceColor()).size() == 0)){
+            target->revertLastMove(startLocation, previous);
+            return false;
+        }
+    }
     if (target->getName() == "Knight") return true;
 
     /* CHECK FOR CASTLING */

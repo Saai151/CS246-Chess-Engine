@@ -215,6 +215,7 @@ void ComputerPlayer_2::move(Board* b) {
         // Else there are no valid moves for the given piece.
         // Remove piece from cpy_pices array. And keep looking.
         piece_indexs.erase(piece_indexs.begin() + random_val);
+        cout << "erased once" << endl;
     }
     backup->move(backup_move);
 }
