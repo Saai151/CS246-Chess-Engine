@@ -69,6 +69,11 @@ std::vector<int> Pawn::allMoves() {
     //std::cout << this->getSquare() << " GET SQUARE" << std::endl;
     int currSquare = this->getSquare();
     vector<int> moves = {};
+        if (this->getPieceColor() == ChessColor::White && isFirst) {
+        moves.push_back(currSquare - 16);
+    } else if(isFirst && this->getPieceColor() == ChessColor::Black){
+        moves.push_back(currSquare + 16);
+    }
     if (this->getPieceColor() == ChessColor::White) {
         moves.push_back(currSquare - 8);
         moves.push_back(currSquare - 7);

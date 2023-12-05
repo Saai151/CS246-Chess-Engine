@@ -16,7 +16,7 @@ class Board: public PieceMovedObserver {
 
     public:
         std::vector<Square> squares;
-        Board(std::vector<AbstractPiece*> white, std::vector<AbstractPiece*> black, DisplayAggregator* g);
+        Board(std::vector<AbstractPiece*> white, std::vector<AbstractPiece*> black, DisplayAggregator* g, bool hardCode = true);
         void resetSquare(int index);
         void reset();
         void placePiece(AbstractPiece* piece, int square);

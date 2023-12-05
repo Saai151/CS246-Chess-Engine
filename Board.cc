@@ -1,7 +1,8 @@
 #include "Board.h"
 
 bool isCastling(std::vector<Square> squares, int startLocation, int endLocation) {
-    if (squares[startLocation].getOccupant()->getName() == "King" 
+    if (squares[startLocation].isOccupied()
+            && squares[startLocation].getOccupant()->getName() == "King" 
             && squares[startLocation].getOccupant()->getIsFirst()
             && squares[endLocation].isOccupied()
             && squares[endLocation].getOccupant()->getName() == "Rook"
@@ -24,7 +25,7 @@ std::vector<AbstractPiece*> getPieces(std::string name, std::vector<AbstractPiec
     return result;
 }
 
-Board::Board(std::vector<AbstractPiece*> white, std::vector<AbstractPiece*> black, DisplayAggregator* g) {
+Board::Board(std::vector<AbstractPiece*> white, std::vector<AbstractPiece*> black, DisplayAggregator* g, bool hardCode) {
     std::vector<AbstractPiece*> selectedPieces;
     squares.reserve(64); // Reserve space for 64 squares
 
@@ -38,6 +39,18 @@ Board::Board(std::vector<AbstractPiece*> white, std::vector<AbstractPiece*> blac
         }
     }
 
+    if (!hardCode) {
+        for (auto& p : white) {
+            int s = p->getSquare();
+            squares[s].setOccupant(p);
+        }
+
+        for (auto& b : black) {
+            int s = b->getSquare();
+            squares[s].setOccupant(b);
+        }
+        return;
+    }
     /* Place down white pieces */
     selectedPieces = getPieces("Pawn", white);
     for (int i = 48; i < 56; i++) {
@@ -217,11 +230,11 @@ void Board::resetSquare(int index) {
 bool Board::handlePieceMoved(AbstractPiece* piece, bool overrideValidation) {
     cout << "handle piece moved" << endl;
     cout << "previous: " << piece->getPreviousSquare() << endl;
-    cout << "squareindex " << piece->getSquare();
-
-    if (overrideValidation || isValidMove(piece, piece->getPreviousSquare(), piece->getSquare())) {
-
+    cout << "squareindex " << piece->getSquare() << endl;
+    if (overrideValidation || isValidMove(piece, piece->getPreviousSquare(), piece->getSquare())) {\
+        cout << "MADE IT HERE" << endl;
         if (isCastling(squares, piece->getPreviousSquare(), piece->getSquare())) {
+            cout << "Castiling is true" << endl;
             AbstractPiece* temp_1 = squares[piece->getPreviousSquare()].getOccupant();
             AbstractPiece* temp_2 = squares[piece->getSquare()].getOccupant();
             
@@ -234,10 +247,12 @@ bool Board::handlePieceMoved(AbstractPiece* piece, bool overrideValidation) {
             squares[piece->getPreviousSquare()].setOccupant(temp_2);
             temp_2->hasMoved();
         } else {
+            cout << "Else" << endl;
             squares[piece->getPreviousSquare()].setOccupant(nullptr);
             squares[piece->getSquare()].setOccupant(piece);
 
             if (piece->getName() == "Pawn" && ((7 - piece->getSquare() >= 0) || (63 - piece->getSquare()) <= 7)) {
+                cout << "Pawn" << endl;
                 std::string added;
                 std::cin >> added;
 
@@ -273,17 +288,17 @@ bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocatio
         captureColor = ChessColor::Black;
     }
 
-    if (isCastling(squares, startLocation, endLocation)) {
-        for (int i = 1; i < delta; i++) {
-            if (startLocation > endLocation) {
-                if (squares[startLocation - i].isOccupied()) return false;
-            } else {
-                if (squares[startLocation + i].isOccupied()) return false;
-            }
-        }
-       return true;
+    // if (isCastling(squares, startLocation, endLocation)) {
+    //     for (int i = 1; i < delta; i++) {
+    //         if (startLocation > endLocation) {
+    //             if (squares[startLocation - i].isOccupied()) return false;
+    //         } else {
+    //             if (squares[startLocation + i].isOccupied()) return false;
+    //         }
+    //     }
+    //    return true;
         
-    }
+    // }
 
     if (squares[endLocation].isOccupied() && squares[endLocation].getOccupant()->getPieceColor() != captureColor) {
         return false;

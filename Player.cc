@@ -185,8 +185,7 @@ bool ComputerPlayer_2::checkFromMove(AbstractPiece* curr_piece, Board* b, int mo
     // Generate cpy board.
     std::vector<DisplayObserver*> empty_displays = {};
     DisplayAggregator allDisplays = DisplayAggregator(empty_displays);
-    Board* cpy_board = new Board(white_pieces, black_pieces, &allDisplays);
-    
+    Board* cpy_board = new Board(white_pieces, black_pieces, &allDisplays, false);
     // Pass cpy_board as an observer of each piece.
     for (AbstractPiece* p : white_pieces) {
         p->attachMoveObserver(cpy_board);
@@ -197,7 +196,7 @@ bool ComputerPlayer_2::checkFromMove(AbstractPiece* curr_piece, Board* b, int mo
 
     // Locate the curr_piece in the cpy board.
     for (Square s : cpy_board->squares) {
-        if (s.getOccupant()->getSquare() == curr_piece->getSquare()) {
+        if (s.isOccupied() && s.getOccupant()->getSquare() == curr_piece->getSquare()) {
             std::cout << "BEFORE" << std::endl;
             std::cout << "Name: " << s.getOccupant()->getName() << " Move: " << move << std::endl;
             s.getOccupant()->move(move); //make the move on the copy board.
@@ -327,8 +326,7 @@ bool ComputerPlayer_3::checkFromMove(AbstractPiece* curr_piece, Board* b, int mo
     // Generate cpy board.
     std::vector<DisplayObserver*> empty_displays = {};
     DisplayAggregator allDisplays = DisplayAggregator(empty_displays);
-    Board* cpy_board = new Board(white_pieces, black_pieces, &allDisplays);
-    
+    Board* cpy_board = new Board(white_pieces, black_pieces, &allDisplays, false);
     // Pass cpy_board as an observer of each piece.
     for (AbstractPiece* p : white_pieces) {
         p->attachMoveObserver(cpy_board);
@@ -339,7 +337,7 @@ bool ComputerPlayer_3::checkFromMove(AbstractPiece* curr_piece, Board* b, int mo
 
     // Locate the curr_piece in the cpy board.
     for (Square s : cpy_board->squares) {
-        if (s.getOccupant()->getSquare() == curr_piece->getSquare()) {
+        if (s.isOccupied() && s.getOccupant()->getSquare() == curr_piece->getSquare()) {
             std::cout << "BEFORE" << std::endl;
             std::cout << "Name: " << s.getOccupant()->getName() << " Move: " << move << std::endl;
             s.getOccupant()->move(move); //make the move on the copy board.
