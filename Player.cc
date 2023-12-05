@@ -194,7 +194,13 @@ void ComputerPlayer_2::move(Board* b) {
                 backup = curr_piece;
                 backup_move = move;
 
-                // Check if move results in a check to the king:
+                // // Check if the move captures another piece.
+                if (b->squares[move].isOccupied()) {
+                    curr_piece->move(move);
+                    return;
+                }
+
+                // Else check if move results in a check to the king:
                 // Move the piece to move.
                 ChessColor opposing_king_color = curr_piece->getPieceColor() == ChessColor::White ? ChessColor::Black : ChessColor::White;
                 curr_piece->move(move);
@@ -206,12 +212,6 @@ void ComputerPlayer_2::move(Board* b) {
                 }
                 // Else, the move did not result in a check. Revert move back to original square.
                 // INPUT REVERT FUNCTION HERE.
-                
-                // Check if the move captures another piece.
-                if (b->squares[move].isOccupied()) {
-                    curr_piece->move(move);
-                    return;
-                }
             }
         }
         // Else there are no valid moves for the given piece.
