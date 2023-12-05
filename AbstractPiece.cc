@@ -210,8 +210,6 @@ bool Knight::validMove(int targetSquare)
 }
 std::vector<int> Knight::allMoves() {
 
-    // Doesn't check for out of bounds in moves yet
-
     int currSquare = this->getSquare();
 
     int currRow = currSquare % 8;
@@ -321,18 +319,30 @@ std::vector<int> Bishop::allMoves() {
 
     int curr = this->getSquare();
     for (int i = 1; i <= 8; i++) {
+        if ((curr + (i*7)) % 8 == 0){
+            break;
+        }
         validMoves.push_back(curr + (i * 7));
     }
 
     for (int i = 1; i <= 8; i++) {
+        if ((curr - (i*7)) % 8 == 0){
+            break;
+        }
         validMoves.push_back(curr - (i * 7));
     }
 
     for (int i = 1; i <= 8; i++) {
+        if ((curr + (i*9)) % 8 == 0){
+            break;
+        }
         validMoves.push_back(curr + (i * 9));
     }
 
     for (int i = 1; i <= 8; i++) {
+        if ((curr - (i*9)) % 8 == 0){
+            break;
+        }
         validMoves.push_back(curr - (i * 9));
     }
 
