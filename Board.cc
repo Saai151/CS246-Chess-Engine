@@ -119,6 +119,24 @@ std::vector<Square*> Board::isInCheck(ChessColor c) {
     return checked;
 }
 
+std::vector<Square*> Board::isInCheck2(ChessColor c, std::vector<Square> boardState) {
+    std::vector<Square*> checked;
+    AbstractPiece* king;
+    for (auto& s : boardState) {
+        if (s.isOccupied() && s.getOccupant()->getName() == "King" && s.getOccupant()->getPieceColor() == c) {
+            king = s.getOccupant();
+        }
+    }
+
+    for (auto& s : squares) {
+        if (isPieceCheckingTheKing(&s, king, c)) {
+            checked.push_back(&s);
+        }
+    }
+
+    return checked;
+}
+
 bool Board::isCheckmate(ChessColor c) {
     AbstractPiece* king;
     for (auto& s : squares) {
@@ -158,14 +176,19 @@ bool Board::isStalemate(ChessColor current_colour) {
     
     cout << "oin" << endl;
     for (Square s : squares) {
-        if (s.isOccupied() && s.getColor() == current_colour) {
+        if (s.isOccupied() && s.getOccupant()->getPieceColor() == current_colour) {
+            cout << s.getOccupant()->getName() << endl;
+            cout << s.getOccupant()->getSquare() << endl;
             for (int move : s.getOccupant()->allMoves()) {
+                cout << move << endl;
                 if (isValidMove(s.getOccupant(), s.getOccupant()->getSquare(), move)) {
+                    cout << s.getOccupant()->getName();
                     return false;
                 }
             }
         }
     }
+
 
     return true;
 }
@@ -182,6 +205,10 @@ void Board::resetSquare(int index) {
 }
 
 bool Board::handlePieceMoved(AbstractPiece* piece, bool overrideValidation) {
+    cout << "handle piece moved" << endl;
+    cout << "previous: " << piece->getPreviousSquare() << endl;
+    cout << "squareindex " << piece->getSquare();
+
     if (overrideValidation || isValidMove(piece, piece->getPreviousSquare(), piece->getSquare())) {
         squares[piece->getPreviousSquare()].setOccupant(nullptr);
         std::cout << piece->getSquare() << std::endl;
@@ -211,9 +238,12 @@ bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocatio
 
     if (target->getName() == "King"){
         int previous = target->getPreviousSquare();
-        target->move(endLocation);
-        if ((this->isInCheck(target->getPieceColor()).size() == 0)){
-            target->revertLastMove(startLocation, previous);
+        std::vector<Square> boardState = squares;
+        boardState[endLocation].setOccupant(target);
+        //target->move(endLocation);
+        if ((this->isInCheck2(target->getPieceColor(), boardState).size() == 0)){
+           // target->revertLastMove(startLocation, previous);
+           cout << "Moving to: " << endLocation << "causes a check" << endl;
             return false;
         }
     }

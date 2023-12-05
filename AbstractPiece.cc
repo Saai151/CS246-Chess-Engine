@@ -60,6 +60,12 @@ std::vector<int> Pawn::allMoves() {
     //std::cout << this->getSquare() << " GET SQUARE" << std::endl;
     int currSquare = this->getSquare();
     vector<int> moves = {};
+    if (this->getPieceColor() == ChessColor::White && isFirst){
+        moves.push_back(currSquare - 16);
+    }
+    if (this->getPieceColor() == ChessColor::Black && isFirst){
+        moves.push_back(currSquare + 16);
+    }
     if (this->getPieceColor() == ChessColor::White){
         moves.push_back(currSquare - 8);
         moves.push_back(currSquare - 7);
@@ -68,12 +74,6 @@ std::vector<int> Pawn::allMoves() {
         moves.push_back(currSquare + 8);
         moves.push_back(currSquare + 7);
         moves.push_back(currSquare + 9);
-    }
-    if (this->getPieceColor() == ChessColor::White && isFirst){
-        moves.push_back(currSquare - 16);
-    }
-    if (this->getPieceColor() == ChessColor::Black && isFirst){
-        moves.push_back(currSquare + 16);
     }
 
     return moves;
@@ -175,12 +175,12 @@ std::string King::printable() const
 }
 
 bool King::validMove(int targetSquare)
-{
+{   
     int currSquare = this->getSquare();
     vector<int> moves = {currSquare + 8, currSquare - 8, currSquare + 9, currSquare - 9};
 
     for (size_t i = 0; i < moves.size(); ++i)
-    {
+    {       
         if (targetSquare == moves[i])
         {
             return true;
@@ -314,30 +314,66 @@ bool Rook::validMove(int targetSquare) {
 }
 
 std::vector<int> Rook::allMoves() {
-    vector<int> validMoves = {};
+    std::vector<int> validMoves;
 
     int currSquare = this->getSquare();
-    for (int i = 1; i <= 8; i++) {
-        validMoves.push_back(currSquare + (i * 8));
+    int currRow = currSquare / 8; // Row index
+    int currCol = currSquare % 8; // Column index
+
+    // Generate vertical moves (up and down)
+    for (int i = currRow + 1; i < 8; ++i) {
+        if (i >= 8 || i < 0){
+            break;
+        }
+        int move = i * 8 + currCol;
+        validMoves.push_back(move);
+    }
+    for (int i = currRow - 1; i >= 0; --i) {
+        if (i >= 8 || i < 0){
+            break;
+        }
+        int move = i * 8 + currCol;
+        validMoves.push_back(move);
     }
 
-    for (int i = 1; i <= 8; i++) {
-        validMoves.push_back(currSquare - (i * 8));
+    // Generate horizontal moves (left and right)
+    for (int i = currCol + 1; i < 8; ++i) {
+        if (i >= 8 || i < 0){
+            break;
+        }
+        int move = currRow * 8 + i;
+        validMoves.push_back(move);
     }
-
-    int currSquareCopy = currSquare;
-    while (currSquareCopy % 8 != 0) {
-        currSquareCopy--;
-        validMoves.push_back(currSquareCopy);
-    }
-
-    currSquareCopy = currSquare;
-    while (currSquareCopy % 8 != 0) {
-        currSquareCopy++;
-        validMoves.push_back(currSquareCopy);
+    for (int i = currCol - 1; i >= 0; --i) {
+        if (i >= 8 || i < 0){
+            break;
+        }
+        int move = currRow * 8 + i;
+        validMoves.push_back(move);
     }
 
     return validMoves;
+    // for (int i = 1; i <= 8; i++) {
+    //     validMoves.push_back(currSquare + (i * 8));
+    // }
+
+    // for (int i = 1; i <= 8; i++) {
+    //     validMoves.push_back(currSquare - (i * 8));
+    // }
+
+    // int currSquareCopy = currSquare;
+    // while (currSquareCopy % 8 != 0) {
+    //     currSquareCopy--;
+    //     validMoves.push_back(currSquareCopy);
+    // }
+
+    // currSquareCopy = currSquare;
+    // while (currSquareCopy % 8 != 0) {
+    //     currSquareCopy++;
+    //     validMoves.push_back(currSquareCopy);
+    // }
+
+    
 }
 
 std::string Bishop::printable() const
@@ -406,6 +442,8 @@ void AbstractPiece::move(int newIndex) {
 
     previousSquareIndex = squareIndex;
     squareIndex = newIndex;
+
+
     
     bool validatedByBoard = pieceMovedObserver->handlePieceMoved(this);
     if (!validatedByBoard) {
