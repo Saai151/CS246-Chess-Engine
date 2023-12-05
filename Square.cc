@@ -27,7 +27,7 @@ void Square::reset() {
 
 void Square::setOccupant(AbstractPiece* occupant) {
     if (occupant != nullptr) {
-        occupant->setSquare(location.getIndex());
+        if (occupant->getSquare() == -1) occupant->setSquare(location.getIndex());
         delete this->occupant;
     }
 

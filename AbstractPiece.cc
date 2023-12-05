@@ -9,7 +9,10 @@ void AbstractPiece::revertLastMove(int newSquare, int prevSquare) {
     if (this->getName() == "Pawn") {
         Pawn* p = (Pawn*)this;
         if (abs(squareIndex - previousSquareIndex) == 16) {
-            std::cout << abs(squareIndex - previousSquareIndex) << std::endl;
+<<<<<<< HEAD
+            //std::cout << abs(squareIndex - previousSquareIndex) << std::endl;
+=======
+>>>>>>> 692cb1c4deefa496e7259ce8ab8a7317a99dd1d8
             p->reset();
         }
     }
@@ -36,7 +39,10 @@ bool Pawn::validMove(int targetSquare)
     int currSquare = this->getSquare();
 
     int delta = targetSquare - currSquare;
-    std::cout << this->isFirst << std::endl;
+<<<<<<< HEAD
+    //std::cout << this->isFirst << std::endl;
+=======
+>>>>>>> 692cb1c4deefa496e7259ce8ab8a7317a99dd1d8
 
     if (getPieceColor() == ChessColor::Black) {
         if ((delta == 8 || delta == 16) && isFirst) {
@@ -62,7 +68,10 @@ bool Pawn::validMove(int targetSquare)
 }
 
 std::vector<int> Pawn::allMoves() {
-    std::cout << this->getSquare() << " GET SQUARE" << std::endl;
+<<<<<<< HEAD
+    //std::cout << this->getSquare() << " GET SQUARE" << std::endl;
+=======
+>>>>>>> 692cb1c4deefa496e7259ce8ab8a7317a99dd1d8
     int currSquare = this->getSquare();
     vector<int> moves = {};
     if (this->getPieceColor() == ChessColor::White){
@@ -405,9 +414,13 @@ std::vector<int> Bishop::allMoves() {
 }
 
 void AbstractPiece::move(int newIndex) {
-    std::cout << "H" << std::endl;
+<<<<<<< HEAD
+    //std::cout << "H" << std::endl;
     if (!validMove(newIndex)) throw std::invalid_argument("Invalid move 5");
-    std::cout << "M" << std::endl;
+    //std::cout << "M" << std::endl;
+=======
+    if (!validMove(newIndex)) throw std::invalid_argument("Invalid move 5");
+>>>>>>> 692cb1c4deefa496e7259ce8ab8a7317a99dd1d8
     int previousSquareIndexCopy = previousSquareIndex;
     int squareIndexCopy = squareIndex;
 

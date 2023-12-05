@@ -172,7 +172,9 @@ void Board::resetSquare(int index) {
 bool Board::handlePieceMoved(AbstractPiece* piece, bool overrideValidation) {
     if (overrideValidation || isValidMove(piece, piece->getPreviousSquare(), piece->getSquare())) {
         squares[piece->getPreviousSquare()].setOccupant(nullptr);
-        squares[piece->getSquare()].setOccupant(piece); 
+        std::cout << piece->getSquare() << std::endl;
+        std::cout << "MADE IT HERE" << std::endl;
+        squares[piece->getSquare()].setOccupant(piece); // broken
         return true;
     }
     
@@ -180,8 +182,7 @@ bool Board::handlePieceMoved(AbstractPiece* piece, bool overrideValidation) {
 }
 
 bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocation) {
-
-    if (endLocation < 0 || endLocation >= 64){
+    if (endLocation < 0 || endLocation > 63){
         return false;
     }
 
@@ -229,6 +230,9 @@ bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocatio
             else return false;
         }
     } else if (delta % 8 == 0) { // veritcal move
+        if (target->getName() == "Pawn") {
+            if (squares[endLocation].isOccupied()) return false;
+        }
         if (startLocation > endLocation) {
             for (int i = 1; i < (delta / 8); i++) {
                 if (squares[startLocation - (i * 8)].isOccupied()) return false;
