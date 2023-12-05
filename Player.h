@@ -47,6 +47,7 @@ class ComputerPlayer_1: public Player {
 };
 
 class ComputerPlayer_2: public Player {
+    bool checkFromMove(AbstractPiece* curr_piece, Board* b, int move);
     public:
         ComputerPlayer_2(Player&& p);
         ComputerPlayer_2(ChessColor c);

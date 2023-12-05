@@ -149,6 +149,56 @@ void ComputerPlayer_1::move(Board* b) {
 ComputerPlayer_2::ComputerPlayer_2(ChessColor c) : Player(c) {}
 ComputerPlayer_2::ComputerPlayer_2(Player &&p) : Player(std::move(p)) {}
 
+bool ComputerPlayer_2::checkFromMove(AbstractPiece* curr_piece, Board* b, int move) {
+    //Basic Idea:
+    // Create a copy of the board built from the white->pieces, black->pieces, and a nullptr display.
+    // Make the move on the built board.
+    // delete the board.
+
+    // Generate white->pieces and black->pieces;
+    std::vector<AbstractPiece*>white_pieces;
+    std::vector<AbstractPiece*>black_pieces;
+    for (Square s : b->squares) {
+        if (s.isOccupied() && s.getOccupant()->getPieceColor() == ChessColor::White) {
+            white_pieces.push_back(s.getOccupant());
+        } else if (s.isOccupied()) {
+            black_pieces.push_back(s.getOccupant());
+        }
+    }
+
+    // Generate cpy board.
+    std::vector<DisplayObserver*> empty_displays = {};
+    DisplayAggregator allDisplays = DisplayAggregator(empty_displays);
+    Board* cpy_board = new Board(white_pieces, black_pieces, &allDisplays);
+    
+    // Pass cpy_board as an observer of each piece.
+    for (AbstractPiece* p : white_pieces) {
+        p->attachMoveObserver(cpy_board);
+    }
+    for (AbstractPiece* p : black_pieces) {
+        p->attachMoveObserver(cpy_board);
+    }
+
+    // Locate the curr_piece in the cpy board.
+    for (Square s : cpy_board->squares) {
+        if (s.getOccupant()->getSquare() == curr_piece->getSquare()) {
+            s.getOccupant()->move(move); //make the move on the copy board.
+            break;
+        }
+    }
+    // Check if the board is in check.
+    ChessColor opposing_king = curr_piece->getPieceColor() == ChessColor::White ? ChessColor::Black : ChessColor::White;
+    for (Square *s : cpy_board->isInCheck(opposing_king)) {
+        if (s->getOccupant()->getSquare() == move) {
+            return true; // The move did lead to a check.
+        }
+    }
+
+    // Else it did not. Return false and delete copy board.
+    delete cpy_board;
+    return false;
+}
+
 void ComputerPlayer_2::move(Board* b) {
     // How it works: 
     // Same functionality as ComputerPlayer_1 except for each valid move found, 
@@ -195,6 +245,12 @@ void ComputerPlayer_2::move(Board* b) {
 
                 // Else check if move results in a check to the king:
                 // Move the piece to move.
+                // // TESTING NEW FUNCTION:
+                // if (checkFromMove(curr_piece, b, move)) {
+                //     curr_piece->move(move);
+                //     return;
+                // }
+
                 ChessColor opposing_king_color = curr_piece->getPieceColor() == ChessColor::White ? ChessColor::Black : ChessColor::White;
                 int original_square = curr_piece->getSquare();
                 int previous_square = curr_piece->getPreviousSquare();
@@ -234,31 +290,6 @@ bool ComputerPlayer_3::canBeCaptured(AbstractPiece* curr_piece, Board* b) {
             }
         }
     }
-    return false;
-}
-
-bool checkFromMove(AbstractPiece* curr_piece, Board* b, int move) {
-    //Basic Idea:
-    //determine the name of the piece. 
-    //create a temporary copy of that piece, setting it's current square as move;
-    //find and save the index of the opposing king.
-    //use the valid_move function passing in the temporary piece, its start location, and the king's index(end location);
-
-    AbstractPiece* new_piece;
-
-    // if (curr_piece->getName() == "Pawn") {
-    //     new_piece = Pawn::Pawn(curr_piece->getPieceColor(), nullptr);
-    // } else if (curr_piece->getName() == "Rook") {
-
-    // } else if (curr_piece->getName() == "Bishop") {
-
-    // } else if (curr_piece->getName() == "Knight") {
-
-    // } else if (curr_piece->getName() == "Queen") {
-
-    // } else { // King
-
-    // }
     return false;
 }
 

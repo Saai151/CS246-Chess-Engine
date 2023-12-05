@@ -1,5 +1,19 @@
 #include "AbstractPiece.h"
 
+// Copy constructor:
+AbstractPiece::AbstractPiece(const AbstractPiece &other) {
+    cout << "Copy constructor is running";
+    color = other.color;
+    squareIndex = other.squareIndex;
+    previousSquareIndex = other.previousSquareIndex;
+    prevPrevSquareIndex = other.prevPrevSquareIndex;
+    isFirst = other.isFirst;
+    lastMoveWasFirstMove = other.lastMoveWasFirstMove;
+    name = other.name;
+    pieceRemovedObserver = nullptr;
+    pieceMovedObserver = nullptr;
+}
+
 AbstractPiece::~AbstractPiece()
 {
     pieceRemovedObserver->handlePieceRemoved(this);

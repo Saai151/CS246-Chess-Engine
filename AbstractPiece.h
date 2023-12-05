@@ -29,6 +29,7 @@ protected:
 
 public:
     AbstractPiece(ChessColor color, std::string name, PieceRemovedObserver *pieceRemovedObserver) : color{color}, name{name}, pieceRemovedObserver{pieceRemovedObserver} {}
+    AbstractPiece(const AbstractPiece &other);
 
     bool getIsFirst() const {
         return isFirst;
