@@ -100,7 +100,6 @@ void HumanPlayer::move(Board* b)
     AbstractPiece *target = nullptr;
     for (auto &p : pieces)
     {
-        std::cout << p->getSquare() << std::endl;
         if (p->getSquare() == startLocation) {
             target = p;
         }
@@ -116,7 +115,6 @@ ComputerPlayer_1::ComputerPlayer_1(ChessColor c) : Player(c) {}
 ComputerPlayer_1::ComputerPlayer_1(Player &&p) : Player(std::move(p)) {}
 
 void ComputerPlayer_1::move(Board* b) {
-    std::cout << pieces.size() << " : SIZE" << std::endl;
     std::vector<int>piece_indexs = {};
     int s = pieces.size();
     for (int i = 0; i < s; i++) {
@@ -126,26 +124,14 @@ void ComputerPlayer_1::move(Board* b) {
     while (piece_indexs.size() > 0) {
         size_t num_pieces = piece_indexs.size();
         int random_val = rand() % num_pieces; // Generate random number
-        //cout << "Random index: " << rand_index << endl;
         int rand_index = piece_indexs[random_val];
 
         AbstractPiece* curr_piece = pieces[rand_index];
-        //std::cout << "Name: " << curr_piece->getName();
-       std::cout << "Name: " << curr_piece->getName() << endl;
 
-        cout << curr_piece->getSquare() << " -> DECIDED PIECE index" << endl;
         std::vector<int>all_moves = curr_piece->allMoves();
 
-        cout << "ALL MOVES START" << endl;
-        for (auto& m : all_moves) {
-            cout << m << endl;
-        }
-        cout << "ALL MOVES END : " << endl;
-
         for (int move : all_moves) {
-            std::cout << move << std::endl;
             if (b->isValidMove(curr_piece, curr_piece->getSquare(), move)) {
-                std::cout << "DECIDED MOVE: " << move << ", CURR SQUARE: " << curr_piece->getSquare() << std::endl;
                 curr_piece->move(move);
                 return;
             }
@@ -166,7 +152,6 @@ void ComputerPlayer_2::move(Board* b) {
     // the move.
     // If no move is found that leads to a check or capture, choose the first piece and move that
     // is valid. i.e make the first random move available.
-    //std::cout << pieces.size() << " : SIZE" << std::endl;
     std::vector<int>piece_indexs = {};
     int s = pieces.size();
     for (int i = 0; i < s; i++) {
@@ -209,7 +194,7 @@ void ComputerPlayer_2::move(Board* b) {
                 ChessColor opposing_king_color = curr_piece->getPieceColor() == ChessColor::White ? ChessColor::Black : ChessColor::White;
                 int original_square = curr_piece->getSquare();
                 int previous_square = curr_piece->getPreviousSquare();
-                //curr_piece->move(move);
+                curr_piece->move(move);
                 // Loop through all the squares on the board checking the opposing king currently.
                 for (Square* s : b->isInCheck(opposing_king_color)) {
                     if (s->getOccupant()->getSquare() == move) { // Check if the piece we just moved is checking the king.
@@ -217,9 +202,13 @@ void ComputerPlayer_2::move(Board* b) {
                     }
                 }
                 // Else, the move did not result in a check. Revert move back to original square.
+<<<<<<< HEAD
                 cout << "Just reverted" << endl;
                 //curr_piece->revertLastMove(original_square,previous_square);
                 //cout << "Just reverted" << endl;
+=======
+                curr_piece->revertLastMove(original_square,previous_square);
+>>>>>>> 692cb1c4deefa496e7259ce8ab8a7317a99dd1d8
             }
         }
         // Else there are no valid moves for the given piece.
@@ -227,7 +216,6 @@ void ComputerPlayer_2::move(Board* b) {
         piece_indexs.erase(piece_indexs.begin() + random_val);
         cout << "erased once" << endl;
     }
-    std::cout << "HERE 33" << std::endl;
     backup->move(backup_move);
 }
 
