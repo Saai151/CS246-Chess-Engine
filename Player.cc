@@ -217,12 +217,15 @@ void ComputerPlayer_2::move(Board* b) {
                     }
                 }
                 // Else, the move did not result in a check. Revert move back to original square.
+                cout << "Just reverted" << endl;
                 //curr_piece->revertLastMove(original_square,previous_square);
+                //cout << "Just reverted" << endl;
             }
         }
         // Else there are no valid moves for the given piece.
         // Remove piece from cpy_pices array. And keep looking.
         piece_indexs.erase(piece_indexs.begin() + random_val);
+        cout << "erased once" << endl;
     }
     std::cout << "HERE 33" << std::endl;
     backup->move(backup_move);
@@ -336,14 +339,7 @@ void ComputerPlayer_3::move(Board* b) {
                         if (s->getOccupant()->getSquare() == move) { // Check if the piece we just moved is checking the king.
                             // move leads to a check. We already know backup move is worst han a rank 2 move. 
                             // Revert move back to original square;
-<<<<<<< HEAD
-                            // 
-                            // .....
-
-
-=======
                             curr_piece->revertLastMove(original_square,previous_square);
->>>>>>> 400846bdd7281c7c5429cba19eb88d0088538250
                             // Now set it as the backup.
                             backup = curr_piece;
                             backup_move = move; 
