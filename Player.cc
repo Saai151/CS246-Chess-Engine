@@ -51,7 +51,7 @@ Player::Player(Player &&p) : c{p.getColor()}
     for (AbstractPiece *p : p.pieces) {
         pieces_.push_back(p);
     }
-    cout << pieces_.size() << " CHECK" << endl;
+
     p.pieces.clear();
     pieces = pieces_;
 }
@@ -113,13 +113,13 @@ ComputerPlayer_1::ComputerPlayer_1(ChessColor c) : Player(c) {}
 ComputerPlayer_1::ComputerPlayer_1(Player &&p) : Player(std::move(p)) {}
 
 void ComputerPlayer_1::move(Board* b) {
+    std::cout << pieces.size() << " : SIZE" << std::endl;
     std::vector<int>piece_indexs = {};
     int s = pieces.size();
     for (int i = 0; i < s; i++) {
         piece_indexs.push_back(i);
     }
-
-
+    
     while (piece_indexs.size() > 0) {
         int num_pieces = piece_indexs.size();
         int random_val = rand() % num_pieces; // Generate random number
@@ -130,13 +130,18 @@ void ComputerPlayer_1::move(Board* b) {
         AbstractPiece* curr_piece = pieces[rand_index];
        //cout << "Name: " << curr_piece->getName() << endl;
 
-        //cout << "<ADE IT" << endl;
+        cout << curr_piece->getName() << " -> DECIDED PIECE" << endl;
         std::vector<int>all_moves = curr_piece->allMoves();
-        cout << "<ADE IT 2" << endl;
+
+        cout << "ALL MOVES START" << endl;
+        for (auto& m : all_moves) {
+            cout << m << endl;
+        }
+        cout << "ALL MOVES END : " << endl;
 
         for (int move : all_moves) {
-            std::cout << curr_piece->getSquare() << std::endl;
             if (b->isValidMove(curr_piece, curr_piece->getSquare(), move)) {
+                std::cout << "DECIDED MOVE: " << move << ", CURR SQUARE: " << curr_piece->getSquare() << std::endl;
                 curr_piece->move(move);
                 return;
             }

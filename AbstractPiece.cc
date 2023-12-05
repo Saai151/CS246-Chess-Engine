@@ -47,8 +47,9 @@ bool Pawn::validMove(int targetSquare)
 }
 
 std::vector<int> Pawn::allMoves() {
+    std::cout << this->getSquare() << " GET SQUARE" << std::endl;
     int currSquare = this->getSquare();
-    vector<int> moves = {currSquare + 8};
+    vector<int> moves = {};
     if (this->getPieceColor() == ChessColor::White){
         moves.push_back(currSquare - 8);
         moves.push_back(currSquare - 7);
@@ -65,6 +66,7 @@ std::vector<int> Pawn::allMoves() {
         moves.push_back(currSquare + 16);
     }
 
+    return moves;
 }
 
 std::string Queen::printable() const
@@ -101,6 +103,8 @@ std::vector<int> Queen::allMoves() {
     vector<int> horizontalOffsets = { -1, 1, 0, 0, -9, -7, 7, 9 }; //combining capabiliies of rook and bishop
 
     for (size_t i = 0; i < 8; ++i) {
+        cout << "HERE 1111" << endl;
+        cout << this->getSquare() << endl;
         int newSquare = this->getSquare();
         while (true) {
             newSquare += horizontalOffsets[i];
@@ -144,10 +148,6 @@ bool King::validMove(int targetSquare)
 
 std::vector<int> King::allMoves() {
     vector<int> validMoves;
-
-    std::cout << "INSIDE 1" << std::endl;
-    this->getSquare();
-    std::cout << "INSIDE 2" << std::endl;
 
     // Define increments for horizontal, vertical, and diagonal movements
     vector<int> kingOffsets = { -9, -8, -7, -1, 1, 7, 8, 9 }; // All directions
@@ -225,26 +225,32 @@ bool Rook::validMove(int targetSquare) {
 }
 
 std::vector<int> Rook::allMoves() {
-    vector<int> validMoves;
+    vector<int> validMoves = {};
 
-    vector<int> horizontalOffsets = { -1, 1, 0, 0 }; // Left, Right, Up, Down
-    vector<int> verticalOffsets = { 0, 0, -8, 8 };   // Left, Right, Up, Down
-
-    for (size_t i = 0; i < 4; ++i) {
-        int newSquare = this->getSquare();
-        while (true) {
-            newSquare += (i < 2) ? horizontalOffsets[i] : verticalOffsets[i];
-
-            if (newSquare < 0 || newSquare >= 64) {
-                break; // Move is out of bounds
-            }
-
-
-            // Empty square, continue in the same direction
-            validMoves.push_back(newSquare);
-        }
+    int currSquare = this->getSquare();
+    for (int i = 1; i <= 8; i++) {
+        validMoves.push_back(currSquare + (i * 8));
     }
 
+    for (int i = 1; i <= 8; i++) {
+        validMoves.push_back(currSquare - (i * 8));
+    }
+
+    int currSquareCopy = currSquare;
+    while (currSquareCopy % 8 != 0) {
+        currSquareCopy--;
+        validMoves.push_back(currSquareCopy);
+    }
+
+    currSquareCopy = currSquare;
+    while (currSquareCopy % 8 != 0) {
+        currSquareCopy++;
+        validMoves.push_back(currSquareCopy);
+    }
+
+    for (auto& i : validMoves) {
+        cout << i << endl;
+    }
     return validMoves;
 }
 
@@ -289,7 +295,8 @@ std::vector<int> Bishop::allMoves() {
         }
     }
 
-    return validMoves;}
+    return validMoves;
+}
 
 void AbstractPiece::move(int newIndex) {
     std::cout << "HEREEEE, " << newIndex << std::endl;
