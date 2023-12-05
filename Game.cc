@@ -14,21 +14,21 @@ void Game::makeMove() {
     }
     try {
         currentTurn->move(board);
-    } catch (std::invalid_argument& _) {
-        std::cout << "INVALID MOVE 2" << std::endl;
+    } catch (std::invalid_argument& e) {
+        std::cout << "INVALID MOVE: " << e.what() << std::endl;
         return;
     }
 
     if (currentTurn == white) currentTurn = black;
     else currentTurn = white;
 
-  //  if (board->isCheckmate(currentTurn->getColor())) {
-  //      std::cout << (currentTurn->getColor() == ChessColor::White ? "White" : "Black") << " IS IN CHECKMATE" << std::endl; 
-  //  }
+   if (board->isCheckmate(currentTurn->getColor())) {
+       std::cout << (currentTurn->getColor() == ChessColor::White ? "White" : "Black") << " IS IN CHECKMATE" << std::endl; 
+   }
 
-    // if (board->isStalemate(currentTurn->getColor())) {
-    //     std::cout << "STALEMATE" << std::endl; 
-    // }
+    if (board->isStalemate(currentTurn->getColor())) {
+        std::cout << "STALEMATE" << std::endl; 
+    }
 }
 
 Game::~Game() {

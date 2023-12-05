@@ -13,10 +13,10 @@ class Board: public PieceMovedObserver {
     DisplayAggregator* g;
 
     bool isPieceCheckingTheKing(Square* s, AbstractPiece* king, ChessColor c);
-
+    bool blockCheck(AbstractPiece* curr_piece, AbstractPiece* king, int blocking_move);
     public:
         std::vector<Square> squares;
-        Board(std::vector<AbstractPiece*> white, std::vector<AbstractPiece*> black, DisplayAggregator* g);
+        Board(std::vector<AbstractPiece*> white, std::vector<AbstractPiece*> black, DisplayAggregator* g, bool hardCode = true);
         void resetSquare(int index);
         void reset();
         void placePiece(AbstractPiece* piece, int square);

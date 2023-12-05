@@ -1,7 +1,8 @@
 #include "Board.h"
 
 bool isCastling(std::vector<Square> squares, int startLocation, int endLocation) {
-    if (squares[startLocation].getOccupant()->getName() == "King" 
+    if (squares[startLocation].isOccupied()
+            && squares[startLocation].getOccupant()->getName() == "King" 
             && squares[startLocation].getOccupant()->getIsFirst()
             && squares[endLocation].isOccupied()
             && squares[endLocation].getOccupant()->getName() == "Rook"
@@ -24,7 +25,7 @@ std::vector<AbstractPiece*> getPieces(std::string name, std::vector<AbstractPiec
     return result;
 }
 
-Board::Board(std::vector<AbstractPiece*> white, std::vector<AbstractPiece*> black, DisplayAggregator* g) {
+Board::Board(std::vector<AbstractPiece*> white, std::vector<AbstractPiece*> black, DisplayAggregator* g, bool hardCode) {
     std::vector<AbstractPiece*> selectedPieces;
     squares.reserve(64); // Reserve space for 64 squares
 
@@ -38,6 +39,18 @@ Board::Board(std::vector<AbstractPiece*> white, std::vector<AbstractPiece*> blac
         }
     }
 
+    if (!hardCode) {
+        for (auto& p : white) {
+            int s = p->getSquare();
+            squares[s].setOccupant(p);
+        }
+
+        for (auto& b : black) {
+            int s = b->getSquare();
+            squares[s].setOccupant(b);
+        }
+        return;
+    }
     /* Place down white pieces */
     selectedPieces = getPieces("Pawn", white);
     for (int i = 48; i < 56; i++) {
@@ -113,6 +126,67 @@ bool Board::isPieceCheckingTheKing(Square* s, AbstractPiece* king, ChessColor c)
 
 }
 
+bool Board::blockCheck(AbstractPiece* curr_piece, AbstractPiece* king, int move) {
+    //Basic Idea:
+    //Create a copy of the board.
+    //make the desired move in the copy of the board.
+    //check if the king is still in check.
+
+    //Create a copy of the board.
+    // Generate white->pieces and black->pieces;
+    std::vector<AbstractPiece*>white_pieces;
+    std::vector<AbstractPiece*>black_pieces;
+    for (Square s : squares) {
+        if (s.isOccupied() && s.getOccupant()->getPieceColor() == ChessColor::White) {
+            // Create copy;
+            AbstractPiece* new_p = parsePieceSymbolAndCopy(s.getOccupant()->printable()[0], s.getOccupant());
+            new_p->detachRemovedObserver();
+            white_pieces.push_back(new_p);
+        } else if (s.isOccupied()) {
+            AbstractPiece* new_p = parsePieceSymbolAndCopy(s.getOccupant()->printable()[0], s.getOccupant());
+            new_p->detachRemovedObserver();
+            black_pieces.push_back(new_p);
+        }
+    }
+    cout << "pieces successfully copied" << endl;
+    // Generate cpy board.
+    std::vector<DisplayObserver*> empty_displays = {};
+    DisplayAggregator allDisplays = DisplayAggregator(empty_displays);
+    Board* cpy_board = new Board(white_pieces, black_pieces, &allDisplays, false);
+    // Pass cpy_board as an observer of each piece.
+    for (AbstractPiece* p : white_pieces) {
+        p->attachMoveObserver(cpy_board);
+    }
+    for (AbstractPiece* p : black_pieces) {
+        p->attachMoveObserver(cpy_board);
+    }
+
+    // Locate the curr_piece in the cpy board.
+    for (Square s : cpy_board->squares) {
+        if (s.isOccupied() && s.getOccupant()->getSquare() == curr_piece->getSquare()) {
+            std::cout << "BEFORE" << std::endl;
+            std::cout << "Name: " << s.getOccupant()->getName() << " Move: " << move << std::endl;
+            s.getOccupant()->move(move); //make the move on the copy board.
+            std::cout << "AFter" << std::endl;
+            break;
+        }
+    }
+    // Check if the board is still in check.
+    bool inCheck = true;
+    if (isInCheck(king->getPieceColor()).size() == 0) {
+        inCheck = false;
+    }
+    // Delete each piece.
+    for (AbstractPiece* p : white_pieces) {
+        delete p;
+    }
+    for (AbstractPiece* p : black_pieces) {
+        delete p;
+    }
+    delete cpy_board;
+    return inCheck;
+}
+
 std::vector<Square*> Board::isInCheck(ChessColor c) {
     std::vector<Square*> checked;
     AbstractPiece* king;
@@ -150,6 +224,12 @@ std::vector<Square*> Board::isInCheck2(ChessColor c, std::vector<Square> boardSt
 }
 
 bool Board::isCheckmate(ChessColor c) {
+    // Basic Idea:
+    // First Check if the King is in check.
+    //  Next check if it has any valid moves
+    //   Next Check if any exisiting piece on the same team can move in such a way to prevent check.
+
+    // First locate the king;
     AbstractPiece* king;
     for (auto& s : squares) {
         if (s.isOccupied() && s.getOccupant()->getName() == "King" && s.getOccupant()->getPieceColor() == c) {
@@ -157,29 +237,31 @@ bool Board::isCheckmate(ChessColor c) {
         }
     }
 
+    // Check if the king is in check;
+    if (isInCheck(c).size() == 0) {
+        return false;
+    }
 
-    std::vector<Square*> checkedPieces = isInCheck(c);
-    if (!checkedPieces.size()) return false;
-
-    bool canMakeMove = true;
-    for (auto& s : checkedPieces) {
-        for (int move : king->allMoves()) {
-            canMakeMove = true;
-
-            for (auto& s_ : squares) {
-                if (isPieceCheckingTheKing(s, king, c)) {
-                    canMakeMove = false;
-                    break;
-                }
-            }
-
-            if (canMakeMove) return false; // not in checkmate
+    // Check if the king has any valid moves:
+    for (int move : king->allMoves()) {
+        if (isValidMove(king, king->getSquare(), move)) {
+            return false;
         }
     }
 
-    // CHECK IF WE CAN MOVE SOME OTHER PIECE IN FRONT OF THE KING
-
-    return false;
+    // Check if piece can block.
+    // Loop through all pieces on the same team as king. 
+    for (Square s : squares) {
+        if (s.isOccupied() && s.getOccupant()->getPieceColor() == c) {
+            // Loop through all its moves. Pass to the blockCheck function.
+            for (int move : s.getOccupant()->allMoves()) {
+                if (blockCheck(s.getOccupant(), king, move)) { //i.e it is possible for a piece to block checkmate.
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
 }
 
 bool Board::isStalemate(ChessColor current_colour) {
@@ -219,6 +301,7 @@ bool Board::handlePieceMoved(AbstractPiece* piece, bool overrideValidation) {
 
     if (overrideValidation || isValidMove(piece, piece->getPreviousSquare(), piece->getSquare())) {
         if (isCastling(squares, piece->getPreviousSquare(), piece->getSquare())) {
+            cout << "Castiling is true" << endl;
             AbstractPiece* temp_1 = squares[piece->getPreviousSquare()].getOccupant();
             AbstractPiece* temp_2 = squares[piece->getSquare()].getOccupant();
             
@@ -231,10 +314,12 @@ bool Board::handlePieceMoved(AbstractPiece* piece, bool overrideValidation) {
             squares[piece->getPreviousSquare()].setOccupant(temp_2);
             temp_2->hasMoved();
         } else {
+            cout << "Else" << endl;
             squares[piece->getPreviousSquare()].setOccupant(nullptr);
             squares[piece->getSquare()].setOccupant(piece);
 
             if (piece->getName() == "Pawn" && ((7 - piece->getSquare() >= 0) || (63 - piece->getSquare()) <= 7)) {
+                cout << "Pawn" << endl;
                 std::string added;
                 std::cin >> added;
 

@@ -31,7 +31,7 @@ void Square::refresh() {
 
 void Square::setOccupant(AbstractPiece* occupant) {
     if (occupant != nullptr) {
-        if (occupant->getSquare() == -1) occupant->setSquare(location.getIndex());
+        occupant->setSquare(location.getIndex());
         delete this->occupant;
     }
 
