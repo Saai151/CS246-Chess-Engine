@@ -336,14 +336,7 @@ void ComputerPlayer_3::move(Board* b) {
                         if (s->getOccupant()->getSquare() == move) { // Check if the piece we just moved is checking the king.
                             // move leads to a check. We already know backup move is worst han a rank 2 move. 
                             // Revert move back to original square;
-<<<<<<< HEAD
-                            // 
-                            // .....
-
-
-=======
                             curr_piece->revertLastMove(original_square,previous_square);
->>>>>>> 400846bdd7281c7c5429cba19eb88d0088538250
                             // Now set it as the backup.
                             backup = curr_piece;
                             backup_move = move; 
