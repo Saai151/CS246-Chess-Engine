@@ -242,6 +242,31 @@ bool ComputerPlayer_3::canBeCaptured(AbstractPiece* curr_piece, Board* b) {
     return false;
 }
 
+bool checkFromMove(AbstractPiece* curr_piece, Board* b, int move) {
+    //Basic Idea:
+    //determine the name of the piece. 
+    //create a temporary copy of that piece, setting it's current square as move;
+    //find and save the index of the opposing king.
+    //use the valid_move function passing in the temporary piece, its start location, and the king's index(end location);
+
+    AbstractPiece* new_piece;
+
+    // if (curr_piece->getName() == "Pawn") {
+    //     new_piece = Pawn::Pawn(curr_piece->getPieceColor(), nullptr);
+    // } else if (curr_piece->getName() == "Rook") {
+
+    // } else if (curr_piece->getName() == "Bishop") {
+
+    // } else if (curr_piece->getName() == "Knight") {
+
+    // } else if (curr_piece->getName() == "Queen") {
+
+    // } else { // King
+
+    // }
+    return false;
+}
+
 void ComputerPlayer_3::move(Board* b) {
     // How it works: 
     // Mostly same functionality as level 2, however...
@@ -303,7 +328,10 @@ void ComputerPlayer_3::move(Board* b) {
                         if (s->getOccupant()->getSquare() == move) { // Check if the piece we just moved is checking the king.
                             // move leads to a check. We already know backup move is worst han a rank 2 move. 
                             // Revert move back to original square;
+                            // 
                             // .....
+
+
                             // Now set it as the backup.
                             backup = curr_piece;
                             backup_move = move; 
