@@ -20,6 +20,7 @@ protected:
 protected:
     int squareIndex = -1;
     int previousSquareIndex = -1;
+    int prevPrevSquareIndex = -1;
     std::string name;
     PieceRemovedObserver *pieceRemovedObserver;
     PieceMovedObserver *pieceMovedObserver;
@@ -58,6 +59,7 @@ public:
     }
 
     void move(int newIndex);
+    void revertLastMove(int newSquare, int prevSquare);
     
     virtual ~AbstractPiece();
     virtual std::string printable() const = 0;
@@ -74,7 +76,7 @@ public:
 class PieceMovedObserver
 {
 public:
-    virtual bool handlePieceMoved(AbstractPiece *p) = 0;
+    virtual bool handlePieceMoved(AbstractPiece *p, bool overrideValidation = false) = 0;
 };
 
 class Pawn : public AbstractPiece
@@ -87,6 +89,9 @@ class Pawn : public AbstractPiece
         std::string printable() const override;
         std::vector<int> allMoves() override;
         bool validMove(int targetSquare) override;
+        void reset() {
+            isFirst = true;
+        }
 };
 
 

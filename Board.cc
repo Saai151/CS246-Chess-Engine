@@ -169,11 +169,10 @@ void Board::resetSquare(int index) {
     squares[index].reset();
 }
 
-bool Board::handlePieceMoved(AbstractPiece* piece) {
-    if (isValidMove(piece, piece->getPreviousSquare(), piece->getSquare())) {
+bool Board::handlePieceMoved(AbstractPiece* piece, bool overrideValidation) {
+    if (overrideValidation || isValidMove(piece, piece->getPreviousSquare(), piece->getSquare())) {
         squares[piece->getPreviousSquare()].setOccupant(nullptr);
         squares[piece->getSquare()].setOccupant(piece); 
-        // Validate isChecked, pieceHopping, isCheckMated, inBoardArea
         return true;
     }
     
