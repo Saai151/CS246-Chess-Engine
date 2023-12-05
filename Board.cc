@@ -180,6 +180,7 @@ bool Board::handlePieceMoved(AbstractPiece* piece, bool overrideValidation) {
 }
 
 bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocation) {
+
     if (endLocation < 0 || endLocation >= 64){
         return false;
     }
@@ -196,6 +197,14 @@ bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocatio
         return false;
     }
 
+    if (target->getName() == "King"){
+        int previous = target->getPreviousSquare();
+        target->move(endLocation);
+        if ((this->isInCheck(target->getPieceColor()).size() == 0)){
+            target->revertLastMove(startLocation, previous);
+            return false;
+        }
+    }
     if (target->getName() == "Knight") return true;
 
     int delta = abs(endLocation - startLocation);
