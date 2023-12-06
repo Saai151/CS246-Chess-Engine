@@ -68,6 +68,7 @@ std::string Pawn::printable() const
 std::vector<int> Pawn::allMoves() {
     int currSquare = this->getSquare();
     vector<int> moves = {};
+
         if (this->getPieceColor() == ChessColor::White && isFirst) {
         moves.push_back(currSquare - 16);
     } else if(isFirst && this->getPieceColor() == ChessColor::Black){
@@ -75,14 +76,31 @@ std::vector<int> Pawn::allMoves() {
     }
     if (this->getPieceColor() == ChessColor::White) {
         moves.push_back(currSquare - 8);
-        moves.push_back(currSquare - 7);
-        moves.push_back(currSquare - 9);
+            
+        if (currSquare % 8 == 0){
+            moves.push_back(currSquare - 7);
+        } else if (currSquare % 8 == 7){
+            moves.push_back(currSquare - 9);
+        }  else{
+            moves.push_back(currSquare - 7);
+             moves.push_back(currSquare - 9);
+        }
+        
+        
     } else{
         moves.push_back(currSquare + 8);
-        moves.push_back(currSquare + 7);
-        moves.push_back(currSquare + 9);
+
+        if (currSquare % 8 == 0){
+            moves.push_back(currSquare + 9);
+        } else if (currSquare % 8 == 7){
+            moves.push_back(currSquare + 7);
+        }  else{
+            moves.push_back(currSquare - 7);
+             moves.push_back(currSquare - 9);
+        }
     }
 
+    
     return moves;
 }
 
@@ -171,6 +189,7 @@ std::vector<int> King::allMoves() {
     // Define increments for horizontal, vertical, and diagonal movements
     vector<int> kingOffsets = { -9, -8, -7, -1, 1, 7, 8, 9 }; // All directions
 
+    
     for (size_t i = 0; i < 8; ++i) {
         int newSquare = this->getSquare() + kingOffsets[i];
         validMoves.push_back(newSquare);  
