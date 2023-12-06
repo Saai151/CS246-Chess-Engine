@@ -5,14 +5,15 @@
 #include <string>
 #include <cstring>
 
-class EmptyDisplay: public DisplayObserver {
-    void handleStateChange(Square* s) override {
-        return;
-    }
-};
+// class EmptyDisplay: public DisplayObserver {
+//     void handleStateChange(Square* s) override {
+//         return;
+//     }
+// };
 
 int main(){
-    srand(static_cast<unsigned int>(time(0))); // for generating random computer moves.
+    srand(static_cast<unsigned int>(time(0))); // Helps generate random numbers by using time as a seed. 
+                                                 // (allows for more random numbers to be generated) 
     float whiteScore = 0;
     float blackScore = 0;
     Player* white = nullptr;
@@ -22,7 +23,7 @@ int main(){
     //GraphicsDisplay gd(w);
     TextDisplay td;
 
-    std::vector<DisplayObserver*> displays = {&td}; // add back graphics display later.
+    std::vector<DisplayObserver*> displays = {&td}; 
     DisplayAggregator allDisplays = DisplayAggregator(displays);
 
     Board* board = nullptr;
@@ -39,18 +40,18 @@ int main(){
             board = new Board(white->pieces, black->pieces, &allDisplays);
         }
 
-        // Refresh screen in case of white space.
+        // Refresh screen in case of display errors.
         for (Square s : board->squares) {
             s.refresh();
         }
 
-        if (command == "setup" && game == nullptr) {
+        if (command == "setup" && game == nullptr) { // Enter setup mode.
             board->reset();
             white->clearPieces();
             black->clearPieces();
             std::string setupCommand = "";
             while (std::cin >> setupCommand) {
-                if (setupCommand == "+") {
+                if (setupCommand == "+") {  // For adding pieces to the board.
                     std::string piece, location;
                     std::cin >> piece >> location;
 
@@ -64,7 +65,7 @@ int main(){
                     newPiece = parsePieceSymbol(piece[0], color, owner);
                     owner->addPiece(newPiece);
                     board->placePiece(newPiece, parseLocation(location));
-                } else if (command == "=") {
+                } else if (command == "=") { // For setting whose turn it is.
                     std::string t = "";
                     std::cin >> t;
                     if (t == "white") {
@@ -72,12 +73,12 @@ int main(){
                     } else if (t == "black") {
                         game->setTurn(ChessColor::Black);
                     }
-                } else if (setupCommand == "-") {
+                } else if (setupCommand == "-") { // For removing pieces from the board.
                     std::string location;
                     std::cin >> location;
                     int parsedLocation = parseLocation(location);
                     board->resetSquare(parsedLocation);
-                } else if (setupCommand == "done") {
+                } else if (setupCommand == "done") { // Signals that the setup process is done.
                     if (board->validState()) break;
                 }
 

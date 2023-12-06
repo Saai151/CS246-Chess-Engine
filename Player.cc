@@ -1,5 +1,6 @@
 #include "Player.h"
 
+// Destructor for player class.
 Player::~Player()
 {
     std::vector<AbstractPiece *> shallow = pieces;
@@ -9,6 +10,7 @@ Player::~Player()
     }
 }
 
+// Default constructor for player
 Player::Player(ChessColor c) : c{c}
 {
     AbstractPiece *p;
@@ -44,11 +46,13 @@ Player::Player(ChessColor c) : c{c}
     }
 }
 
+// Clear pieces.
 void Player::clearPieces()
 {
     pieces.clear();
 }
 
+// Move constructor for player.
 Player::Player(Player &&p) : c{p.getColor()}
 {
     std::vector<AbstractPiece *> pieces_ = {};
@@ -68,11 +72,13 @@ ChessColor Player::getColor()
     return c;
 }
 
+// Add piece to a player's pieces.
 void Player::addPiece(AbstractPiece *piece)
 {
     pieces.push_back(piece);
 }
 
+// Erase removed piece from a player's pieces.
 void Player::handlePieceRemoved(AbstractPiece *piece)
 {
     for (size_t i = 0; i < pieces.size(); i++)
@@ -85,6 +91,7 @@ void Player::handlePieceRemoved(AbstractPiece *piece)
     }
 }
 
+// Attach board as an observer to each piece.
 void Player::attachBoardToPieces(PieceMovedObserver *board)
 {
     for (auto &p : pieces)
@@ -96,6 +103,7 @@ void Player::attachBoardToPieces(PieceMovedObserver *board)
 HumanPlayer::HumanPlayer(ChessColor c) : Player(c) {}
 HumanPlayer::HumanPlayer(Player &&p) : Player(std::move(p)) {}
 
+// Move function for a human player.
 void HumanPlayer::move(Board *b)
 {
     std::string start, end;
@@ -123,17 +131,17 @@ void HumanPlayer::move(Board *b)
 ComputerPlayer_1::ComputerPlayer_1(ChessColor c) : Player(c) {}
 ComputerPlayer_1::ComputerPlayer_1(Player &&p) : Player(std::move(p)) {}
 
+
+// Move function for computer player level 1.
 void ComputerPlayer_1::move(Board *b)
 {
-    std::vector<int> piece_indexs = {};
+    std::vector<int> piece_indexs = {}; 
     int s = pieces.size();
-    for (int i = 0; i < s; i++)
-    {
+    for (int i = 0; i < s; i++) {
         piece_indexs.push_back(i);
     }
 
-    while (piece_indexs.size() > 0)
-    {
+    while (piece_indexs.size() > 0) {
         size_t num_pieces = piece_indexs.size();
         int random_val = rand() % num_pieces; // Generate random number
         int rand_index = piece_indexs[random_val];
@@ -158,6 +166,8 @@ void ComputerPlayer_1::move(Board *b)
 ComputerPlayer_2::ComputerPlayer_2(ChessColor c) : Player(c) {}
 ComputerPlayer_2::ComputerPlayer_2(Player &&p) : Player(std::move(p)) {}
 
+
+// Function to determine if a particular move by a piece will lead to a check.
 bool ComputerPlayer_2::checkFromMove(AbstractPiece *curr_piece, Board *b, int move)
 {
     // Basic Idea:
@@ -231,6 +241,7 @@ bool ComputerPlayer_2::checkFromMove(AbstractPiece *curr_piece, Board *b, int mo
     return isInCheck;
 }
 
+// Move function for computer level 2.
 void ComputerPlayer_2::move(Board *b)
 {
     // How it works:
@@ -284,19 +295,6 @@ void ComputerPlayer_2::move(Board *b)
                     curr_piece->move(move);
                     return;
                 }
-
-                // ChessColor opposing_king_color = curr_piece->getPieceColor() == ChessColor::White ? ChessColor::Black : ChessColor::White;
-                // int original_square = curr_piece->getSquare();
-                // int previous_square = curr_piece->getPreviousSquare();
-                // curr_piece->move(move);
-                // // Loop through all the squares on the board checking the opposing king currently.
-                // for (Square* s : b->isInCheck(opposing_king_color)) {
-                //     if (s->getOccupant()->getSquare() == move) { // Check if the piece we just moved is checking the king.
-                //         return; // nothing is to be done, a move was just made that placed the opposing king in check.
-                //     }
-                // }
-                // // Else, the move did not result in a check. Revert move back to original square.
-                // curr_piece->revertLastMove(original_square,previous_square);
             }
         }
         // Else there are no valid moves for the given piece.
@@ -309,6 +307,7 @@ void ComputerPlayer_2::move(Board *b)
 ComputerPlayer_3::ComputerPlayer_3(ChessColor c) : Player(c) {}
 ComputerPlayer_3::ComputerPlayer_3(Player &&p) : Player(std::move(p)) {}
 
+// Function to check if a move from a particular piece will lead to a check.
 bool ComputerPlayer_3::checkFromMove(AbstractPiece *curr_piece, Board *b, int move)
 {
     // Basic Idea:
@@ -382,6 +381,7 @@ bool ComputerPlayer_3::checkFromMove(AbstractPiece *curr_piece, Board *b, int mo
     return isInCheck;
 }
 
+// Function to determine if a piece is currently under attack. i.e can be captured.
 bool ComputerPlayer_3::canBeCaptured(AbstractPiece *curr_piece, Board *b)
 {
     // Basic idea:
@@ -401,6 +401,7 @@ bool ComputerPlayer_3::canBeCaptured(AbstractPiece *curr_piece, Board *b)
     return false;
 }
 
+// Move function for computer level 3.
 void ComputerPlayer_3::move(Board *b)
 {
     // How it works:
@@ -465,25 +466,6 @@ void ComputerPlayer_3::move(Board *b)
                     backup = curr_piece;
                     backup_move = move;
                     MoveRank = 2;
-
-                    // Move the piece to move.
-                    // ChessColor opposing_king_color = curr_piece->getPieceColor() == ChessColor::White ? ChessColor::Black : ChessColor::White;
-                    // int original_square = curr_piece->getSquare();
-                    // int previous_square = curr_piece->getPreviousSquare();
-                    // curr_piece->move(move);
-                    // // Loop through all the squares on the board checking the opposing king currently.
-                    // for (Square* s : b->isInCheck(opposing_king_color)) {
-                    //     if (s->getOccupant()->getSquare() == move) { // Check if the piece we just moved is checking the king.
-                    //         // move leads to a check. We already know backup move is worst han a rank 2 move.
-                    //         // Revert move back to original square;
-                    //         curr_piece->revertLastMove(original_square,previous_square);
-                    //         // Now set it as the backup.
-                    //         backup = curr_piece;
-                    //         backup_move = move;
-                    //         MoveRank = 2;
-                    //         break;
-                    //     }
-                    // }
                 }
             }
         }
