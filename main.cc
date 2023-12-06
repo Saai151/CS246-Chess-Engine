@@ -64,13 +64,21 @@ int main(){
                     newPiece = parsePieceSymbol(piece[0], color, owner);
                     owner->addPiece(newPiece);
                     board->placePiece(newPiece, parseLocation(location));
+                } else if (command == "=") {
+                    std::string t = "";
+                    std::cin >> t;
+                    if (t == "white") {
+                        game->setTurn(ChessColor::White);
+                    } else if (t == "black") {
+                        game->setTurn(ChessColor::Black);
+                    }
                 } else if (setupCommand == "-") {
                     std::string location;
                     std::cin >> location;
                     int parsedLocation = parseLocation(location);
                     board->resetSquare(parsedLocation);
                 } else if (setupCommand == "done") {
-                    break;
+                    if (board->validState()) break;
                 }
 
                 allDisplays.render();
@@ -131,14 +139,6 @@ int main(){
 
                 delete board;
                 board = nullptr;
-            }
-        } else if (command == "color") {
-            std::string t = "";
-            std::cin >> t;
-            if (t == "white") {
-                game->setTurn(ChessColor::White);
-            } else if (t == "black") {
-                game->setTurn(ChessColor::Black);
             }
         } else if (command == "resign") {
             if (game->turn() == ChessColor::White) {
