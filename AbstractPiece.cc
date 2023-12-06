@@ -187,10 +187,19 @@ std::vector<int> King::allMoves() {
     vector<int> validMoves = {};
 
     // Define increments for horizontal, vertical, and diagonal movements
-    vector<int> kingOffsets = { -9, -8, -7, -1, 1, 7, 8, 9 }; // All directions
+    vector<int> kingOffsets; // All directions
+    int currSquare = this->getSquare();
+    if (currSquare % 8){
+        kingOffsets = { -8, -7, -1, 1, 8, 9 };
+    }
+    else if (currSquare % 8 == 7){
+        kingOffsets = { -9, -8, -1, 1, 7, 8 };
+    } else{
+        kingOffsets = { -9, -8, -7, -1, 1, 7, 8, 9 }; 
+    }
 
-    
-    for (size_t i = 0; i < 8; ++i) {
+    int size = kingOffsets.size();
+    for (size_t i = 0; i < size; ++i) {
         int newSquare = this->getSquare() + kingOffsets[i];
         validMoves.push_back(newSquare);  
     }
