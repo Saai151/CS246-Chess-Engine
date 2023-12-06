@@ -24,6 +24,14 @@ bool Game::makeMove(float* whiteScore, float* blackScore) {
         *whiteScore += 0.5;
         return true;
     }
+    if (board->isCheckmate(currentTurn->getColor())) {
+        if (currentTurn->getColor() == ChessColor::White) {
+            *blackScore += 1;
+        } else {
+            *whiteScore += 1;
+        }
+        return true;
+   }
     try {
         currentTurn->move(board);
     } catch (std::invalid_argument& e) {
@@ -32,15 +40,6 @@ bool Game::makeMove(float* whiteScore, float* blackScore) {
 
     if (currentTurn == white) currentTurn = black;
     else currentTurn = white;
-
-   if (board->isCheckmate(currentTurn->getColor())) {
-        if (currentTurn->getColor() == ChessColor::White) {
-            *blackScore += 1;
-        } else {
-            *whiteScore += 1;
-        }
-        return true;
-   }
 
    return false;
 }
