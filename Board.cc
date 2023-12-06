@@ -1,5 +1,6 @@
 #include "Board.h"
 
+// returns true of we can castle
 bool isCastling(std::vector<Square> squares, int startLocation, int endLocation)
 {
     if (squares[startLocation].isOccupied() && squares[startLocation].getOccupant()->getName() == "King" && squares[startLocation].getOccupant()->getIsFirst() && squares[endLocation].isOccupied() && squares[endLocation].getOccupant()->getName() == "Rook" && squares[endLocation].getOccupant()->getIsFirst())
@@ -10,6 +11,7 @@ bool isCastling(std::vector<Square> squares, int startLocation, int endLocation)
     return false;
 }
 
+// returns the piece with the name, name within pieces
 std::vector<AbstractPiece *> getPieces(std::string name, std::vector<AbstractPiece *> pieces)
 {
     std::vector<AbstractPiece *> result;
@@ -23,6 +25,10 @@ std::vector<AbstractPiece *> getPieces(std::string name, std::vector<AbstractPie
     return result;
 }
 
+// Constructs a game board, initializing squares based on ranks and files. 
+// If hardCode is false, it populates the board with the given white and black pieces.
+// If hardCode is true, it selectively places predefined pieces (pawn, rook, knight, bishop, king, queen) 
+// for both white and black on specific squares to set up the initial chess board configuration.
 Board::Board(std::vector<AbstractPiece *> white, std::vector<AbstractPiece *> black, DisplayAggregator *g, bool hardCode)
 {
     std::vector<AbstractPiece *> selectedPieces;
@@ -118,6 +124,8 @@ Board::Board(std::vector<AbstractPiece *> white, std::vector<AbstractPiece *> bl
     squares[3].setOccupant(selectedPieces.back());
 }
 
+
+// Resets the board
 void Board::reset()
 {
     for (auto &s : squares)
@@ -126,6 +134,7 @@ void Board::reset()
     }
 }
 
+// checks if a piece can block a check and then returns true if it can
 bool Board::blockCheck(AbstractPiece *curr_piece, AbstractPiece *king, int move)
 {
     // Basic Idea:
@@ -195,6 +204,7 @@ bool Board::blockCheck(AbstractPiece *curr_piece, AbstractPiece *king, int move)
     return inCheck;
 }
 
+// Returns true if a piece is checking the king
 bool Board::isPieceCheckingTheKing(Square s, AbstractPiece *king, ChessColor c)
 {
     return s.isOccupied() && s.getOccupant()->getPieceColor() != c && s.getOccupant()->validMove(king->getSquare()) && isValidMove(s.getOccupant(), s.getOccupant()->getSquare(), king->getSquare());
@@ -223,6 +233,7 @@ std::vector<AbstractPiece *> Board::isInCheck(ChessColor c)
     return checked;
 }
 
+// Returns true to the gamestate if the king is currently under checkmate, allows us to end a game
 bool Board::isCheckmate(ChessColor c)
 {
     // Basic Idea:
@@ -274,6 +285,7 @@ bool Board::isCheckmate(ChessColor c)
     return true;
 }
 
+// Checks for stalemate, returns true for a draw
 bool Board::isStalemate(ChessColor current_colour)
 {
     if (isInCheck(current_colour).size() > 0)
@@ -298,6 +310,7 @@ bool Board::isStalemate(ChessColor current_colour)
     return true;
 }
 
+// Places a piece on the board
 void Board::placePiece(AbstractPiece *piece, int square)
 {
     if (squares[square].isOccupied())
