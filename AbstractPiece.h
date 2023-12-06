@@ -10,9 +10,17 @@
 using namespace std;
 
 
+/* Forward declarations to avoid circular dependencies */
 class PieceRemovedObserver;
 class PieceMovedObserver;
 
+
+/**
+ * AbstractPiece is the base class for all pieces, subclass this to create different piece types
+ * Fields:
+ *  - color: The piece color
+ *  - square: The square index
+*/
 class AbstractPiece
 {
 protected:
