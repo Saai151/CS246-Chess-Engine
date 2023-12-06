@@ -25,11 +25,7 @@ int main(){
     std::vector<DisplayObserver*> displays = {&gd, &td}; // add back graphics display later.
     DisplayAggregator allDisplays = DisplayAggregator(displays);
 
-    Board* board = new Board(white->pieces, black->pieces, &allDisplays);
-    // Refresh screen in case of white space.
-    for (Square s : board->squares) {
-        s.refresh();
-    }
+    Board* board = nullptr;
     std::string command;
 
     while (std::cin >> command) {
@@ -41,6 +37,11 @@ int main(){
         }
         if (board == nullptr) {
             board = new Board(white->pieces, black->pieces, &allDisplays);
+        }
+
+        // Refresh screen in case of white space.
+        for (Square s : board->squares) {
+            s.refresh();
         }
 
         if (command == "setup" && game == nullptr) {
