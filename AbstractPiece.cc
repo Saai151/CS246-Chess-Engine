@@ -236,38 +236,24 @@ std::vector<int> Knight::allMoves() {
 
     int currSquare = this->getSquare();
 
-    int currRow = currSquare % 8;
-    int currCol = currSquare / 8;
-
-    std::vector<int> rows = {2, 2, -2, -2, 1, 1, -1, -1};
-    std::vector<int> cols = {1, -1, 1, -1, 2, -2, 2, -2};
-
-    std::vector<int> newRows;
-    std::vector<int> newCols;
-    std::vector<int> moves;
-
-    for (int i = 0; i < 8; ++i){
-        int newRow = currRow + rows[i];
-        int newCol = currCol + cols[i];
-        newRows.push_back(newRow);
-        newCols.push_back(newCol);
+    vector<int> knightOffsets;
+    vector<int> moves;
+    if (currSquare %8 == 0){
+        knightOffsets = {-15, 17, -6, 10};
+    } else if (currSquare %8 == 7){
+        knightOffsets = {15, -17, +6, -10};
+    } else if(currSquare % 8 ==1){
+        knightOffsets = {-15, 17, -6, 10, 15, -17};
+    } else if (currSquare % 8 == 6){
+        knightOffsets = {15, -17, +6, -10, -15, 17};
     }
 
-    for (int i =0; i < 8; ++i){
-        if (newCols[i] >= 8){
-            newCols.erase(newCols.begin() + i);
-            newRows.erase(newRows.begin() + i);
-        } else if (newRows[i] >= 8){
-            newCols.erase(newCols.begin() + i);
-            newRows.erase(newRows.begin() + i);
-        }
-    }
 
-    for (size_t i = 0; i < newRows.size(); ++i) {
-        int move = newCols[i]*8 + newRows[i];
-        moves.push_back(move);
+    size_t size = knightOffsets.size();
+
+    for (int i = 0; i < size; ++i){
+        moves.push_back(currSquare + knightOffsets[i]);
     }
-    
     
 
     return moves;
