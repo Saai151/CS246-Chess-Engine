@@ -57,6 +57,9 @@ bool Game::makeMove(float *whiteScore, float *blackScore)
         return false;
     }
 
+    if (board->isCheckmate(otherTurn)) {
+        cout << "CheckMated";
+    }
     if (board->isCheckmate(otherTurn))
     {
         if (currentTurn->getColor() == ChessColor::White)
