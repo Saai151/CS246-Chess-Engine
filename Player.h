@@ -10,7 +10,7 @@
 #include <ctime>
 //#include <random>
 
-class Player: public PieceRemovedObserver {
+class Player: public PieceRemovedObserver, public PiecePromotedObserver {
     ChessColor c;
 
     public:

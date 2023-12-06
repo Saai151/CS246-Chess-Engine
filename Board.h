@@ -8,7 +8,6 @@
 #include <iostream>
 #include <vector>
 
-
 class Board: public PieceMovedObserver {    
     DisplayAggregator* g;
 

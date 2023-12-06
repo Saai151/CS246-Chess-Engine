@@ -115,6 +115,8 @@ int main(){
                 black = newBlack;
             }
 
+            board->attachWhitePromoter(white);
+            board->attachBlackPromoter(black);
             game = new Game(white, black, board);
         } else if (command == "move") {
             bool isOver = game->makeMove(&whiteScore, &blackScore);

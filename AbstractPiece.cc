@@ -67,9 +67,12 @@ std::string Pawn::printable() const
 
 std::vector<int> Pawn::allMoves() {
     int currSquare = this->getSquare();
+    int currRow = currSquare % 8;
+    int currCol = currSquare / 8;
+
     vector<int> moves = {};
 
-        if (this->getPieceColor() == ChessColor::White && isFirst) {
+    if (this->getPieceColor() == ChessColor::White && isFirst) {
         moves.push_back(currSquare - 16);
     } else if(isFirst && this->getPieceColor() == ChessColor::Black){
         moves.push_back(currSquare + 16);
@@ -83,7 +86,7 @@ std::vector<int> Pawn::allMoves() {
             moves.push_back(currSquare - 9);
         }  else{
             moves.push_back(currSquare - 7);
-             moves.push_back(currSquare - 9);
+                moves.push_back(currSquare - 9);
         }
         
         
@@ -408,8 +411,6 @@ void AbstractPiece::move(int newIndex) {
     previousSquareIndex = squareIndex;
     squareIndex = newIndex;
 
-
-    
     bool validatedByBoard = pieceMovedObserver->handlePieceMoved(this);
     if (!validatedByBoard) {
         previousSquareIndex = previousSquareIndexCopy;

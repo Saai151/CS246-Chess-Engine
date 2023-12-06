@@ -92,6 +92,11 @@ public:
 AbstractPiece* parsePieceSymbol(char p, ChessColor color, PieceRemovedObserver* owner);
 AbstractPiece* parsePieceSymbolAndCopy(char p, AbstractPiece* toCopy);
 
+class PiecePromotedObserver {
+    public:
+        virtual void promote(AbstractPiece* old, AbstractPiece* n) = 0;
+};
+
 class PieceRemovedObserver
 {
 public:
