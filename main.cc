@@ -18,14 +18,18 @@ int main(){
     Player* white = nullptr;
     Player* black = nullptr;
     Game* game = nullptr;
-    //Xwindow w = Xwindow();
-    //GraphicsDisplay gd(w);
+    Xwindow w = Xwindow();
+    GraphicsDisplay gd(w);
     TextDisplay td;
 
-    std::vector<DisplayObserver*> displays = {&td};
+    std::vector<DisplayObserver*> displays = {&gd, &td}; // add back graphics display later.
     DisplayAggregator allDisplays = DisplayAggregator(displays);
 
-    Board* board = nullptr;
+    Board* board = new Board(white->pieces, black->pieces, &allDisplays);
+    // Refresh screen in case of white space.
+    for (Square s : board->squares) {
+        s.refresh();
+    }
     std::string command;
 
     while (std::cin >> command) {

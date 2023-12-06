@@ -201,24 +201,6 @@ std::vector<Square*> Board::isInCheck(ChessColor c) {
     return checked;
 }
 
-std::vector<Square*> Board::isInCheck2(ChessColor c, std::vector<Square> boardState) {
-    std::vector<Square*> checked;
-    AbstractPiece* king;
-    for (auto& s : boardState) {
-        if (s.isOccupied() && s.getOccupant()->getName() == "King" && s.getOccupant()->getPieceColor() == c) {
-            king = s.getOccupant();
-        }
-    }
-
-    for (auto& s : squares) {
-        if (isPieceCheckingTheKing(&s, king, c)) {
-            checked.push_back(&s);
-        }
-    }
-
-    return checked;
-}
-
 bool Board::isCheckmate(ChessColor c) {
     // Basic Idea:
     // First Check if the King is in check.
@@ -261,11 +243,15 @@ bool Board::isCheckmate(ChessColor c) {
 }
 
 bool Board::isStalemate(ChessColor current_colour) {
-    if (isInCheck(current_colour).size() > 0) return false;
+    cout << "in Stalemate check" << endl;
+    if (isInCheck(current_colour).size() > 0) {
+        return false;}
     
     for (Square s : squares) {
         if (s.isOccupied() && s.getOccupant()->getPieceColor() == current_colour) {
             for (int move : s.getOccupant()->allMoves()) {
+                cout << s.getOccupant()->getName() << endl;
+                cout << move << endl;
                 if (isValidMove(s.getOccupant(), s.getOccupant()->getSquare(), move)) {
                     return false;
                 }
@@ -373,14 +359,26 @@ bool Board::isValidMove(AbstractPiece* target, int startLocation, int endLocatio
     }
 
     if (target->getName() == "King"){
-        std::vector<Square> boardState = squares;
-        boardState[endLocation].setOccupant(target);
-        //target->move(endLocation);
-        if ((this->isInCheck2(target->getPieceColor(), boardState).size() == 0)){
-           // target->revertLastMove(startLocation, previous);
-            return false;
+        for (auto& s : squares) {
+            if (s.isOccupied() 
+            && s.getOccupant()->getPieceColor() == captureColor 
+            && s.getOccupant()->validMove(target->getSquare())
+            && isValidMove(s.getOccupant(), s.getLocation().getIndex(), target->getSquare()))
+             return false;
         }
     }
+
+    
+
+    // if (target->getName() == "King"){
+    //     //int previous = target->getPreviousSquare();
+    //     //target->move(endLocation);
+    //     if (isInCheck2(target, endLocation)){
+    //        // target->revertLastMove(startLocation, previous);
+    //         cout << "Moving to: " << endLocation << "causes a check" << endl;
+    //         return false;
+    //     } 
+    // }
     
     if (target->getName() == "Knight") return true;
 

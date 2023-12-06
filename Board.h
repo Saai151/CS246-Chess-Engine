@@ -21,7 +21,7 @@ class Board: public PieceMovedObserver {
         void reset();
         void placePiece(AbstractPiece* piece, int square);
         std::vector<Square*> isInCheck(ChessColor c);
-        std::vector<Square*> isInCheck2(ChessColor c, std::vector<Square> boardState);
+        bool isInCheck2(AbstractPiece* king, int move);
         bool isCheckmate(ChessColor c);
         bool isStalemate(ChessColor current_colour);
         bool isValidMove(AbstractPiece* target, int startLocation, int endLocation);
