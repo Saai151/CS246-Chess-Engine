@@ -5,12 +5,6 @@
 #include <string>
 #include <cstring>
 
-// class EmptyDisplay: public DisplayObserver {
-//     void handleStateChange(Square* s) override {
-//         return;
-//     }
-// };
-
 int main(){
     srand(static_cast<unsigned int>(time(0))); // Helps generate random numbers by using time as a seed. 
                                                  // (allows for more random numbers to be generated) 
