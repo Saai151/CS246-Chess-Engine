@@ -27,22 +27,24 @@ void Game::setTurn(ChessColor c)
 bool Game::makeMove(float *whiteScore, float *blackScore)
 {
     ChessColor otherTurn = ((currentTurn->getColor() == ChessColor::Black) ? ChessColor::White : ChessColor::Black);
+    
     if (board->isCheckmate(otherTurn))
     {
-        std::cout << "Checkmate" << std::endl;
-        if (currentTurn->getColor() == ChessColor::White)
+        if (otherTurn == ChessColor::White)
         {
+            cout << "Black wins! Checkmate!" << endl;
             *blackScore += 1;
         }
         else
         {
+            cout << "White wins! Checkmate!" << endl;
             *whiteScore += 1;
         }
-        return true;
     }
 
     if (board->isStalemate(otherTurn))
     {
+        cout << "Stalemate Draw!" << endl;
         *blackScore += 0.5;
         *whiteScore += 0.5;
         return true;
@@ -57,17 +59,16 @@ bool Game::makeMove(float *whiteScore, float *blackScore)
         return false;
     }
 
-    if (board->isCheckmate(otherTurn)) {
-        cout << "CheckMated";
-    }
     if (board->isCheckmate(otherTurn))
     {
-        if (currentTurn->getColor() == ChessColor::White)
+        if (otherTurn== ChessColor::White)
         {
+            cout << "Black wins! Checkmate!" << endl;
             *blackScore += 1;
         }
         else
         {
+            cout << "White wins! Checkmate!" << endl;
             *whiteScore += 1;
         }
         return true;
@@ -77,6 +78,12 @@ bool Game::makeMove(float *whiteScore, float *blackScore)
         currentTurn = black;
     else
         currentTurn = white;
+
+    if (board->isInCheck(ChessColor::White).size() > 0) {
+        cout << "White is in check." << endl;
+    } else if (board->isInCheck(ChessColor::Black).size() > 0) {
+        cout << "Black is in check." << endl;
+    }
 
     return false;
 }

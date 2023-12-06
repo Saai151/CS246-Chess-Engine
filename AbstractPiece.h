@@ -21,7 +21,6 @@ protected:
 protected:
     int squareIndex = -1;
     int previousSquareIndex = -1;
-    int prevPrevSquareIndex = -1;
     bool isFirst = true;
     bool lastMoveWasFirstMove = false;
     std::string name;

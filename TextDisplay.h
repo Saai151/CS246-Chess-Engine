@@ -3,7 +3,6 @@
 class TextDisplay: public DisplayObserver {
     std::vector<char> display;
 
-
     public:
         TextDisplay();
         void render() override;

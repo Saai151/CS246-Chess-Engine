@@ -67,9 +67,6 @@ std::string Pawn::printable() const
 
 std::vector<int> Pawn::allMoves() {
     int currSquare = this->getSquare();
-    int currRow = currSquare % 8;
-    int currCol = currSquare / 8;
-
     vector<int> moves = {};
 
     if (this->getPieceColor() == ChessColor::White && isFirst) {
@@ -201,7 +198,7 @@ std::vector<int> King::allMoves() {
         kingOffsets = { -9, -8, -7, -1, 1, 7, 8, 9 }; 
     }
 
-    int size = kingOffsets.size();
+    size_t size = kingOffsets.size();
     for (size_t i = 0; i < size; ++i) {
         int newSquare = this->getSquare() + kingOffsets[i];
         validMoves.push_back(newSquare);  
@@ -250,8 +247,7 @@ std::vector<int> Knight::allMoves() {
 
 
     size_t size = knightOffsets.size();
-
-    for (int i = 0; i < size; ++i){
+    for (size_t i = 0; i < size; ++i){
         moves.push_back(currSquare + knightOffsets[i]);
     }
     
