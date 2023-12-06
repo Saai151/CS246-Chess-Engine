@@ -243,15 +243,15 @@ bool Board::isCheckmate(ChessColor c) {
 }
 
 bool Board::isStalemate(ChessColor current_colour) {
-    cout << "in Stalemate check" << endl;
+    //cout << "in Stalemate check" << endl;
     if (isInCheck(current_colour).size() > 0) {
         return false;}
     
     for (Square s : squares) {
         if (s.isOccupied() && s.getOccupant()->getPieceColor() == current_colour) {
             for (int move : s.getOccupant()->allMoves()) {
-                cout << s.getOccupant()->getName() << endl;
-                cout << move << endl;
+                //cout << s.getOccupant()->getName() << endl;
+                //cout << move << endl;
                 if (isValidMove(s.getOccupant(), s.getOccupant()->getSquare(), move)) {
                     return false;
                 }

@@ -26,10 +26,6 @@ int main(){
     DisplayAggregator allDisplays = DisplayAggregator(displays);
 
     Board* board = nullptr;
-    // Refresh screen in case of white space.
-    for (Square s : board->squares) {
-        s.refresh();
-    }
     std::string command;
 
     while (std::cin >> command) {
@@ -41,6 +37,11 @@ int main(){
         }
         if (board == nullptr) {
             board = new Board(white->pieces, black->pieces, &allDisplays);
+        }
+
+        // Refresh screen in case of white space.
+        for (Square s : board->squares) {
+            s.refresh();
         }
 
         if (command == "setup" && game == nullptr) {
