@@ -467,6 +467,13 @@ void ComputerPlayer_3::move(Board *b)
                     backup_move = move;
                     MoveRank = 2;
                 }
+
+                // Add random move to backup if nothing is found;
+                if (MoveRank < 2) {
+                    backup = curr_piece;
+                    backup_move = move;
+                    MoveRank = 1;
+                }
             }
         }
         // Else there are no rank 3 moves for the given piece.
