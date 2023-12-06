@@ -216,7 +216,6 @@ std::vector<AbstractPiece *> Board::isInCheck(ChessColor c)
     {
         if (isPieceCheckingTheKing(s, king, c))
         {
-            std::cout << " INSIDE " << s.getOccupant()->getName() << std::endl;
             checked.push_back(s.getOccupant());
         }
     }
@@ -258,14 +257,10 @@ bool Board::isCheckmate(ChessColor c)
 
     // Check if piece can block.
     // Loop through all pieces on the same team as king.
-    cout << "There are no more valid moves for king" << endl;
     for (Square s : squares)
     {
-        cout << "in squares" << endl;
         if (s.isOccupied() && s.getOccupant()->getPieceColor() == king->getPieceColor() && s.getOccupant()->getName() != "King")
         {   
-            cout << "Here" << endl;
-            cout << s.getOccupant()->getName() << endl;
             // Loop through all its moves. Pass to the blockCheck function.
             for (int move : s.getOccupant()->allMoves())
             {
@@ -276,13 +271,11 @@ bool Board::isCheckmate(ChessColor c)
             }
         }
     }
-    cout << " we have checkmated" << endl;
     return true;
 }
 
 bool Board::isStalemate(ChessColor current_colour)
 {
-    // cout << "in Stalemate check" << endl;
     if (isInCheck(current_colour).size() > 0)
     {
         return false;
@@ -294,8 +287,6 @@ bool Board::isStalemate(ChessColor current_colour)
         {
             for (int move : s.getOccupant()->allMoves())
             {
-                // cout << s.getOccupant()->getName() << endl;
-                // cout << move << endl;
                 if (isValidMove(s.getOccupant(), s.getOccupant()->getSquare(), move))
                 {
                     return false;
@@ -470,16 +461,6 @@ bool Board::isValidMove(AbstractPiece *target, int startLocation, int endLocatio
                 return false;
         }
     }
-
-    // if (target->getName() == "King"){
-    //     //int previous = target->getPreviousSquare();
-    //     //target->move(endLocation);
-    //     if (isInCheck2(target, endLocation)){
-    //        // target->revertLastMove(startLocation, previous);
-    //         cout << "Moving to: " << endLocation << "causes a check" << endl;
-    //         return false;
-    //     }
-    // }
 
     if (target->getName() == "Knight")
         return true;

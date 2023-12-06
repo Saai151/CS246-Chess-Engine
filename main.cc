@@ -23,7 +23,7 @@ int main(){
     GraphicsDisplay gd(w);
     TextDisplay td;
 
-    std::vector<DisplayObserver*> displays = {&gd, &td}; 
+    std::vector<DisplayObserver*> displays = {&td, &gd}; 
     DisplayAggregator allDisplays = DisplayAggregator(displays);
 
     Board* board = nullptr;
@@ -143,8 +143,10 @@ int main(){
             }
         } else if (command == "resign") {
             if (game->turn() == ChessColor::White) {
+                cout << "Black wins!" << endl;
                 blackScore += 1;
             } else {
+                cout << "White wins!" << endl;
                 whiteScore += 1;
             }
 
