@@ -1,5 +1,7 @@
 #include "Game.h"
 
+// Initializes a game instance with references to white and black players, along with a game board. Sets the current turn to the white player, 
+// attaches the board to the player pieces for both players.
 Game::Game(Player *white, Player *black, Board *board) : white{white}, black{black}, board{board}
 {
     currentTurn = white;
@@ -24,6 +26,8 @@ void Game::setTurn(ChessColor c)
     }
 }
 
+// Game::makeMove executes a move in a chess game, updates scores based on game state 
+// (checkmate, stalemate), handles errors, notifies about checks, and switches player turns.
 bool Game::makeMove(float *whiteScore, float *blackScore)
 {
     ChessColor otherTurn = ((currentTurn->getColor() == ChessColor::Black) ? ChessColor::White : ChessColor::Black);
