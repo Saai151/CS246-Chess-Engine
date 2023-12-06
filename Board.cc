@@ -274,6 +274,27 @@ void Board::resetSquare(int index) {
     squares[index].reset();
 }
 
+bool Board::validState() {
+    int whiteKingCount = 0;
+    int blackKingCount = 0;
+
+    for (auto& s : squares) {
+        if (s.isOccupied() && s.getOccupant()->getName() == "King") {
+            if (s.getOccupant()->getPieceColor() == ChessColor::White) {
+                whiteKingCount++;
+            } else {
+                blackKingCount++;
+            }
+        }
+    }
+
+    if (whiteKingCount > 1 || blackKingCount > 1) return false;
+
+    if (isInCheck(ChessColor::White).size() > 0 || isInCheck(ChessColor::Black).size() > 0) return false;
+
+    return true;
+}
+
 bool Board::handlePieceMoved(AbstractPiece* piece, bool overrideValidation) {
     if (overrideValidation || isValidMove(piece, piece->getPreviousSquare(), piece->getSquare())) {
         if (isCastling(squares, piece->getPreviousSquare(), piece->getSquare())) {
