@@ -468,7 +468,11 @@ void ComputerPlayer_3::move(Board *b)
                     MoveRank = 2;
                 }
 
+<<<<<<< HEAD
+                // Just check if nothing was implemented. Then sent random move as backup.
+=======
                 // Add random move to backup if nothing is found;
+>>>>>>> 40608447c2d97561137bf286ee417b3cc64e6670
                 if (MoveRank < 2) {
                     backup = curr_piece;
                     backup_move = move;

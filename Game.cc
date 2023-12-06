@@ -65,6 +65,12 @@ bool Game::makeMove(float *whiteScore, float *blackScore)
         return false;
     }
 
+<<<<<<< HEAD
+    if (currentTurn == white) currentTurn = black;
+    else currentTurn = white;
+
+   return false;
+=======
     if (board->isCheckmate(otherTurn))
     {
         if (otherTurn== ChessColor::White)
@@ -92,4 +98,5 @@ bool Game::makeMove(float *whiteScore, float *blackScore)
         currentTurn = white;
 
     return false;
+>>>>>>> 479a93d1c9af0cde432da296aa557f746f4aeecc
 }
